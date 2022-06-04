@@ -23,6 +23,12 @@ class CustomerSerializer(ModelSerializer):
         fields = ('id', 'user')
 
 
+class SpecialitySerializer(ModelSerializer):
+    class Meta:
+        model = Specialist
+        fields = ('id', 'name')
+
+
 class CustomerFullSerializer(ModelSerializer):
     user = UserFullSerializer()
 
@@ -33,10 +39,11 @@ class CustomerFullSerializer(ModelSerializer):
 
 class SpecialistSerializer(ModelSerializer):
     user = UserSerializer()
+    speciality = SpecialitySerializer()
 
     class Meta:
         model = Specialist
-        fields = ('id', 'user')
+        fields = ('id', 'user','speciality')
 
 
 class SpecialistFullSerializer(ModelSerializer):
