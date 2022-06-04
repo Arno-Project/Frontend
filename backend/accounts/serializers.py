@@ -1,6 +1,5 @@
-from django.contrib.auth.hashers import make_password
 from rest_framework.serializers import ModelSerializer
-from accounts.models import User, Customer, Specialist, TechnicalManager, CompanyManager
+from accounts.models import User, Customer, Specialist, TechnicalManager, CompanyManager, Speciality
 
 
 class UserSerializer(ModelSerializer):
@@ -25,7 +24,7 @@ class CustomerSerializer(ModelSerializer):
 
 class SpecialitySerializer(ModelSerializer):
     class Meta:
-        model = Specialist
+        model = Speciality
         fields = ('id', 'name')
 
 

@@ -36,6 +36,7 @@ class Customer(models.Model):
     @classmethod
     def search(cls, query):
         result = User.search(query, is_customer=True)
+        result =cls.objects.filter(user__in=result)
         return result
 
 
@@ -57,6 +58,7 @@ class Specialist(models.Model):
     @classmethod
     def search(cls, query):
         result = User.search(query, is_specialist=True)
+        result = cls.objects.filter(user__in=result)
         for field in ['speciality']:
             if query.get(field):
                 result = result.filter(Q(**{'specialist__' + field + '__icontains': query[field]}))
@@ -69,6 +71,7 @@ class CompanyManager(models.Model):
     @classmethod
     def search(cls, query):
         result = User.search(query, is_company_manager=True)
+        result = cls.objects.filter(user__in=result)
         return result
 
 
@@ -78,4 +81,5 @@ class TechnicalManager(models.Model):
     @classmethod
     def search(cls, query):
         result = User.search(query, is_technical_manager=True)
+        result = cls.objects.filter(user__in=result)
         return result
