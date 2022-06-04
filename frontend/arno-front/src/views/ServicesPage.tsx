@@ -3,23 +3,28 @@ import {
   Table,
   Button,
   Center,
-  Select,
-  Input,
+  MultiSelect,
+  TextInput,
 } from "@mantine/core";
+
 import React from "react";
 
 import { Search, ListSearch, UserSearch } from "tabler-icons-react";
 
 const ServicesPage = () => {
   const theme = useMantineTheme();
-
+  
   const fetchResults = () => {
     setSearching(true);
+    console.log(inputValue);
+    console.log(selectedValues);
     // TODO fetch items
     setSearching(false);
   };
 
   const [isSearching, setSearching] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
+  const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
 
   const data: any[] = [
     { attr: "1" },
@@ -42,12 +47,21 @@ const ServicesPage = () => {
     <>
       <h1>جست‌وجوی خدمات</h1>
       <div className="search-criteria">
-        <Input icon={<Search />} placeholder="شرح وظیفه" />
-        <Select
-          label="انتخاب تخصص"
-          placeholder="تخصص"
-          data={["React", "Angular", "Svelte", "Vue"]} // TODO
+        <TextInput
+          value={inputValue}
+          onChange={(event) => setInputValue(event.currentTarget.value)}
+          icon={<Search />}
+          label="شرح خدمت"
+          placeholder="خدمت"
+        />
+
+        <MultiSelect
+          onChange={(event) => setSelectedValues(event)}
+          className="font-reminder"
+          data={["React", "Angular", "Svelte", "Vue", "Riot", "Next.js", "Blitz.js",]} // TODO
           icon={<UserSearch size={14} />}
+          label="انتخاب تخصص(ها)"
+          placeholder="تخصص‌های مورد نظر"
           searchable
           clearable
         />
