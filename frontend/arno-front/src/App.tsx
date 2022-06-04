@@ -8,11 +8,11 @@ import Footer from "./components/Footer";
 import BasePage from "./views/BasePage";
 
 export default function App() {
-  const [rtl, setRtl] = useState(false);
+  const [rtl, setRtl] = useState(true);
 
   return (
     <MantineProvider
-      withGlobalStyles
+      // withGlobalStyles
       withNormalizeCSS
       theme={{
         dir: rtl ? "rtl" : "ltr",
@@ -27,7 +27,7 @@ export default function App() {
       }
     >
       <div dir={rtl ? "rtl" : "ltr"}>
-        <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button>
+        {/* <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button> */}
         <Header />
         <BasePage />
         <Footer />
