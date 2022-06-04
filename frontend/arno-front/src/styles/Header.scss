@@ -1,0 +1,14 @@
+header {
+    position: absolute;
+    z-index: 99;
+
+    .content-desktop {
+        justify-content: space-between;
+        align-items: center;
+        display: flex;
+    }
+    
+    top: 40px;
+    left: 60px;
+    right: 60px;
+}
