@@ -18,14 +18,14 @@ const Header = () => {
           </Text>
         </div>
         <div>
-          <Link to="/register">
-            <Button
-              variant="gradient"
-              gradient={{ from: "indigo", to: "cyan" }}
-            >
-              ورود / ثبت‌نام
-            </Button>
-          </Link>
+          <Button
+            component={Link}
+            to="/register"
+            variant="gradient"
+            gradient={{ from: "indigo", to: "cyan" }}
+          >
+            ورود / ثبت‌نام
+          </Button>
         </div>
       </div>
     </header>

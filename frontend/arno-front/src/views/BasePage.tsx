@@ -10,7 +10,7 @@ const BasePage = () => {
   const theme = useMantineTheme();
 
   return (
-    <Container>
+    <Container className="main-container">
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/register" element={<SignUpPage />} />
