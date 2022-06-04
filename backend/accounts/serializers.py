@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework.serializers import ModelSerializer
 from accounts.models import User, Customer, Specialist, TechnicalManager, CompanyManager
 
@@ -70,12 +71,14 @@ class RegisterSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            validated_data['username'], validated_data['email'], validated_data['password'], validated_data['phone'],
-            validated_data['first_name'], validated_data['last_name'])
+            validated_data['username'], validated_data['email'], validated_data['password'],
+            phone=validated_data['phone'],
+            first_name=validated_data['first_name'], last_name=validated_data['last_name'])
+        user.save()
         return user
 
 
-class CustomerRegisterSerializer(ModelSerializer):
+class CustomerRegisterSerializer(RegisterSerializer):
     class Meta(RegisterSerializer.Meta):
         pass
 
@@ -85,7 +88,7 @@ class CustomerRegisterSerializer(ModelSerializer):
         return customer
 
 
-class SpecialistRegisterSerializer(ModelSerializer):
+class SpecialistRegisterSerializer(RegisterSerializer):
     class Meta(RegisterSerializer.Meta):
         pass
 

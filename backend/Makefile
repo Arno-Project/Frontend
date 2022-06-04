@@ -16,8 +16,6 @@ superuser:
 	docker-compose exec arno python manage.py createsuperuser
 runserver:
 	docker-compose exec arno python manage.py runserver
-runserver-sepehr:
-	docker-compose exec arno python manage.py runserver 0.0.0.0:8000
 down-v:
 	docker-compose down -v
 volume:

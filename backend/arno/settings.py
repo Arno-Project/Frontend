@@ -10,13 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-from datetime import timedelta
 
-from decouple import config
-from rest_framework.settings import api_settings
-from unipath import Path
 import environ
-import sys
+from decouple import config
+from unipath import Path
 
 # Handling GeoSpatial Data for Windows
 if os.name == 'nt':
@@ -27,13 +24,11 @@ if os.name == 'nt':
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
 
-
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     "django.contrib.auth.hashers.Argon2PasswordHasher",
 ]
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).parent
@@ -154,22 +149,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'knox.auth.TokenAuthentication',
     ],
 }
 
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = "fa-ir"
 TIME_ZONE = "Asia/Tehran"
-
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -192,4 +182,3 @@ STATICFILES_DIRS = (os.path.join(CORE_DIR, "apps/static"),)
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-

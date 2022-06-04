@@ -4,7 +4,7 @@ from phone_field import PhoneField
 
 
 class User(AbstractUser):
-    phone = PhoneField(blank=False, null=False , verbose_name=u"شماره تلفن همراه")
+    phone = PhoneField(blank=False, null=False, verbose_name=u"شماره تلفن همراه")
     pass
 
 
