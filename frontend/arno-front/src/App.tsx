@@ -30,7 +30,7 @@ export default function App() {
         {/* <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button> */}
         <Header />
         <BasePage />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </MantineProvider>
   );

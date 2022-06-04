@@ -8,7 +8,7 @@ const Header = () => {
     <header>
       <div className="content-desktop">
         <div>
-          <Text
+          <Text component={Link} to="/"
             style={{ fontSize: 32 }}
             weight={600}
             variant="gradient"
