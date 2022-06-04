@@ -1,5 +1,4 @@
 import {
-  useMantineTheme,
   Table,
   Button,
   Center,
@@ -12,7 +11,6 @@ import React from "react";
 import { Search, ListSearch, UserSearch } from "tabler-icons-react";
 
 const ServicesPage = () => {
-  const theme = useMantineTheme();
   
   const fetchResults = () => {
     setSearching(true);
@@ -50,7 +48,7 @@ const ServicesPage = () => {
         <TextInput
           value={inputValue}
           onChange={(event) => setInputValue(event.currentTarget.value)}
-          icon={<Search />}
+          icon={<Search size={20} />}
           label="شرح خدمت"
           placeholder="خدمت"
         />
@@ -59,7 +57,7 @@ const ServicesPage = () => {
           onChange={(event) => setSelectedValues(event)}
           className="font-reminder"
           data={["React", "Angular", "Svelte", "Vue", "Riot", "Next.js", "Blitz.js",]} // TODO
-          icon={<UserSearch size={14} />}
+          icon={<UserSearch size={20} />}
           label="انتخاب تخصص(ها)"
           placeholder="تخصص‌های مورد نظر"
           searchable
@@ -70,7 +68,7 @@ const ServicesPage = () => {
         <Button
           variant="gradient"
           gradient={{ from: "teal", to: "lime", deg: 105 }}
-          leftIcon={<ListSearch />}
+          leftIcon={<ListSearch size={20} />}
           loading={isSearching}
           // loaderPosition="right"
           onClick={() => fetchResults()}
