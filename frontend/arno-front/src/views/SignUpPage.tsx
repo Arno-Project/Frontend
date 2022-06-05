@@ -31,6 +31,8 @@ const SignUpPage = () => { // TODO resolve style compatibilty
   const theme = useMantineTheme();
 
   const toggleFormType = () => {
+    setShowFailureNotificaiton(false);
+    setShowSuccessNotificaiton(false);
     setFormType((current) => (current === "register" ? "login" : "register"));
     // setError(null);
   };
