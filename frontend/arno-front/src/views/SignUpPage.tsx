@@ -1,5 +1,8 @@
 import { useForm } from "@mantine/hooks";
 
+import { Notification } from '@mantine/core';
+import { Check, X } from 'tabler-icons-react';
+
 import React, { useState } from "react";
 
 import {
@@ -14,12 +17,17 @@ import {
   Anchor,
   useMantineTheme,
 } from "@mantine/core";
-import { Lock, Mail } from "tabler-icons-react";
+import { Lock, Mail, Phone } from "tabler-icons-react";
+import { signup } from "../api/account";
 
 const SignUpPage = () => { // TODO resolve style compatibilty
   const [formType, setFormType] = useState<"register" | "login">("register");
   const [loading, setLoading] = useState(false);
+  const [showSuccessNotificaiton, setShowSuccessNotificaiton] = useState(false);
+  const [showFailureNotificaiton, setShowFailureNotificaiton] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   // const [error, setError] = useState<string>(null);
+
   const theme = useMantineTheme();
 
   const toggleFormType = () => {
@@ -34,6 +42,7 @@ const SignUpPage = () => { // TODO resolve style compatibilty
       email: "",
       password: "",
       confirmPassword: "",
+      phone: "",
       termsOfService: true,
     },
 
@@ -52,15 +61,37 @@ const SignUpPage = () => { // TODO resolve style compatibilty
     // },
   });
 
-  const handleSubmit = (values: any) => {
+  const  handleSubmit = async (values: any) => {
     console.log(values);
-    // TODO: call api
+    const data = await signup(values, 'customer');
+    console.log(data);
+    if (data != null &&  (data['status'] == undefined || data['status'] === 200))
+      {
+        setShowFailureNotificaiton(false);
+        setShowSuccessNotificaiton(true);
+      }
+        else 
+        {
+        setShowSuccessNotificaiton(false);
+        setShowFailureNotificaiton(true);
+        }
+    
   };
 
   return (
     <>
       <h1>ثبت نام / ورود به سامانه</h1>
       <Paper style={{ position: "relative" }}>
+        {showSuccessNotificaiton?
+      <Notification disallowClose icon={<Check size={18} />} color="teal" title="موفقیت">
+        با موفقیت ثبت‌نام شدید.
+      </Notification>:<></>
+}
+{showFailureNotificaiton?
+      <Notification disallowClose icon={<X size={18} />} color="red" title="">
+        ثبت‌نام با خطا مواجه شد.
+      </Notification>:<></>
+}
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <LoadingOverlay visible={loading} />
           {formType === "register" && (
@@ -91,6 +122,14 @@ const SignUpPage = () => { // TODO resolve style compatibilty
             {...form.getInputProps("email")}
           />
 
+        <TextInput
+            mt="md"
+            required
+            placeholder="تلفن همراه"
+            label="تلفن همراه"
+            icon={<Phone />}
+            {...form.getInputProps("phone")}
+          />
           <PasswordInput
             mt="md"
             required

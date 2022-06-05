@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import BasePage from "./views/BasePage";
 
+
 export default function App() {
   const [rtl, setRtl] = useState(true);
 
