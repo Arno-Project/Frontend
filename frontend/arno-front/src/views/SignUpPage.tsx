@@ -1,9 +1,10 @@
 import { useForm } from "@mantine/hooks";
 
-import { Notification } from '@mantine/core';
-import { Check, X } from 'tabler-icons-react';
+import { Notification } from "@mantine/core";
+import { Check, X } from "tabler-icons-react";
 
-import React, { useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   TextInput,
@@ -11,28 +12,27 @@ import {
   Group,
   Checkbox,
   Button,
-  Paper,
-  Text,
   LoadingOverlay,
   Anchor,
   useMantineTheme,
 } from "@mantine/core";
 import { Lock, Mail, Phone } from "tabler-icons-react";
-import { signup } from "../api/account";
+import { sendLoginRequest, sendSignUpRequest } from "../api/account";
 
-const SignUpPage = () => { // TODO resolve style compatibilty
+const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("register");
   const [loading, setLoading] = useState(false);
-  const [showSuccessNotificaiton, setShowSuccessNotificaiton] = useState(false);
-  const [showFailureNotificaiton, setShowFailureNotificaiton] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [showFailureNotification, setShowFailureNotification] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  // const [error, setError] = useState<string>(null);
 
   const theme = useMantineTheme();
 
+  const navigate = useNavigate();
+
   const toggleFormType = () => {
-    setShowFailureNotificaiton(false);
-    setShowSuccessNotificaiton(false);
+    setShowFailureNotification(false);
+    setShowSuccessNotification(false);
     setFormType((current) => (current === "register" ? "login" : "register"));
     // setError(null);
   };
@@ -48,52 +48,82 @@ const SignUpPage = () => { // TODO resolve style compatibilty
       termsOfService: true,
     },
 
-    // validationRules: {
-    //   firstName: (value) => formType === 'login' || value.trim().length >= 2,
-    //   lastName: (value) => formType === 'login' || value.trim().length >= 2,
-    //   email: (value) => /^\S+@\S+$/.test(value),
-    //   password: (value) => /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(value),
-    //   confirmPassword: (val, values) => formType === 'login' || val === values.password,
-    // },
+    validationRules: {
+      // firstName: (value) => formType === "login" || value.trim().length >= 2,
+      // lastName: (value) => formType === "login" || value.trim().length >= 2,
+      // email: (value) => /^\S+@\S+$/.test(value),
+      // password: (value) => /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(value),
+      phone: (value) => /^(\+|0)\d{10}$/.test(value),
+      confirmPassword: (val, values: any) =>
+        formType === "login" || val === values.password,
+      termsOfService: (value) => value === true,
+    },
 
-    // errorMessages: {
-    //   email: 'Invalid email',
-    //   password: 'Password should contain 1 number, 1 letter and at least 6 characters',
-    //   confirmPassword: "Passwords don't match. Try again",
-    // },
+    errorMessages: {
+      // email: "Invalid email",
+      // password:
+      //   "Password should contain 1 number, 1 letter and at least 6 characters",
+      phone: "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
+      confirmPassword: "تکرار رمز مطابق رمز وارد شده نیست.",
+      termsOfService: "لطفا با مقررات سایت موافقت کنید",
+    },
   });
 
-  const  handleSubmit = async (values: any) => {
+  const handleErrors = (data: any) => {
+    if (
+      data["success"] &&
+      (data["status"] == undefined || data["status"] === 200) // ?
+    ) {
+      setShowFailureNotification(false);
+      setShowSuccessNotification(true);
+    } else {
+      setErrorMessage(data["error"]);
+      setShowSuccessNotification(false);
+      setShowFailureNotification(true);
+    }
+  };
+
+  const handleSubmit = async (values: any) => {
     console.log(values);
-    const data = await signup(values, 'customer');
-    console.log(data);
-    if (data != null &&  (data['status'] == undefined || data['status'] === 200))
-      {
-        setShowFailureNotificaiton(false);
-        setShowSuccessNotificaiton(true);
-      }
-        else 
-        {
-        setShowSuccessNotificaiton(false);
-        setShowFailureNotificaiton(true);
-        }
-    
+    let data = null;
+    if (formType === "login") {
+      data = await sendLoginRequest(values);
+    } else {
+      data = await sendSignUpRequest(values, "customer");
+    }
+
+    handleErrors(data);
+    if (formType === "login") {
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
+    }
   };
 
   return (
     <>
-      <h1>ثبت نام / ورود به سامانه</h1>
-      <Paper style={{ position: "relative" }}>
-        {showSuccessNotificaiton?
-      <Notification disallowClose icon={<Check size={18} />} color="teal" title="موفقیت">
-        با موفقیت ثبت‌نام شدید.
-      </Notification>:<></>
-}
-{showFailureNotificaiton?
-      <Notification disallowClose icon={<X size={18} />} color="red" title="">
-        ثبت‌نام با خطا مواجه شد.
-      </Notification>:<></>
-}
+      <h1>ثبت‌نام / ورود به سامانه</h1>
+      <div className="transparent-paper">
+        {showSuccessNotification && (
+          <Notification
+            disallowClose
+            icon={<Check size={18} />}
+            color="teal"
+            title="موفقیت"
+          >
+            با موفقیت ثبت‌نام شدید.
+          </Notification>
+        )}
+        {showFailureNotification && (
+          <Notification
+            disallowClose
+            icon={<X size={18} />}
+            color="red"
+            title=""
+          >
+            {errorMessage}
+          </Notification>
+        )}
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <LoadingOverlay visible={loading} />
           {formType === "register" && (
@@ -124,7 +154,7 @@ const SignUpPage = () => { // TODO resolve style compatibilty
             {...form.getInputProps("email")}
           />
 
-        <TextInput
+          <TextInput
             mt="md"
             required
             placeholder="تلفن همراه"
@@ -178,7 +208,7 @@ const SignUpPage = () => { // TODO resolve style compatibilty
             </Button>
           </Group>
         </form>
-      </Paper>
+      </div>
     </>
   );
 };
