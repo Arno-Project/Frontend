@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-import { MantineProvider, Button } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import rtlPlugin from "stylis-plugin-rtl";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import BasePage from "./views/BasePage";
+import DashboardPage from "./views/DashboardPage";
+import { Route, Routes } from "react-router-dom";
 
 
 export default function App() {
@@ -29,8 +29,11 @@ export default function App() {
     >
       <div dir={rtl ? "rtl" : "ltr"}>
         {/* <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button> */}
-        <Header />
-        <BasePage />
+        {/* <Header /> */}
+        <Routes>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="*" element={<BasePage />} />
+        </Routes>
         {/* <Footer /> */}
       </div>
     </MantineProvider>
