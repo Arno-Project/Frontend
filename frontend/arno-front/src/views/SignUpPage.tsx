@@ -111,7 +111,13 @@ const SignUpPage = () => {
             color="teal"
             title="موفقیت"
           >
-            با موفقیت ثبت‌نام شدید.
+            {
+              "با موفقیت"
+              + formType === "register"
+                ? "ثبت‌نام"
+                : "وارد"
+              + " شدید"
+            }
           </Notification>
         )}
         {showFailureNotification && (
