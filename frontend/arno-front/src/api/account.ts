@@ -14,7 +14,7 @@ const sendRequest = async (url: string, body: any) => {
       error: error.response.data[Object.keys(error.response.data)[0]][0],
     };
   }
-}
+};
 
 export async function sendSignUpRequest(params: any, role: string) {
   let url = `${BASE_URL}/account/register/${role}/`;
@@ -26,8 +26,9 @@ export async function sendSignUpRequest(params: any, role: string) {
     username: params["email"],
     phone: params["phone"],
     password: params["password"],
+    specialities: params["specialities"]
   };
-  
+
   const response = await sendRequest(url, renamed_params);
   return response;
 }

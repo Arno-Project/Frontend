@@ -1,10 +1,9 @@
 import { useForm } from "@mantine/hooks";
 
-import { Notification } from "@mantine/core";
-import { Check, X } from "tabler-icons-react";
-
+import { Notification, Radio, RadioGroup } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 import {
   TextInput,
@@ -15,10 +14,11 @@ import {
   LoadingOverlay,
   Anchor,
 } from "@mantine/core";
-import { Lock, Mail, Phone } from "tabler-icons-react";
-import { sendLoginRequest, sendSignUpRequest } from "../api/account";
 
-import {Helmet} from "react-helmet";
+import { Lock, Mail, Phone, Check, X } from "tabler-icons-react";
+
+import { sendLoginRequest, sendSignUpRequest } from "../api/account";
+import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("register");
@@ -26,6 +26,11 @@ const SignUpPage = () => {
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [showFailureNotification, setShowFailureNotification] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [userRole, setUserRole] = useState("customer");
+  const [selectedSpecialities, setSelectedSpecialities] = useState<string[]>(
+    []
+  );
+  const [specialityError, setSpecialityError] = useState("");
 
   const navigate = useNavigate();
 
@@ -84,45 +89,60 @@ const SignUpPage = () => {
 
   const handleSubmit = async (values: any) => {
     console.log(values);
+    if (selectedSpecialities.length == 0) {
+      setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
+      return;
+    }
+
     let data = null;
     if (formType === "login") {
       data = await sendLoginRequest(values);
     } else {
-      data = await sendSignUpRequest(values, "customer");
+      data = await sendSignUpRequest(
+        { specialities: selectedSpecialities, ...values },
+        userRole
+      );
     }
 
     handleErrors(data);
     if (formType === "login") {
       setTimeout(() => {
         navigate("/dashboard");
-      }, 500);
+      }, 1000);
     }
+  };
+
+  const onSpecialitySelectChange = (values: any[]) => {
+    setSelectedSpecialities(values);
+    setSpecialityError("");
   };
 
   return (
     <>
-      <Helmet><title>{ "آرنو | " + (formType === "register" ? "ثبت‌نام" : "ورود") }</title></Helmet>
-      
+      <Helmet>
+        <title>
+          {"آرنو | " + (formType === "register" ? "ثبت‌نام" : "ورود")}
+        </title>
+      </Helmet>
+
       <h1>ثبت‌نام / ورود به سامانه</h1>
       <div className="transparent-paper">
         {showSuccessNotification && (
           <Notification
+            mb="sm"
             disallowClose
             icon={<Check size={18} />}
             color="teal"
             title="موفقیت"
           >
-            {
-              "با موفقیت"
-              + formType === "register"
-                ? "ثبت‌نام"
-                : "وارد"
-              + " شدید"
-            }
+            {"با موفقیت " + (formType === "register"
+              ? "ثبت‌نام"
+              : "وارد") + " شدید"}
           </Notification>
         )}
         {showFailureNotification && (
           <Notification
+            mb="sm"
             disallowClose
             icon={<X size={18} />}
             color="red"
@@ -131,6 +151,23 @@ const SignUpPage = () => {
             {errorMessage}
           </Notification>
         )}
+
+        {formType === "register" && (
+          <RadioGroup
+            mb="sm"
+            label="نوع کاربر"
+            description="در صورت انتخاب متخصص، نیاز به تأیید مدیر خواهید داشت"
+            spacing="xl"
+            color="cyan"
+            value={userRole}
+            onChange={setUserRole}
+            required
+          >
+            <Radio value="customer" label="مشتری" />
+            <Radio value="specialist" label="متخصص" />
+          </RadioGroup>
+        )}
+
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <LoadingOverlay visible={loading} />
           {formType === "register" && (
@@ -186,6 +223,15 @@ const SignUpPage = () => {
               placeholder="تکرار رمز عبور"
               icon={<Lock />}
               {...form.getInputProps("confirmPassword")}
+            />
+          )}
+
+          {formType === "register" && userRole === "specialist" && (
+            <SpecialityMultiSelect
+              style={{ marginTop: "16px" }}
+              setter={onSpecialitySelectChange}
+              required={true}
+              error={specialityError}
             />
           )}
 
