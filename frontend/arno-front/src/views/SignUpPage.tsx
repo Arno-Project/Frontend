@@ -135,9 +135,9 @@ const SignUpPage = () => {
             color="teal"
             title="موفقیت"
           >
-            {"با موفقیت " + (formType === "register"
-              ? "ثبت‌نام"
-              : "وارد") + " شدید"}
+            {"با موفقیت " +
+              (formType === "register" ? "ثبت‌نام" : "وارد") +
+              " شدید"}
           </Notification>
         )}
         {showFailureNotification && (
@@ -227,12 +227,13 @@ const SignUpPage = () => {
           )}
 
           {formType === "register" && userRole === "specialist" && (
-            <SpecialityMultiSelect
-              style={{ marginTop: "16px" }}
-              setter={onSpecialitySelectChange}
-              required={true}
-              error={specialityError}
-            />
+            <div style={{ marginTop: "16px" }}>
+              <SpecialityMultiSelect
+                setter={onSpecialitySelectChange}
+                required={true}
+                error={specialityError}
+              />
+            </div>
           )}
 
           {formType === "register" && (
