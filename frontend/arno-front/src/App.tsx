@@ -31,7 +31,7 @@ export default function App() {
         {/* <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button> */}
         {/* <Header /> */}
         <Routes>
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard/*" element={<DashboardPage />} />
           <Route path="*" element={<BasePage />} />
         </Routes>
         {/* <Footer /> */}

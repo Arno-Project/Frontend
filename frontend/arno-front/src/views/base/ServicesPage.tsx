@@ -10,7 +10,7 @@ import {
 
 import { Search, ListSearch } from "tabler-icons-react";
 
-import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
+import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 
 import {Helmet} from "react-helmet";
 const TITLE = "آرنو | خدمات";

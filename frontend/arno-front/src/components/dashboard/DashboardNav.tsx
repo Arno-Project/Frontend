@@ -24,7 +24,7 @@ export interface MainLinkProps {
   icon: React.ReactNode;
   color: string;
   label: string;
-  path: string; // something like this to manage related route/component
+  path: string;
   roles: string[];
 }
 
@@ -51,10 +51,10 @@ const links: MainLinkProps[] = [
     roles: ["customer", "specialist"],
   },
   {
-    icon: <MathFunction size={16} />, // or Checklist? :)
+    icon: <MathFunction size={16} />, // or <Checklist />? :)
     color: "grape",
     label: "معیارهای ارزیابی",
-    path: "",
+    path: "/evaluation_metrics",
     roles: ["companyManager"],
   },
   {

@@ -17,8 +17,8 @@ import {
 
 import { Lock, Mail, Phone, Check, X } from "tabler-icons-react";
 
-import { sendLoginRequest, sendSignUpRequest } from "../api/account";
-import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
+import { sendLoginRequest, sendSignUpRequest } from "../../api/account";
+import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("register");

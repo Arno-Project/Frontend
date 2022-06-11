@@ -1,6 +1,6 @@
 import { ChevronRight, ChevronLeft } from 'tabler-icons-react';
 import { UnstyledButton, Group, Avatar, Text, Box, useMantineTheme } from '@mantine/core';
-import { RoleDict } from '../assets/consts';
+import { RoleDict } from '../../assets/consts';
 
 export function UserCard({ user }: any) {
     const theme = useMantineTheme();

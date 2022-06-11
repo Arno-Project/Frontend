@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import { ColorScheme, ColorSchemeProvider, useMantineTheme } from "@mantine/core";
 
-import { DashboardNav } from "../components/DashboardNav";
+import { DashboardNav } from "../components/dashboard/DashboardNav";
 
 import {Helmet} from "react-helmet";
 const TITLE = "آرنو | داشبورد";
