@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   Table,
   Button,
@@ -7,9 +9,10 @@ import {
   Pagination,
 } from "@mantine/core";
 
-import React from "react";
-
 import { Search, ListSearch, UserSearch } from "tabler-icons-react";
+
+import {Helmet} from "react-helmet";
+const TITLE = "آرنو | خدمات";
 
 const ServicesPage = () => {
   const PAGE_SIZE = 5;
@@ -59,6 +62,7 @@ const ServicesPage = () => {
 
   return (
     <>
+      <Helmet><title>{ TITLE }</title></Helmet>
       <h1>جست‌وجوی خدمات</h1>
       <div className="search-criteria">
         <TextInput

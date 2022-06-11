@@ -14,10 +14,11 @@ import {
   Button,
   LoadingOverlay,
   Anchor,
-  useMantineTheme,
 } from "@mantine/core";
 import { Lock, Mail, Phone } from "tabler-icons-react";
 import { sendLoginRequest, sendSignUpRequest } from "../api/account";
+
+import {Helmet} from "react-helmet";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("register");
@@ -25,8 +26,6 @@ const SignUpPage = () => {
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [showFailureNotification, setShowFailureNotification] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const theme = useMantineTheme();
 
   const navigate = useNavigate();
 
@@ -102,6 +101,8 @@ const SignUpPage = () => {
 
   return (
     <>
+      <Helmet><title>{ "آرنو | " + (formType === "register" ? "ثبت‌نام" : "ورود") }</title></Helmet>
+      
       <h1>ثبت‌نام / ورود به سامانه</h1>
       <div className="transparent-paper">
         {showSuccessNotification && (

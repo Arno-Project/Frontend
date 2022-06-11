@@ -5,6 +5,9 @@ import { ColorScheme, ColorSchemeProvider, useMantineTheme } from "@mantine/core
 
 import { DashboardNav } from "../components/DashboardNav";
 
+import {Helmet} from "react-helmet";
+const TITLE = "آرنو | داشبورد";
+
 const sampleUser = {
   name: "John Doe",
   role: "customer"
@@ -22,6 +25,7 @@ const DashboardPage = ({ user }: any) => {
       colorScheme={colorScheme}
       toggleColorScheme={toggleColorScheme}
     >
+      <Helmet><title>{ TITLE }</title></Helmet>
       <DashboardNav user={sampleUser} />
       <Routes>
         <Route />
