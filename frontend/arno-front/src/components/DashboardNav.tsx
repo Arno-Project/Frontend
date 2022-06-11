@@ -1,10 +1,19 @@
 import { Navbar } from "@mantine/core";
 
 import {
-  GitPullRequest,
   AlertCircle,
-  Messages,
-  Database,
+  Users,
+  UserExclamation,
+  EyeCheck,
+  FilePlus,
+  ShoppingCartPlus,
+  Edit,
+  ClipboardText,
+  BuildingStore,
+  Calculator,
+  Bucket,
+  ReportAnalytics,
+  MathFunction,
 } from "tabler-icons-react";
 
 import { UserCard } from "./_user";
@@ -15,33 +24,101 @@ export interface MainLinkProps {
   icon: React.ReactNode;
   color: string;
   label: string;
+  path: string; // something like this to manage related route/component
   roles: string[];
 }
 
 const links: MainLinkProps[] = [
   {
-    icon: <GitPullRequest size={16} />,
-    color: "blue",
-    label: "Pull Requests",
-    roles: ["customer"],
-  },
-  {
     icon: <AlertCircle size={16} />,
+    color: "blue",
+    label: "مشکلات فنی",
+    path: "/technical_issues",
+    roles: ["technicalManager", "companyManager"],
+  },
+  {
+    icon: <Users size={16} />,
     color: "teal",
-    label: "Open Issues",
-    roles: ["customer"],
+    label: "مختصصین سامانه",
+    path: "/specialists",
+    roles: ["customer", "specialist", "technicalManager", "companyManager"],
   },
   {
-    icon: <Messages size={16} />,
+    icon: <UserExclamation size={16} />,
     color: "violet",
-    label: "Discussions",
+    label: "انتقادات و پیشنهادات",
+    path: "/suggestion_complaint",
+    roles: ["customer", "specialist"],
+  },
+  {
+    icon: <MathFunction size={16} />, // or Checklist? :)
+    color: "grape",
+    label: "معیارهای ارزیابی",
+    path: "",
+    roles: ["companyManager"],
+  },
+  {
+    icon: <ReportAnalytics size={16} />,
+    color: "blue",
+    label: "گزارش‌گیری",
+    path: "/report",
+    roles: ["technicalManager", "companyManager"],
+  },
+  {
+    icon: <Bucket size={16} />,
+    color: "teal",
+    label: "خدمات دریافت شده",
+    path: "/requests",
     roles: ["customer"],
   },
   {
-    icon: <Database size={16} />,
+    icon: <Calculator size={16} />,
+    color: "violet",
+    label: "سیاست‌گذاری خدمت‌دهی",
+    path: "/service_policy",
+    roles: ["companyManager"],
+  },
+  {
+    icon: <BuildingStore size={16} />,
     color: "grape",
-    label: "Databases",
+    label: "مشاهده خدمات",
+    path: "/services",
     roles: ["customer"],
+  },
+  {
+    icon: <ClipboardText size={16} />,
+    color: "blue",
+    label: "خدمات ارائه شده",
+    path: "/my_services",
+    roles: ["specialist"],
+  },
+  {
+    icon: <Edit size={16} />,
+    color: "teal",
+    label: "ویرایش اطلاعات",
+    path: "/edit_data",
+    roles: ["technicalManager"],
+  },
+  {
+    icon: <ShoppingCartPlus size={16} />,
+    color: "violet",
+    label: "درخواست خدمت",
+    path: "/request_service",
+    roles: ["customer"],
+  },
+  {
+    icon: <FilePlus size={16} />,
+    color: "grape",
+    label: "ایجاد خدمت برای مشتری",
+    path: "/create_service",
+    roles: ["technicalManager", "companyManager"],
+  },
+  {
+    icon: <EyeCheck size={16} />,
+    color: "blue",
+    label: "مدیریت خدمات",
+    path: "/manage_services",
+    roles: ["technicalManager", "companyManager"],
   },
 ];
 
@@ -59,7 +136,7 @@ export function DashboardNav({ user }: any) {
         <MainLinks links={linkItems} />
       </Navbar.Section>
       <Navbar.Section>
-        <UserCard user={user}/>
+        <UserCard user={user} />
       </Navbar.Section>
     </Navbar>
   );
