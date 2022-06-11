@@ -4,12 +4,13 @@ import {
   Table,
   Button,
   Center,
-  MultiSelect,
   TextInput,
   Pagination,
 } from "@mantine/core";
 
-import { Search, ListSearch, UserSearch } from "tabler-icons-react";
+import { Search, ListSearch } from "tabler-icons-react";
+
+import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
 
 import {Helmet} from "react-helmet";
 const TITLE = "آرنو | خدمات";
@@ -73,24 +74,7 @@ const ServicesPage = () => {
           placeholder="خدمت"
         />
 
-        <MultiSelect
-          onChange={(event) => setSelectedValues(event)}
-          className="font-reminder"
-          data={[
-            "React",
-            "Angular",
-            "Svelte",
-            "Vue",
-            "Riot",
-            "Next.js",
-            "Blitz.js",
-          ]} // TODO
-          icon={<UserSearch size={20} />}
-          label="انتخاب تخصص(ها)"
-          placeholder="تخصص‌های مورد نظر"
-          searchable
-          clearable
-        />
+        <SpecialityMultiSelect setter={setSelectedValues} />
       </div>
       <Center>
         <Button
