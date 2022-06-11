@@ -1,6 +1,6 @@
-import React from 'react';
 import { ChevronRight, ChevronLeft } from 'tabler-icons-react';
 import { UnstyledButton, Group, Avatar, Text, Box, useMantineTheme } from '@mantine/core';
+import { RoleDict } from '../assets/consts';
 
 export function UserCard({ user }: any) {
     const theme = useMantineTheme();
@@ -38,7 +38,7 @@ export function UserCard({ user }: any) {
               {user.name}
             </Text>
             <Text color="dimmed" size="xs">
-              {user.role}
+              {RoleDict[user.role]}
             </Text>
           </Box>
 
