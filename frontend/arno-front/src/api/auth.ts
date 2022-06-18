@@ -8,6 +8,7 @@ const sendRequest = async (url: string, body: any) => {
     const { data } = res;
     return { success: true, ...data };
   } catch (error: any) {
+    console.log(error)
     console.log(error.response.data);
     return {
       success: false,

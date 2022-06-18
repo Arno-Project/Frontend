@@ -17,6 +17,7 @@ from knox.views import LoginView as KnoxLoginView
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
+from django.utils.translation import gettext_lazy as _
 
 # Create your views here.
 class RegisterView(generics.GenericAPIView):
@@ -38,7 +39,7 @@ class RegisterView(generics.GenericAPIView):
 
         if User.objects.filter(email=request.data['email']).exists():
             return Response({
-                'email': ['user with this email address already exists.']
+                'email': [_('User with this email address already exists.')]
             }, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.is_valid(raise_exception=True)
