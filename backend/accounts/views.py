@@ -6,7 +6,7 @@ from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import APIException
 
-from .models import User, Specialist, Customer
+from .models import CompanyManager, TechnicalManager, User, Specialist, Customer
 
 from .serializers import SpecialistRegisterSerializer, CustomerRegisterSerializer, RegisterSerializer, \
     SpecialistFullSerializer, CustomerFullSerializer, UserFullSerializer
@@ -20,6 +20,8 @@ from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 
 # Create your views here.
+
+
 class RegisterView(generics.GenericAPIView):
 
     def get_serializer_class(self):
@@ -46,7 +48,7 @@ class RegisterView(generics.GenericAPIView):
         user = serializer.save()
 
         return Response({
-            'user': (SpecialistFullSerializer if role == 'specialist' else CustomerFullSerializer)(user).data,
+            'user': (SpecialistFullSerializer if role == 'specialist' else CustomerFullSerializer)(user).data['user'],
             'role': role,
             'token': AuthToken.objects.create(user.user)[1]
         })
@@ -60,11 +62,13 @@ class LoginView(KnoxLoginView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
+    
 
         res = super(LoginView, self).post(request, format=None)
         if res.status_code == 200:
             return Response({
                 **res.data,
                 'user': UserFullSerializer(user).data,
+                'role': user.get_role()
             })
         return res

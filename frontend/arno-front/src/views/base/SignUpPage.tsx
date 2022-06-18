@@ -19,7 +19,9 @@ import { Lock, Mail, Phone, Check, X } from "tabler-icons-react";
 
 import { callLogin, callRegister } from "../../api/auth";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
-import { UserRole } from "../../models";
+import { User, UserRole } from "../../models";
+import { useAppDispatch } from "../../redux/hooks";
+import { login } from "../../redux/auth";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("register");
@@ -34,6 +36,8 @@ const SignUpPage = () => {
   const [specialityError, setSpecialityError] = useState("");
 
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
 
   const toggleFormType = () => {
     setShowFailureNotification(false);
@@ -74,24 +78,8 @@ const SignUpPage = () => {
     },
   });
 
-  const handleErrors = (data: any) => {
-    console.log("handle errors", data)
-    if (
-      data["success"] &&
-      (data["status"] == undefined || data["status"] === 200) // ?
-    ) {
-      setShowFailureNotification(false);
-      setShowSuccessNotification(true);
-    } else {
-      setErrorMessage(data["error"]);
-      setShowSuccessNotification(false);
-      setShowFailureNotification(true);
-    }
-  };
-
   const handleSubmit = async (values: any) => {
-    console.log(values);
-    if (userRole == UserRole.Specialist && selectedSpecialities.length == 0) {
+    if (userRole === UserRole.Specialist && selectedSpecialities.length === 0) {
       setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
       return;
     }
@@ -106,11 +94,37 @@ const SignUpPage = () => {
       );
     }
 
-    handleErrors(data);
-    if (formType === "login") {
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
+    if (data["success"]) {
+      console.log(formType, userRole)
+      
+      setShowFailureNotification(false);
+      setShowSuccessNotification(true);
+
+      if (formType === "login" || userRole === UserRole.Customer) {
+
+        let userData = data["user"];
+        let user: User = {
+          id: userData["id"],
+          username: userData["username"],
+          firstName: userData["first_name"],
+          lastName: userData["last_name"],
+          email: userData["email"],
+          role: data["role"] as UserRole,
+          phone: userData["phone"],
+          token: data["token"],
+        };
+
+        dispatch(login(user));
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
+      }
+
+    } else {
+      setErrorMessage(data["error"]);
+      setShowSuccessNotification(false);
+      setShowFailureNotification(true);
     }
   };
 
@@ -162,11 +176,11 @@ const SignUpPage = () => {
             spacing="xl"
             color="cyan"
             value={userRole}
-            onChange={(val:string) => setUserRole(UserRole[val as keyof typeof UserRole])}
+            onChange={(val: string) => setUserRole(val as UserRole)}
             required
           >
-            <Radio value="customer" label="مشتری" />
-            <Radio value="specialist" label="متخصص" />
+            <Radio value={UserRole.Customer} label="مشتری" />
+            <Radio value={UserRole.Specialist} label="متخصص" />
           </RadioGroup>
         )}
 

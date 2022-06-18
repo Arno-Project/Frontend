@@ -13,15 +13,16 @@ enum UserRole {
 //     CompanyManager,
 //     TechnicalManager,
 //   }
-  
 
 type User = {
+  id: number;
   username: string;
   firstName: string;
   lastName: string;
   email: string;
   role: UserRole;
   phone: string;
+  token: string;
 };
 
 export { UserRole };

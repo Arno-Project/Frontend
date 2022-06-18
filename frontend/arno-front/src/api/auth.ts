@@ -8,12 +8,17 @@ const sendRequest = async (url: string, body: any) => {
     const { data } = res;
     return { success: true, ...data };
   } catch (error: any) {
-    console.log(error)
-    console.log(error.response.data);
-    return {
-      success: false,
-      error: error.response.data[Object.keys(error.response.data)[0]][0],
-    };
+    if (error.code === "ERR_NETWORK") {
+      return {
+        success: false,
+        error: "در ارتباط با سرور خطایی رخ داد. لطفا مجددا تلاش کنید..",
+      };
+    } else {
+      return {
+        success: false,
+        error: error.response.data[Object.keys(error.response.data)[0]][0],
+      };
+    }
   }
 };
 
@@ -27,11 +32,11 @@ export async function callRegister(params: any, role: UserRole) {
     username: params["email"],
     phone: params["phone"],
     password: params["password"],
-    specialities: params["specialities"]
+    specialities: params["specialities"],
   };
 
   const response = await sendRequest(url, renamed_params);
-  console.log("SIGNUP response", response)
+  console.log("SIGNUP response", response);
 
   return response;
 }
@@ -45,6 +50,6 @@ export async function callLogin(params: any) {
   };
 
   const response = await sendRequest(url, renamed_params);
-  console.log("LOGIN response", response)
+  console.log("LOGIN response", response);
   return response;
 }
