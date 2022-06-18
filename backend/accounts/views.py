@@ -1,8 +1,10 @@
 from django.contrib.auth import login
+from django.forms import ValidationError
 from django.views import View
 from rest_framework import response
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import APIException
 
 from .models import User, Specialist, Customer
 
@@ -26,11 +28,12 @@ class RegisterView(generics.GenericAPIView):
         elif role == 'customer':
             return CustomerRegisterSerializer
         else:
-            return RegisterSerializer
+            raise APIException("Invalid Role", status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
         role = self.kwargs.get('role')
         self.serializer_class = self.get_serializer_class()
+
         serializer = self.get_serializer(data=request.data)
 
         if User.objects.filter(email=request.data['email']).exists():

@@ -5,7 +5,7 @@ from phone_field import PhoneField
 
 
 class User(AbstractUser):
-    phone = PhoneField(blank=False, null=False, verbose_name=u"شماره تلفن همراه")
+    phone = PhoneField(blank=False, null=False, verbose_name=u"شماره تلفن همراه",  unique=True)
 
     @classmethod
     def search(cls, query: dict, is_customer=False, is_specialist=False, is_company_manager=False,
