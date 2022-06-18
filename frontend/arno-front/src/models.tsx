@@ -22,7 +22,6 @@ type User = {
   email: string;
   role: UserRole;
   phone: string;
-  token: string;
 };
 
 export { UserRole };

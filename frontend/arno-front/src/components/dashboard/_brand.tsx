@@ -1,20 +1,19 @@
-import {
-  Group,
-  ActionIcon,
-  Box,
-  Text,
-} from "@mantine/core";
+import { Group, ActionIcon, Box, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { Logout } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/hooks";
+import { logout } from "../../redux/auth";
 
 export function Brand() {
   let navigate = useNavigate();
 
-  const logout = () => {
-    // TODO Remove token
-    navigate('/');
-  }
+  const dispatch = useAppDispatch();
+
+  const doLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
 
   return (
     <Box
@@ -38,11 +37,7 @@ export function Brand() {
         >
           داشبورد
         </Text>
-        <ActionIcon
-          variant="default"
-          onClick={() => logout()}
-          size={30}
-        >
+        <ActionIcon variant="default" onClick={() => doLogout()} size={30}>
           <Logout size={16} />
         </ActionIcon>
       </Group>

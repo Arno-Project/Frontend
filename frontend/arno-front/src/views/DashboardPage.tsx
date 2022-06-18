@@ -8,12 +8,7 @@ import { DashboardNav } from "../components/dashboard/DashboardNav";
 import {Helmet} from "react-helmet";
 const TITLE = "آرنو | داشبورد";
 
-const sampleUser = {
-  name: "John Doe",
-  role: "customer"
-}
-
-const DashboardPage = ({ user }: any) => {
+const DashboardPage = () => {
   const theme = useMantineTheme();
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
@@ -26,7 +21,7 @@ const DashboardPage = ({ user }: any) => {
       toggleColorScheme={toggleColorScheme}
     >
       <Helmet><title>{ TITLE }</title></Helmet>
-      <DashboardNav user={sampleUser} />
+      <DashboardNav />
       <Routes>
         <Route />
       </Routes>

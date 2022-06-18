@@ -16,6 +16,7 @@ from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from django.utils.translation import gettext_lazy as _
 
@@ -62,7 +63,6 @@ class LoginView(KnoxLoginView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-    
 
         res = super(LoginView, self).post(request, format=None)
         if res.status_code == 200:
@@ -72,3 +72,17 @@ class LoginView(KnoxLoginView):
                 'role': user.get_role()
             })
         return res
+
+
+class MyAccountView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        print(request.user)
+        print(format)
+
+        return Response({
+            'user': UserFullSerializer(request.user).data,
+            'role': request.user.get_role()
+        })

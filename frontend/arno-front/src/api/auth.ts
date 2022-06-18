@@ -1,8 +1,8 @@
 import { BASE_URL } from "./base";
-import axios from "axios";
 import { UserRole } from "../models";
+import axios from "axios";
 
-const sendRequest = async (url: string, body: any) => {
+const sendPostRequest = async (url: string, body: any) => {
   try {
     const res = await axios.post(url, body);
     const { data } = res;
@@ -11,7 +11,7 @@ const sendRequest = async (url: string, body: any) => {
     if (error.code === "ERR_NETWORK") {
       return {
         success: false,
-        error: "در ارتباط با سرور خطایی رخ داد. لطفا مجددا تلاش کنید..",
+        error: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید..",
       };
     } else {
       return {
@@ -35,7 +35,7 @@ export async function callRegister(params: any, role: UserRole) {
     specialities: params["specialities"],
   };
 
-  const response = await sendRequest(url, renamed_params);
+  const response = await sendPostRequest(url, renamed_params);
   console.log("SIGNUP response", response);
 
   return response;
@@ -49,7 +49,7 @@ export async function callLogin(params: any) {
     password: params["password"],
   };
 
-  const response = await sendRequest(url, renamed_params);
+  const response = await sendPostRequest(url, renamed_params);
   console.log("LOGIN response", response);
   return response;
 }

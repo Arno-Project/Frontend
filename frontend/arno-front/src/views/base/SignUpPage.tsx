@@ -21,10 +21,10 @@ import { callLogin, callRegister } from "../../api/auth";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { User, UserRole } from "../../models";
 import { useAppDispatch } from "../../redux/hooks";
-import { login } from "../../redux/auth";
+import { login, setUserInfo } from "../../redux/auth";
 
 const SignUpPage = () => {
-  const [formType, setFormType] = useState<"register" | "login">("register");
+  const [formType, setFormType] = useState<"register" | "login">("login");
   const [loading, setLoading] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [showFailureNotification, setShowFailureNotification] = useState(false);
@@ -46,7 +46,7 @@ const SignUpPage = () => {
     // setError(null);
   };
 
-  const form = useForm({
+  const registerForm = useForm({
     initialValues: {
       firstName: "",
       lastName: "",
@@ -78,6 +78,17 @@ const SignUpPage = () => {
     },
   });
 
+  const loginForm = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    validationRules: {},
+
+    errorMessages: {},
+  });
+
   const handleSubmit = async (values: any) => {
     if (userRole === UserRole.Specialist && selectedSpecialities.length === 0) {
       setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
@@ -95,13 +106,12 @@ const SignUpPage = () => {
     }
 
     if (data["success"]) {
-      console.log(formType, userRole)
-      
+      console.log(formType, userRole);
+
       setShowFailureNotification(false);
       setShowSuccessNotification(true);
 
       if (formType === "login" || userRole === UserRole.Customer) {
-
         let userData = data["user"];
         let user: User = {
           id: userData["id"],
@@ -111,16 +121,15 @@ const SignUpPage = () => {
           email: userData["email"],
           role: data["role"] as UserRole,
           phone: userData["phone"],
-          token: data["token"],
         };
 
-        dispatch(login(user));
+        dispatch(login(data["token"]));
+        dispatch(setUserInfo(user));
 
         setTimeout(() => {
           navigate("/dashboard");
         }, 1000);
       }
-
     } else {
       setErrorMessage(data["error"]);
       setShowSuccessNotification(false);
@@ -140,8 +149,8 @@ const SignUpPage = () => {
           {"آرنو | " + (formType === "register" ? "ثبت‌نام" : "ورود")}
         </title>
       </Helmet>
-
       <h1>ثبت‌نام / ورود به سامانه</h1>
+
       <div className="transparent-paper">
         {showSuccessNotification && (
           <Notification
@@ -168,116 +177,148 @@ const SignUpPage = () => {
           </Notification>
         )}
 
-        {formType === "register" && (
-          <RadioGroup
-            mb="sm"
-            label="نوع کاربر"
-            description="در صورت انتخاب متخصص، نیاز به تأیید مدیر خواهید داشت"
-            spacing="xl"
-            color="cyan"
-            value={userRole}
-            onChange={(val: string) => setUserRole(val as UserRole)}
-            required
-          >
-            <Radio value={UserRole.Customer} label="مشتری" />
-            <Radio value={UserRole.Specialist} label="متخصص" />
-          </RadioGroup>
-        )}
+        {formType === "register" ? (
+          <form onSubmit={registerForm.onSubmit(handleSubmit)}>
+            <RadioGroup
+              mb="sm"
+              label="نوع کاربر"
+              description="در صورت انتخاب متخصص، نیاز به تأیید مدیر خواهید داشت"
+              spacing="xl"
+              color="cyan"
+              value={userRole}
+              onChange={(val: string) => setUserRole(val as UserRole)}
+              required
+            >
+              <Radio value={UserRole.Customer} label="مشتری" />
+              <Radio value={UserRole.Specialist} label="متخصص" />
+            </RadioGroup>
 
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <LoadingOverlay visible={loading} />
-          {formType === "register" && (
+            <LoadingOverlay visible={loading} />
             <Group grow>
               <TextInput
                 data-autofocus
                 required
                 placeholder="نام"
                 label="نام"
-                {...form.getInputProps("firstName")}
+                {...registerForm.getInputProps("firstName")}
               />
 
               <TextInput
                 required
                 placeholder="نام خانوادگی"
                 label="نام خانوادگی"
-                {...form.getInputProps("lastName")}
+                {...registerForm.getInputProps("lastName")}
               />
             </Group>
-          )}
 
-          <TextInput
-            mt="md"
-            required
-            placeholder="پست الکترونیکی"
-            label="ایمیل"
-            icon={<Mail />}
-            {...form.getInputProps("email")}
-          />
+            <TextInput
+              mt="md"
+              required
+              placeholder="پست الکترونیکی"
+              label="ایمیل"
+              icon={<Mail />}
+              {...registerForm.getInputProps("email")}
+            />
 
-          <TextInput
-            mt="md"
-            required
-            placeholder="تلفن همراه"
-            label="تلفن همراه"
-            icon={<Phone />}
-            {...form.getInputProps("phone")}
-          />
-          <PasswordInput
-            mt="md"
-            required
-            placeholder="رمز عبور"
-            label="رمز عبور"
-            icon={<Lock />}
-            {...form.getInputProps("password")}
-          />
+            <TextInput
+              mt="md"
+              required
+              placeholder="تلفن همراه"
+              label="تلفن همراه"
+              icon={<Phone />}
+              {...registerForm.getInputProps("phone")}
+            />
+            <PasswordInput
+              mt="md"
+              required
+              placeholder="رمز عبور"
+              label="رمز عبور"
+              icon={<Lock />}
+              {...registerForm.getInputProps("password")}
+            />
 
-          {formType === "register" && (
             <PasswordInput
               mt="md"
               required
               label="تکرار رمز عبور"
               placeholder="تکرار رمز عبور"
               icon={<Lock />}
-              {...form.getInputProps("confirmPassword")}
+              {...registerForm.getInputProps("confirmPassword")}
             />
-          )}
 
-          {formType === "register" && userRole === "specialist" && (
-            <div style={{ marginTop: "16px" }}>
-              <SpecialityMultiSelect
-                setter={onSpecialitySelectChange}
-                required={true}
-                error={specialityError}
-              />
-            </div>
-          )}
+            {userRole === "specialist" && (
+              <div style={{ marginTop: "16px" }}>
+                <SpecialityMultiSelect
+                  setter={onSpecialitySelectChange}
+                  required={true}
+                  error={specialityError}
+                />
+              </div>
+            )}
 
-          {formType === "register" && (
             <Checkbox
               mt="xl"
               label="با قوانین و مقررات سایت موافقم"
-              {...form.getInputProps("termsOfService", { type: "checkbox" })}
+              {...registerForm.getInputProps("termsOfService", {
+                type: "checkbox",
+              })}
             />
-          )}
 
-          <Group position="apart" mt="xl">
-            <Anchor
-              component="button"
-              type="button"
-              color="gray"
-              onClick={toggleFormType}
-              size="sm"
-            >
-              {formType === "register"
-                ? "حساب کاربری دارید؟ وارد شوید."
-                : "حساب کاربری نساخته‌اید؟ ثبت‌نام کنید."}
-            </Anchor>
+            <Group position="apart" mt="xl">
+              <Anchor
+                component="button"
+                type="button"
+                color="gray"
+                onClick={toggleFormType}
+                size="sm"
+              >
+                حساب کاربری دارید؟ وارد شوید.
+              </Anchor>
 
-            <Button color="blue" type="submit">
-              {formType === "register" ? "ثبت‌نام" : "ورود"}
-            </Button>
-          </Group>
-        </form>
+              <Button color="blue" type="submit">
+                ثبت‌نام
+              </Button>
+            </Group>
+          </form>
+        ) : (
+          <form onSubmit={loginForm.onSubmit(handleSubmit)}>
+            <LoadingOverlay visible={loading} />
+
+            <TextInput
+              mt="md"
+              required
+              placeholder="پست الکترونیکی"
+              label="ایمیل"
+              icon={<Mail />}
+              {...loginForm.getInputProps("email")}
+            />
+
+            <PasswordInput
+              mt="md"
+              required
+              placeholder="رمز عبور"
+              label="رمز عبور"
+              icon={<Lock />}
+              {...loginForm.getInputProps("password")}
+            />
+
+            <Group position="apart" mt="xl">
+              <Anchor
+                component="button"
+                type="button"
+                color="gray"
+                onClick={toggleFormType}
+                size="sm"
+              >
+                حساب کاربری نساخته‌اید؟ ثبت‌نام کنید.
+              </Anchor>
+
+              <Button color="blue" type="submit">
+                ورود
+              </Button>
+            </Group>
+          </form>
+        )}
       </div>
     </>
   );
