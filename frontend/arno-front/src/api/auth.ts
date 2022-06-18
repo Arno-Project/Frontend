@@ -1,11 +1,11 @@
 import { BASE_URL } from "./base";
 import axios from "axios";
+import { UserRole } from "../models";
 
 const sendRequest = async (url: string, body: any) => {
   try {
     const res = await axios.post(url, body);
     const { data } = res;
-    console.log("AAA", data);
     return { success: true, ...data };
   } catch (error: any) {
     console.log(error.response.data);
@@ -16,7 +16,7 @@ const sendRequest = async (url: string, body: any) => {
   }
 };
 
-export async function sendSignUpRequest(params: any, role: string) {
+export async function callRegister(params: any, role: UserRole) {
   let url = `${BASE_URL}/account/register/${role}/`;
 
   const renamed_params = {
@@ -30,10 +30,12 @@ export async function sendSignUpRequest(params: any, role: string) {
   };
 
   const response = await sendRequest(url, renamed_params);
+  console.log("SIGNUP response", response)
+
   return response;
 }
 
-export async function sendLoginRequest(params: any) {
+export async function callLogin(params: any) {
   let url = `${BASE_URL}/account/login/`;
 
   const renamed_params = {
@@ -42,5 +44,6 @@ export async function sendLoginRequest(params: any) {
   };
 
   const response = await sendRequest(url, renamed_params);
+  console.log("LOGIN response", response)
   return response;
 }

@@ -17,8 +17,9 @@ import {
 
 import { Lock, Mail, Phone, Check, X } from "tabler-icons-react";
 
-import { sendLoginRequest, sendSignUpRequest } from "../../api/account";
+import { callLogin, callRegister } from "../../api/auth";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
+import { UserRole } from "../../models";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("register");
@@ -26,7 +27,7 @@ const SignUpPage = () => {
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [showFailureNotification, setShowFailureNotification] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [userRole, setUserRole] = useState("customer");
+  const [userRole, setUserRole] = useState<UserRole>(UserRole.Customer);
   const [selectedSpecialities, setSelectedSpecialities] = useState<string[]>(
     []
   );
@@ -74,6 +75,7 @@ const SignUpPage = () => {
   });
 
   const handleErrors = (data: any) => {
+    console.log("handle errors", data)
     if (
       data["success"] &&
       (data["status"] == undefined || data["status"] === 200) // ?
@@ -89,16 +91,16 @@ const SignUpPage = () => {
 
   const handleSubmit = async (values: any) => {
     console.log(values);
-    if (selectedSpecialities.length == 0) {
+    if (userRole == UserRole.Specialist && selectedSpecialities.length == 0) {
       setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
       return;
     }
 
     let data = null;
     if (formType === "login") {
-      data = await sendLoginRequest(values);
+      data = await callLogin(values);
     } else {
-      data = await sendSignUpRequest(
+      data = await callRegister(
         { specialities: selectedSpecialities, ...values },
         userRole
       );
@@ -160,7 +162,7 @@ const SignUpPage = () => {
             spacing="xl"
             color="cyan"
             value={userRole}
-            onChange={setUserRole}
+            onChange={(val:string) => setUserRole(UserRole[val as keyof typeof UserRole])}
             required
           >
             <Radio value="customer" label="مشتری" />
