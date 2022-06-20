@@ -25,12 +25,13 @@ import SpecialistServicesView from "./dashboard/SpecialistServicesView";
 import SpecialistsView from "./dashboard/SpecialistsView";
 import TechnicalIssuesView from "./dashboard/TechnicalIssuesView";
 import UserFeedbackView from "./dashboard/UserFeedbackView";
+import EditProfileView from "./dashboard/EditProfileView";
 
 import { Helmet } from "react-helmet";
 import { Brand } from "../components/dashboard/_brand";
 const TITLE = "آرنو | داشبورد";
 
-const DashboardPage2 = () => {
+const DashboardPage = () => {
   const theme = useMantineTheme();
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
@@ -82,6 +83,7 @@ const DashboardPage2 = () => {
             <Route path="/request_service" element={<RequestServiceView />} />
             <Route path="/create_request" element={<CreateRequestView />} />
             <Route path="/manage_services" element={<ManageServicesView />} />
+            <Route path="/profile" element={<EditProfileView />} />
           </Routes>
         </Container>
       </AppShell>
@@ -89,4 +91,4 @@ const DashboardPage2 = () => {
   );
 };
 
-export default DashboardPage2;
+export default DashboardPage;
