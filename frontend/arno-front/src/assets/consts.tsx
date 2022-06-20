@@ -29,6 +29,6 @@ export const AccessRules: any = {
   "/my_services": [UserRole.Specialist],
   "/edit_data": [UserRole.TechnicalManager],
   "/request_service": [UserRole.Customer],
-  "/create_service": [UserRole.TechnicalManager, UserRole.CompanyManager],
+  "/create_request": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/manage_services": [UserRole.TechnicalManager, UserRole.CompanyManager],
 };
