@@ -1,12 +1,13 @@
 import { useState } from "react";
 
-import { Badge, Center, Pagination, Space, Table, Title } from "@mantine/core";
-import { X, Check } from "tabler-icons-react";
+import { Badge, Button, Center, Pagination, Space, Table, TextInput, Title } from "@mantine/core";
+import { X, Check, ListSearch, Search } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
+import { UserRole } from "../../models";
+import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 
 import { Helmet } from "react-helmet";
-import { UserRole } from "../../models";
 const TITLE = "متخصصان";
 
 const SpecialistsView = () => {
@@ -14,6 +15,7 @@ const SpecialistsView = () => {
 
   const PAGE_SIZE = 5;
   const [activePage, setPage] = useState(1);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   return (
     <>
@@ -64,7 +66,35 @@ const SpecialistsView = () => {
       <Title order={3} my="md">
         مشاهده متخصصین برحسب امتیاز
       </Title>
-      <Table striped highlightOnHover verticalSpacing="sm">
+
+      {user?.role === UserRole.Customer && (
+        <>
+        <div className="search-criteria">
+        <TextInput
+          // value={inputValue}
+          // onChange={(event) => setInputValue(event.currentTarget.value)}
+          icon={<Search size={20} />}
+          label="نام متخصص"
+          placeholder="نام"
+        />
+
+        <SpecialityMultiSelect setter={setSelectedValues} />
+      </div>
+      <Center>
+        <Button
+          variant="gradient"
+          gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+          leftIcon={<ListSearch size={20} />}
+          // loading={isSearching}
+          // onClick={() => fetchResults()}
+        >
+          جست‌وجو
+        </Button>
+      </Center>
+        </>
+      )}
+
+      <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
         <thead>
           <tr>
             <th>ردیف</th>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 import { MantineProvider, LoadingOverlay } from "@mantine/core";
+import { NotificationsProvider } from '@mantine/notifications';
+
 import rtlPlugin from "stylis-plugin-rtl";
 
 import BasePage from "./views/BasePage";
@@ -81,6 +83,8 @@ export default function App() {
               { key: "mantine" }
         }
       >
+        
+      <NotificationsProvider>
         <div dir={rtl ? "rtl" : "ltr"}>
           {/* <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button> */}
           {/* <Header /> */}
@@ -90,6 +94,7 @@ export default function App() {
           </Routes>
           {/* <Footer /> */}
         </div>
+        </NotificationsProvider>
       </MantineProvider>
     );
   }
