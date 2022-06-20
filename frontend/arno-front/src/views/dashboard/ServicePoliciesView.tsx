@@ -36,7 +36,7 @@ const ServicePoliciesView = () => {
       <Title order={2}>{TITLE}</Title>
 
       <Center>
-        <Table verticalSpacing="xl" striped highlightOnHover>
+        <Table verticalSpacing="lg" striped highlightOnHover>
           <thead>
             <tr>
               <th>حداقل امتیاز</th>
@@ -45,7 +45,7 @@ const ServicePoliciesView = () => {
           </thead>
           <tbody>
             <tr>
-              <th>
+              <td>
                 <Rating // TODO: fix this lie
                   // onClick={handleRating5}
                   ratingValue={rating5}
@@ -56,18 +56,18 @@ const ServicePoliciesView = () => {
                   fillColorArray={fillColorArray}
                   readonly={false}
                 />
-              </th>
-              <th>
-                <NumberInput py="sm"
+              </td>
+              <td>
+                <NumberInput
                   defaultValue={3}
                   placeholder="تعداد خدمات"
                   max={10}
                   min={0}
                 />
-              </th>
+              </td>
             </tr>
             <tr>
-              <th>
+              <td>
                 <Rating
                   // onClick={handleRating4}
                   ratingValue={rating4}
@@ -78,18 +78,18 @@ const ServicePoliciesView = () => {
                   fillColorArray={fillColorArray}
                   readonly={false}
                 />
-              </th>
-              <th>
-                <NumberInput py="sm"
+              </td>
+              <td>
+                <NumberInput
                   defaultValue={3}
                   placeholder="تعداد خدمات"
                   max={10}
                   min={0}
                 />
-              </th>
+              </td>
             </tr>
             <tr>
-              <th>
+              <td>
                 <Rating
                   // onClick={handleRating3}
                   ratingValue={rating3}
@@ -100,18 +100,18 @@ const ServicePoliciesView = () => {
                   fillColorArray={fillColorArray}
                   readonly={false}
                 />
-              </th>
-              <th>
-                <NumberInput py="sm"
+              </td>
+              <td>
+                <NumberInput
                   defaultValue={2}
                   placeholder="تعداد خدمات"
                   max={10}
                   min={0}
                 />
-              </th>
+              </td>
             </tr>
             <tr>
-              <th>
+              <td>
                 <Rating
                   // onClick={handleRating2}
                   ratingValue={rating2}
@@ -122,18 +122,18 @@ const ServicePoliciesView = () => {
                   fillColorArray={fillColorArray}
                   readonly={false}
                 />
-              </th>
-              <th>
-                <NumberInput py="sm"
+              </td>
+              <td>
+                <NumberInput
                   defaultValue={2}
                   placeholder="تعداد خدمات"
                   max={10}
                   min={0}
                 />
-              </th>
+              </td>
             </tr>
             <tr>
-              <th>
+              <td>
                 <Rating
                   // onClick={handleRating1}
                   ratingValue={rating1}
@@ -144,15 +144,15 @@ const ServicePoliciesView = () => {
                   fillColorArray={fillColorArray}
                   readonly={false}
                 />
-              </th>
-              <th>
-                <NumberInput py="sm"
+              </td>
+              <td>
+                <NumberInput
                   defaultValue={1}
                   placeholder="تعداد خدمات"
                   max={10}
                   min={0}
                 />
-              </th>
+              </td>
             </tr>
           </tbody>
         </Table>
