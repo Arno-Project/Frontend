@@ -52,5 +52,5 @@ export function MainLinks({ links }: any) {
   const elements = links.map((link: any) => (
     <MainLink {...link} key={link.label} />
   ));
-  return <div>{elements}</div>;
+  return <div id="dashboard-nav-links">{elements}</div>;
 }
