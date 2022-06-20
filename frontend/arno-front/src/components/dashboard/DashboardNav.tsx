@@ -100,7 +100,7 @@ const links: MainLinkProps[] = [
     icon: <FilePlus size={16} />,
     color: "grape",
     label: "ایجاد خدمت برای مشتری",
-    path: "/create_service",
+    path: "/create_request",
   },
   {
     icon: <EyeCheck size={16} />,
@@ -119,10 +119,10 @@ export function DashboardNav() {
 
   return (
     <Navbar p="xs" width={{ base: 300 }}>
-      <Navbar.Section mt="xs">
+      {/* <Navbar.Section mt="xs">
         <Brand />
-      </Navbar.Section>
-      <Navbar.Section grow mt="md">
+      </Navbar.Section> */}
+      <Navbar.Section grow>
         <MainLinks links={linkItems} />
       </Navbar.Section>
       <Navbar.Section>
