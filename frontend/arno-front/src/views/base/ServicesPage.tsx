@@ -6,6 +6,7 @@ import {
   Center,
   TextInput,
   Pagination,
+  Title,
 } from "@mantine/core";
 
 import { Search, ListSearch } from "tabler-icons-react";
@@ -64,7 +65,7 @@ const ServicesPage = () => {
   return (
     <>
       <Helmet><title>{ TITLE }</title></Helmet>
-      <h1>جست‌وجوی خدمات</h1>
+      <Title order={1}>جست‌وجوی خدمات</Title>
       <div className="search-criteria">
         <TextInput
           value={inputValue}
