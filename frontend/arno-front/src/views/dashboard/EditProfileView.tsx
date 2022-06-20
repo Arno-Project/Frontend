@@ -10,6 +10,7 @@ import {
   Button,
   LoadingOverlay,
   Center,
+  Title,
 } from "@mantine/core";
 
 import { useAppSelector } from "../../redux/hooks";
@@ -76,7 +77,7 @@ const EditProfileView = () => {
       <Helmet>
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
-      <h2>{TITLE}</h2>
+      <Title order={2}>{TITLE}</Title>
       <div className="transparent-paper">
         {showSuccessNotification && (
           <Notification

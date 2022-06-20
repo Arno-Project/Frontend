@@ -1,3 +1,4 @@
+import { Title } from "@mantine/core";
 import { useState } from "react";
 
 import { Helmet } from "react-helmet";
@@ -9,7 +10,7 @@ const ReportsView = () => {
       <Helmet>
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
-      <h2>{TITLE}</h2>
+      <Title order={2}>{TITLE}</Title>
     </>
   );
 };

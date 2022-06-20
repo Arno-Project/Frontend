@@ -1,6 +1,6 @@
 import { useForm } from "@mantine/hooks";
 
-import { Notification, Radio, RadioGroup } from "@mantine/core";
+import { Notification, Radio, RadioGroup, Title } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -149,7 +149,7 @@ const SignUpPage = () => {
           {"آرنو | " + (formType === "register" ? "ثبت‌نام" : "ورود")}
         </title>
       </Helmet>
-      <h1>ثبت‌نام / ورود به سامانه</h1>
+      <Title order={1}>ثبت‌نام / ورود به سامانه</Title>
 
       <div className="transparent-paper">
         {showSuccessNotification && (
