@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'phone_field',
     'knox',
-
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
