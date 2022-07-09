@@ -1,11 +1,33 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
+
 from phone_field import PhoneField
 
 
 class User(AbstractUser):
-    phone = PhoneField(blank=False, null=False, verbose_name=u"شماره تلفن همراه")
+    phone = PhoneField(blank=False, null=False, verbose_name=u"شماره تلفن همراه",  unique=True)
+
+    def get_role(self):
+        role = 'customer'
+        try:
+            _ = self.specialist
+            role = 'specialist'
+        except ObjectDoesNotExist:
+            pass
+        try:
+            _ = self.companymanager
+            role = 'companyManager'
+        except ObjectDoesNotExist:
+            pass
+        try:
+            _ = self.technicalmanager
+            role = 'technicalManager'
+        except ObjectDoesNotExist:
+            pass
+
+        return role
 
     @classmethod
     def search(cls, query: dict, is_customer=False, is_specialist=False, is_company_manager=False,

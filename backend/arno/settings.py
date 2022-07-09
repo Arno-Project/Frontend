@@ -160,6 +160,15 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = "fa-ir"
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('fa', 'Farsi'),
+]
+
+LOCALE_PATHS = (
+    BASE_DIR + '/../locale', )
+
 TIME_ZONE = "Asia/Tehran"
 
 USE_I18N = True
