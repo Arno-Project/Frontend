@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Badge, Button, Center, Pagination, Space, Table, TextInput, Title } from "@mantine/core";
-import { X, Check, ListSearch, Search } from "tabler-icons-react";
+import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
 import { UserRole } from "../../models";
@@ -36,6 +36,7 @@ const SpecialistsView = () => {
                 <th>ردیف</th>
                 <th>نام متخصص</th>
                 <th>تخصص(ها)</th>
+                <th>مدارک اعتبارسنجی</th>
                 <th>تأیید/رد</th>
               </tr>
             </thead>
@@ -50,6 +51,9 @@ const SpecialistsView = () => {
                   <Badge color="cyan" variant="filled">
                     سخت‌افزار
                   </Badge>
+                </td>
+                <td>
+                  <Paperclip size={24} />
                 </td>
                 <td>
                   <div style={{ display: "flex" }}>
