@@ -19,7 +19,7 @@ export const Specialities = [
 
 export const AccessRules: any = {
   "/technical_issues": [UserRole.TechnicalManager, UserRole.CompanyManager],
-  "/specialists": [ UserRole.Customer, UserRole.Specialist, UserRole.TechnicalManager, UserRole.CompanyManager],
+  "/specialists": [UserRole.Customer, UserRole.Specialist, UserRole.TechnicalManager, UserRole.CompanyManager],
   "/suggestion_complaint": [UserRole.Customer, UserRole.Specialist],
   "/evaluation_metrics": [UserRole.CompanyManager],
   "/report": [UserRole.TechnicalManager, UserRole.CompanyManager],
@@ -31,4 +31,12 @@ export const AccessRules: any = {
   "/request_service": [UserRole.Customer],
   "/create_request": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/manage_services": [UserRole.TechnicalManager, UserRole.CompanyManager],
+};
+
+export const RequestStatus: any = {
+  "Done": { message: "انجام شده", color: "teal" },
+  "WaitingForSpecialist": { message: "در انتظار پذیرش متخصص", color: "violet" },
+  "WaitingToAssign": { message: "در انتظار تعیین متخصص", color: "yellow" },
+  "Cancelled": { message: "لغو شده", color: "gray" },
+  "Doing": { message: "در حال انجام", color: "cyan" },
 };

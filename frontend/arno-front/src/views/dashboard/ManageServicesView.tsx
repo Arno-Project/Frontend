@@ -1,12 +1,59 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Badge, Space, Table, Title } from "@mantine/core";
+import { Badge, Space, Table, Title, UnstyledButton } from "@mantine/core";
 import { Check, X } from "tabler-icons-react";
 
 import { Helmet } from "react-helmet";
+import { RequestStatus } from "../../assets/consts";
 const TITLE = "مدیریت خدمات";
 
+interface ServiceSummary {
+  customer: string;
+  service: string;
+  status: string;
+}
+
+const fake: ServiceSummary[] = [
+  { customer: "علیرضا", service: "بار", status: "Done" },
+  { customer: "ممد", service: "ویندوز", status: "WaitingForSpecialist" },
+  { customer: "امیر", service: "شبکه", status: "WaitingToAssign" },
+  { customer: "رضا", service: "اسباب‌کشی", status: "Cancelled" },
+  { customer: "مهدی", service: "جوجه‌کشی", status: "Doing" },
+];
+
 const ManageServicesView = () => {
+  const [rows, setRows] = useState<ServiceSummary[]>([]);
+
+  useEffect(() => {
+    // fetch rows from the server
+    setRows(fake);
+  }, []);
+
+  const abortService = async (id: any) => {
+
+  };
+  
+  const renderRows = () => {
+    const body: any[] = rows.map((obj: ServiceSummary, i) => (
+          <tr>
+            <td>{i + 1}</td>
+            <td>{obj.customer}</td>
+            <td>{obj.service}</td>
+            <td>
+              <Badge color={RequestStatus[obj.status].color} variant="filled">
+                {RequestStatus[obj.status].message}
+              </Badge>
+            </td>
+            <td>
+              {obj.status !== "Cancelled" && <UnstyledButton onClick={() => abortService(i)}>
+                <X color="red" size={22} />
+              </UnstyledButton>}
+            </td>
+          </tr>
+    ));
+    return <tbody>{body}</tbody>
+  };
+
   return (
     <>
       <Helmet>
@@ -26,21 +73,7 @@ const ManageServicesView = () => {
             <th>لغو خدمت</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>علیرضا تاجمیرریاحی</td>
-            <td>حمل بار</td>
-            <td>
-              <Badge color="cyan" variant="filled">
-                در حال انجام
-              </Badge>
-            </td>
-            <td>
-              <X color="red" size={22} />
-            </td>
-          </tr>
-        </tbody>
+        {renderRows()}
       </Table>
     </>
   );
