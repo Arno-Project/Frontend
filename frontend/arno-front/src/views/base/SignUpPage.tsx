@@ -1,6 +1,12 @@
 import { useForm } from "@mantine/hooks";
 
-import { Notification, Radio, RadioGroup, Title } from "@mantine/core";
+import {
+  InputWrapper,
+  Notification,
+  Radio,
+  RadioGroup,
+  Title,
+} from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -28,7 +34,7 @@ const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [showFailureNotification, setShowFailureNotification] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [error, setErrorMessage] = useState<any>({});
   const [userRole, setUserRole] = useState<UserRole>(UserRole.Customer);
   const [selectedSpecialities, setSelectedSpecialities] = useState<string[]>(
     []
@@ -95,35 +101,38 @@ const SignUpPage = () => {
       return;
     }
 
-    let data = null;
+    let res = null;
     if (formType === "login") {
-      data = await callLogin(values);
+      res = await callLogin(values);
     } else {
-      data = await callRegister(
+      res = await callRegister(
         { specialities: selectedSpecialities, ...values },
         userRole
       );
     }
+    let data = res.data;
 
-    if (data["success"]) {
+    if (res.success && data !== null) {
       console.log(formType, userRole);
 
       setShowFailureNotification(false);
       setShowSuccessNotification(true);
 
       if (formType === "login" || userRole === UserRole.Customer) {
-        let userData = data["user"];
+        let userData = data["user" as keyof object];
+        console.log(data);
+        console.log(userData);
         let user: User = {
           id: userData["id"],
           username: userData["username"],
           firstName: userData["first_name"],
           lastName: userData["last_name"],
           email: userData["email"],
-          role: data["role"] as UserRole,
+          role: data["role" as keyof object] as UserRole,
           phone: userData["phone"],
         };
 
-        dispatch(login(data["token"]));
+        dispatch(login(data["token" as keyof object]));
         dispatch(setUserInfo(user));
 
         setTimeout(() => {
@@ -131,7 +140,7 @@ const SignUpPage = () => {
         }, 1000);
       }
     } else {
-      setErrorMessage(data["error"]);
+      setErrorMessage(res.error);
       setShowSuccessNotification(false);
       setShowFailureNotification(true);
     }
@@ -165,15 +174,26 @@ const SignUpPage = () => {
               " شدید"}
           </Notification>
         )}
-        {showFailureNotification && (
+        {error && error["custom_errors" as keyof object] && (
           <Notification
             mb="sm"
             disallowClose
             icon={<X size={18} />}
             color="red"
-            title=""
+            title="خطا"
           >
-            {errorMessage}
+            {error["custom_errors"]}
+          </Notification>
+        )}
+        {error && error["non_field_errors" as keyof object] && (
+          <Notification
+            mb="sm"
+            disallowClose
+            icon={<X size={18} />}
+            color="red"
+            title="خطا"
+          >
+            {error["non_field_errors" as keyof object].join("\n")}
           </Notification>
         )}
 
@@ -210,41 +230,57 @@ const SignUpPage = () => {
                 {...registerForm.getInputProps("lastName")}
               />
             </Group>
+            <InputWrapper
+              id="input-demo"
+              required
+              error={error ? error["email" as keyof object] : ""}
+            >
+              <TextInput
+                mt="md"
+                required
+                placeholder="پست الکترونیکی"
+                label="ایمیل"
+                icon={<Mail />}
+                {...registerForm.getInputProps("email")}
+              />
+            </InputWrapper>
+            <InputWrapper
+              id="input-demo"
+              required
+              error={error ? error["phone" as keyof object] : ""}
+            >
+              <TextInput
+                mt="md"
+                required
+                placeholder="تلفن همراه"
+                label="تلفن همراه"
+                icon={<Phone />}
+                {...registerForm.getInputProps("phone")}
+              />
+            </InputWrapper>
+            <InputWrapper
+              id="input-demo"
+              required
+              error={error ? error["password" as keyof object] : ""}
+            >
+              <PasswordInput
+                mt="md"
+                required
+                placeholder="رمز عبور"
+                label="رمز عبور"
+                icon={<Lock />}
+                {...registerForm.getInputProps("password")}
+              />
 
-            <TextInput
-              mt="md"
-              required
-              placeholder="پست الکترونیکی"
-              label="ایمیل"
-              icon={<Mail />}
-              {...registerForm.getInputProps("email")}
-            />
-
-            <TextInput
-              mt="md"
-              required
-              placeholder="تلفن همراه"
-              label="تلفن همراه"
-              icon={<Phone />}
-              {...registerForm.getInputProps("phone")}
-            />
-            <PasswordInput
-              mt="md"
-              required
-              placeholder="رمز عبور"
-              label="رمز عبور"
-              icon={<Lock />}
-              {...registerForm.getInputProps("password")}
-            />
-
-            <PasswordInput
-              mt="md"
-              required
-              label="تکرار رمز عبور"
-              placeholder="تکرار رمز عبور"
-              icon={<Lock />}
-              {...registerForm.getInputProps("confirmPassword")}
-            />
+              <PasswordInput
+                mt="md"
+                required
+                label="تکرار رمز عبور"
+                placeholder="تکرار رمز عبور"
+                icon={<Lock />}
+                {...registerForm.getInputProps("confirmPassword")}
+              />
+            </InputWrapper>
 
             {userRole === UserRole.Specialist && (
               <div style={{ marginTop: "16px" }}>

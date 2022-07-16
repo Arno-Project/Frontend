@@ -27,17 +27,18 @@ export default function App() {
 
   const getAccountInfo = async () => {
 
-    let data = await getMyAccount();
+    let res = await getMyAccount();
+    let data = res.data;
 
-    if (data["success"]) {
-      let userData = data["user"];
+    if (res.success && data !== null) {
+      let userData = data["user" as keyof object];
       let user: User = {
         id: userData["id"],
         username: userData["username"],
         firstName: userData["first_name"],
         lastName: userData["last_name"],
         email: userData["email"],
-        role: data["role"] as UserRole,
+        role: data["role" as keyof object] as UserRole,
         phone: userData["phone"],
       };
 

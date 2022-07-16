@@ -1,10 +1,17 @@
-import { BASE_URL, sendGetRequest } from "./base";
+import { BASE_URL, BaseAPI } from "./base";
 
 export async function getMyAccount() {
   let url = `${BASE_URL}/account/my-account/`;
 
-  const response = await sendGetRequest(url);
-  console.log("get my", response)
+  const b = new BaseAPI('account') 
+ 
+  const response = await b.sendAuthorizedGetRequest({
+    path: 'my-account/',
+    body: null,
+    headers: null
+  })
+  
+  console.info("getMyAccount", response)
 
   return response;
 }
