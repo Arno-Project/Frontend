@@ -246,7 +246,7 @@ const SignUpPage = () => {
               {...registerForm.getInputProps("confirmPassword")}
             />
 
-            {userRole === "specialist" && (
+            {userRole === UserRole.Specialist && (
               <div style={{ marginTop: "16px" }}>
                 <SpecialityMultiSelect
                   setter={onSpecialitySelectChange}

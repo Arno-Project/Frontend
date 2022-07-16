@@ -1,10 +1,10 @@
 // TODO! structure this
 
 enum UserRole {
-  Customer = "customer",
-  Specialist = "specialist",
-  CompanyManager = "companyManager",
-  TechnicalManager = "technicalManager",
+  Customer = "C",
+  Specialist = "S",
+  CompanyManager = "CM",
+  TechnicalManager = "TM",
 }
 
 // enum UserRole {

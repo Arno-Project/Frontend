@@ -37,7 +37,7 @@ export { sendGetRequest };
 interface APIRequest {
   path: string
   body: object|null
-  header: object|null
+  headers: object|null
 }
 
 
@@ -62,7 +62,7 @@ abstract class BaseAPI {
         const config = {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            ...r.header
+            ...r.headers
           },
         };
     
@@ -93,7 +93,7 @@ abstract class BaseAPI {
   }
   async sendAuthorizedGetRequest(r: APIRequest) : Promise<APIResponse> {
       const token = window.localStorage.getItem("token");
-      r.header = {...r.header, Authorization: `Token ${token}`}
+      r.headers = {...r.headers, Authorization: `Token ${token}`}
       return this.sendGetRequest(r)
   }
 }
