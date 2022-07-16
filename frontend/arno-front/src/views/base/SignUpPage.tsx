@@ -21,7 +21,7 @@ import {
   Anchor,
 } from "@mantine/core";
 
-import { Lock, Mail, Phone, Check, X } from "tabler-icons-react";
+import { Lock, Mail, Phone, Check, X, Id } from "tabler-icons-react";
 
 import { AuthAPI } from "../../api/auth";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
@@ -57,6 +57,7 @@ const SignUpPage = () => {
     initialValues: {
       firstName: "",
       lastName: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -87,7 +88,7 @@ const SignUpPage = () => {
 
   const loginForm = useForm({
     initialValues: {
-      email: "",
+      username: "",
       password: "",
     },
 
@@ -106,7 +107,7 @@ const SignUpPage = () => {
 
     let res = null;
     if (formType === "login") {
-      res = await api.login(values["email"], values["password"]);
+      res = await api.login(values["username"], values["password"]);
     } else {
       res = await api.register(
         { specialities: selectedSpecialities, ...values },
@@ -225,7 +226,7 @@ const SignUpPage = () => {
             <InputWrapper
               id="input-demo"
               required
-              error={error ? error["email" as keyof object] || error["username" as keyof object] : ""}
+              error={error ? error["email" as keyof object] : ""}
             >
               <TextInput
                 mt="md"
@@ -236,6 +237,22 @@ const SignUpPage = () => {
                 {...registerForm.getInputProps("email")}
               />
             </InputWrapper>
+
+            <InputWrapper
+              id="input-demo"
+              required
+              error={error ? error["username" as keyof object] : ""}
+            >
+              <TextInput
+                mt="md"
+                required
+                placeholder="نام کاربری"
+                label="نام کاربری"
+                icon={<Id />}
+                {...registerForm.getInputProps("username")}
+              />
+            </InputWrapper>
+
             <InputWrapper
               id="input-demo"
               required
@@ -312,15 +329,20 @@ const SignUpPage = () => {
           <form onSubmit={loginForm.onSubmit(handleSubmit)}>
             <LoadingOverlay visible={loading} />
 
-            <TextInput
-              mt="md"
+            <InputWrapper
+              id="input-demo"
               required
-              placeholder="پست الکترونیکی"
-              label="ایمیل"
-              icon={<Mail />}
-              {...loginForm.getInputProps("email")}
-            />
-
+              error={error ? error["username" as keyof object] : ""}
+            >
+              <TextInput
+                mt="md"
+                required
+                placeholder="نام کاربری"
+                label="نام کاربری"
+                icon={<Id />}
+                {...loginForm.getInputProps("username")}
+              />
+            </InputWrapper>
             <PasswordInput
               mt="md"
               required

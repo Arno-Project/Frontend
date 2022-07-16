@@ -38,7 +38,7 @@ export class AuthAPI extends BaseAPI {
       first_name: params["firstName"],
       last_name: params["lastName"],
       email: params["email"],
-      username: params["email"],
+      username: params["username"],
       phone: params["phone"],
       password: params["password"],
       specialities: params["specialities"],
