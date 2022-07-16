@@ -23,7 +23,7 @@ import {
 
 import { Lock, Mail, Phone, Check, X } from "tabler-icons-react";
 
-import { callLogin, callRegister } from "../../api/auth";
+import { AuthAPI } from "../../api/auth";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { User, UserRole } from "../../models";
 import { useAppDispatch } from "../../redux/hooks";
@@ -102,11 +102,13 @@ const SignUpPage = () => {
       return;
     }
 
+    const api = AuthAPI.getInstance();
+
     let res = null;
     if (formType === "login") {
-      res = await callLogin(values);
+      res = await api.login(values["email"], values["password"]);
     } else {
-      res = await callRegister(
+      res = await api.register(
         { specialities: selectedSpecialities, ...values },
         userRole
       );
@@ -120,7 +122,7 @@ const SignUpPage = () => {
       setShowSuccessNotification(true);
 
       if (formType === "login" || userRole === UserRole.Customer) {
-        let user = APIDataToUser(res)
+        let user = APIDataToUser(res);
 
         dispatch(login(data["token" as keyof object]));
         dispatch(setUserInfo(user));
@@ -223,7 +225,7 @@ const SignUpPage = () => {
             <InputWrapper
               id="input-demo"
               required
-              error={error ? error["email" as keyof object] : ""}
+              error={error ? error["email" as keyof object] || error["username" as keyof object] : ""}
             >
               <TextInput
                 mt="md"

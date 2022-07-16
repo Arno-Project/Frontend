@@ -1,46 +1,56 @@
 import { BaseAPI } from "./base";
 import { UserRole } from "../models";
 
-export async function callRegister(params: any, role: UserRole) {
+export class AuthAPI extends BaseAPI {
+  protected static instance: AuthAPI;
 
-  const renamed_params = {
-    first_name: params["firstName"],
-    last_name: params["lastName"],
-    email: params["email"],
-    username: params["email"],
-    phone: params["phone"],
-    password: params["password"],
-    specialities: params["specialities"],
-  };
+  private constructor(base_path: string = "account") {
+    super(base_path);
+  }
 
-  const b = new BaseAPI('account') 
- 
-  const response = await b.sendPostRequest({
-    path: `register/${role}/`,
-    body: renamed_params,
-    headers: null
-  })
- 
-  console.log("SIGNUP response", response);
+  public static getInstance(): AuthAPI {
+    if (!AuthAPI.instance) {
+      AuthAPI.instance = new AuthAPI("account");
+    }
 
-  return response;
-}
+    return AuthAPI.instance;
+  }
 
-export async function callLogin(params: any) {
+  async login(username:string, password:string) {
+    console.log(username, password)
+    const renamed_params = {
+      username: username,
+      password:password
+    };
+  
+    const response = await this.sendPostRequest({
+      path: `login/`,
+      body: renamed_params,
+      headers: null,
+    });
 
-  const renamed_params = {
-    username: params["email"],
-    password: params["password"],
-  };
+    console.info("LOGIN", response);
+    return response;
+  }
 
-  const b = new BaseAPI('account') 
- 
-  const response = await b.sendPostRequest({
-    path: `login/`,
-    body: renamed_params,
-    headers: null
-  })
+  async register(params: any, role: UserRole) {
+    const renamed_params = {
+      first_name: params["firstName"],
+      last_name: params["lastName"],
+      email: params["email"],
+      username: params["email"],
+      phone: params["phone"],
+      password: params["password"],
+      specialities: params["specialities"],
+    };
 
-  console.log("LOGIN response", response);
-  return response;
+    const response = await this.sendPostRequest({
+      path: `register/${role}/`,
+      body: renamed_params,
+      headers: null,
+    });
+
+    console.info("SIGNUP", response);
+    return response;
+  }
 }
