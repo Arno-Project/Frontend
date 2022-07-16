@@ -1,11 +1,52 @@
 import { Badge, Space, Table, Title } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { Check, X } from "tabler-icons-react";
+
+import { RequestStatus } from "../../assets/consts";
 
 import { Helmet } from "react-helmet";
-import { Check, X } from "tabler-icons-react";
 const TITLE = "سفارش‌های من";
 
+interface ServiceSummary {
+  customer: string;
+  service: string;
+  status: string;
+  lastModified?: string;
+}
+
+const fake: ServiceSummary[] = [
+  { customer: "علیرضا", service: "بار", status: "Done", lastModified: "11 تیر 1401" },
+  { customer: "ممد", service: "ویندوز", status: "WaitingForSpecialist", lastModified: "12 تیر 1401" },
+  { customer: "امیر", service: "شبکه", status: "WaitingToAssign", lastModified: "13 تیر 1401" },
+  { customer: "رضا", service: "اسباب‌کشی", status: "Cancelled", lastModified: "14 تیر 1401" },
+  { customer: "مهدی", service: "جوجه‌کشی", status: "Doing", lastModified: "15 تیر 1401" },
+];
+
 const CustomerRequestsView = () => {
+  const [rows, setRows] = useState<ServiceSummary[]>([]);
+
+  useEffect(() => {
+    // fetch rows from the server
+    setRows(fake);
+  }, []);
+  
+  const renderRows = () => {
+    const body: any[] = rows.map((obj: ServiceSummary, i) => (
+          <tr key={i}>
+            <td>{i + 1}</td>
+            <td>{obj.service}</td>
+            <td>
+              <Badge color={RequestStatus[obj.status].color} variant="filled">
+                {RequestStatus[obj.status].message}
+              </Badge>
+            </td>
+            <td>{obj.lastModified}</td>
+          </tr>
+    ));
+    return <tbody>{body}</tbody>
+  };
+
   return (
     <>
       <Helmet>
@@ -54,18 +95,7 @@ const CustomerRequestsView = () => {
                 <th>تاریخ آخرین تغییر</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>حمل بار</td>
-                <td>
-                  <Badge color="yellow" variant="filled">
-                    در انتظار پذیرش توسط متخصص
-                  </Badge>
-                </td>
-                <td>30 خرداد 1400</td>
-              </tr>
-            </tbody>
+            { renderRows() }
           </Table>
     </>
   );

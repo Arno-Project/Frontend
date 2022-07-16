@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { Badge, Space, Table, Title, UnstyledButton } from "@mantine/core";
 import { Check, X } from "tabler-icons-react";
 
-import { Helmet } from "react-helmet";
 import { RequestStatus } from "../../assets/consts";
+import { showNotification } from "@mantine/notifications";
+
+import { Helmet } from "react-helmet";
 const TITLE = "مدیریت خدمات";
 
 interface ServiceSummary {
@@ -30,12 +32,20 @@ const ManageServicesView = () => {
   }, []);
 
   const abortService = async (id: any) => {
-
+    if (true) {
+      showNotification({
+        title: "لغو موفقیت‌آمیز",
+        message: "خدمت موردنظر با موفقیت لغو شد.",
+        color: "teal",
+        icon: <Check size={18} />,
+      });
+    }
+    // TODO reload the list
   };
   
   const renderRows = () => {
     const body: any[] = rows.map((obj: ServiceSummary, i) => (
-          <tr>
+          <tr key={i}>
             <td>{i + 1}</td>
             <td>{obj.customer}</td>
             <td>{obj.service}</td>
