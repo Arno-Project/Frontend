@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { MantineProvider, LoadingOverlay } from "@mantine/core";
-import { NotificationsProvider } from '@mantine/notifications';
+import { NotificationsProvider } from "@mantine/notifications";
 
 import rtlPlugin from "stylis-plugin-rtl";
 
@@ -12,10 +12,11 @@ import { Route, Routes } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { User, UserRole } from "./models";
 import { useNavigate } from "react-router-dom";
-import { getMyAccount } from "./api/accounts";
+import { AccountAPI } from "./api/accounts";
 import { logout, setUserInfo } from "./redux/auth";
 
 import { useLocation } from "react-router-dom";
+import { APIDataToUser } from "./models/utils";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -26,21 +27,11 @@ export default function App() {
   const location = useLocation();
 
   const getAccountInfo = async () => {
-
-    let res = await getMyAccount();
+    let res = await AccountAPI.getInstance().getMyAccount();
     let data = res.data;
 
     if (res.success && data !== null) {
-      let userData = data["user" as keyof object];
-      let user: User = {
-        id: userData["id"],
-        username: userData["username"],
-        firstName: userData["first_name"],
-        lastName: userData["last_name"],
-        email: userData["email"],
-        role: data["role" as keyof object] as UserRole,
-        phone: userData["phone"],
-      };
+      let user = APIDataToUser(res);
 
       dispatch(setUserInfo(user));
 
@@ -84,17 +75,16 @@ export default function App() {
               { key: "mantine" }
         }
       >
-        
-      <NotificationsProvider>
-        <div dir={rtl ? "rtl" : "ltr"}>
-          {/* <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button> */}
-          {/* <Header /> */}
-          <Routes>
-            <Route path="/dashboard/*" element={<DashboardPage />} />
-            <Route path="*" element={<BasePage />} />
-          </Routes>
-          {/* <Footer /> */}
-        </div>
+        <NotificationsProvider>
+          <div dir={rtl ? "rtl" : "ltr"}>
+            {/* <Button onClick={() => setRtl((c) => !c)}>تعویض R به L</Button> */}
+            {/* <Header /> */}
+            <Routes>
+              <Route path="/dashboard/*" element={<DashboardPage />} />
+              <Route path="*" element={<BasePage />} />
+            </Routes>
+            {/* <Footer /> */}
+          </div>
         </NotificationsProvider>
       </MantineProvider>
     );

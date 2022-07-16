@@ -28,6 +28,7 @@ import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { User, UserRole } from "../../models";
 import { useAppDispatch } from "../../redux/hooks";
 import { login, setUserInfo } from "../../redux/auth";
+import { APIDataToUser } from "../../models/utils";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("login");
@@ -119,18 +120,7 @@ const SignUpPage = () => {
       setShowSuccessNotification(true);
 
       if (formType === "login" || userRole === UserRole.Customer) {
-        let userData = data["user" as keyof object];
-        console.log(data);
-        console.log(userData);
-        let user: User = {
-          id: userData["id"],
-          username: userData["username"],
-          firstName: userData["first_name"],
-          lastName: userData["last_name"],
-          email: userData["email"],
-          role: data["role" as keyof object] as UserRole,
-          phone: userData["phone"],
-        };
+        let user = APIDataToUser(res)
 
         dispatch(login(data["token" as keyof object]));
         dispatch(setUserInfo(user));

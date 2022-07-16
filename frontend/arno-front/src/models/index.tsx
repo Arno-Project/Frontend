@@ -7,13 +7,6 @@ enum UserRole {
   TechnicalManager = "TM",
 }
 
-// enum UserRole {
-//     Customer,
-//     Specialist,
-//     CompanyManager,
-//     TechnicalManager,
-//   }
-
 type User = {
   id: number;
   username: string;

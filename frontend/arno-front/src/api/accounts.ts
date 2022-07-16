@@ -1,17 +1,28 @@
-import { BASE_URL, BaseAPI } from "./base";
+import { BaseAPI } from "./base";
 
-export async function getMyAccount() {
-  let url = `${BASE_URL}/account/my-account/`;
+export class AccountAPI extends BaseAPI {
+  protected static instance: AccountAPI;
 
-  const b = new BaseAPI('account') 
- 
-  const response = await b.sendAuthorizedGetRequest({
-    path: 'my-account/',
-    body: null,
-    headers: null
-  })
-  
-  console.info("getMyAccount", response)
+  private constructor(base_path: string = "account") {
+    super(base_path);
+  }
 
-  return response;
+  public static getInstance(): AccountAPI {
+    if (!AccountAPI.instance) {
+      AccountAPI.instance = new AccountAPI("account");
+    }
+
+    return AccountAPI.instance;
+  }
+
+  async getMyAccount() {
+    const response = await this.sendAuthorizedGetRequest({
+      path: "my-account/",
+      body: null,
+      headers: null,
+    });
+
+    console.info("getMyAccount", response);
+    return response;
+  }
 }

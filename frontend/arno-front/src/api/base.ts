@@ -6,24 +6,24 @@ const NETWORK_ERROR_MSG = {
   custom_errors: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید.",
 };
 
-interface APIRequest {
+export type APIRequest = {
   path: string;
   body: object | null;
   headers: object | null;
-}
+};
 
-interface APIResponse {
+export type APIResponse = {
   success: boolean;
   data: object | null;
   error: object | null;
-}
+};
 
 class BaseAPI {
-  private base_url: string;
+
+  private base_url: string = BASE_URL;
   private base_path: string;
 
   constructor(base_path: string) {
-    this.base_url = BASE_URL;
     this.base_path = base_path;
   }
 
