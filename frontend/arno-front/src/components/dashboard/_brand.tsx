@@ -4,13 +4,15 @@ import { Logout } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import { logout } from "../../redux/auth";
+import { AuthAPI } from "../../api/auth";
 
 export function Brand() {
   let navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
-  const doLogout = () => {
+  const doLogout = async () => {
+    await AuthAPI.getInstance().logout();
     dispatch(logout());
     navigate("/");
   };

@@ -117,7 +117,7 @@ const SignUpPage = () => {
     let data = res.data;
 
     if (res.success && data !== null) {
-      console.log(formType, userRole);
+      setErrorMessage({});
 
       setShowFailureNotification(false);
       setShowSuccessNotification(true);

@@ -53,4 +53,15 @@ export class AuthAPI extends BaseAPI {
     console.info("SIGNUP", response);
     return response;
   }
+
+  async logout() {
+    const response = await this.sendAuthorizedPostRequest({
+      path: `logout/`,
+      body: {},
+      headers: null,
+    });
+
+    console.info("LOGOUT", response);
+    return response;
+  }
 }
