@@ -1,6 +1,6 @@
-import { BaseAPI } from "./base";
+import { BaseAPI, BaseListAPI } from "./base";
 
-export class AccountAPI extends BaseAPI {
+export class AccountAPI extends BaseListAPI {
   protected static instance: AccountAPI;
 
   private constructor(base_path: string = "account") {
@@ -20,6 +20,7 @@ export class AccountAPI extends BaseAPI {
       path: "my-account/",
       body: null,
       headers: null,
+      params: null,
     });
 
     console.info("getMyAccount", response);

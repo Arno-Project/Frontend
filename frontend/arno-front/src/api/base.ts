@@ -4,12 +4,41 @@ const BASE_URL = "http://localhost:8000/api";
 
 const NETWORK_ERROR_MSG = {
   custom_errors: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید.",
+
 };
+
+
+export enum FieldFilterType {
+  Exact,
+  Contains
+}
+
+export enum FieldFilterName{
+  Role = "role",
+}
+
+export class FieldFilter {
+  name: string
+  value: string
+  type: FieldFilterType
+
+  constructor(name: string, value: string, type: FieldFilterType){
+    this.name = name
+    this.value = value
+    this.type = type
+  }
+
+  get_pair(): string[]{
+    return [this.name, this.value]
+  }
+}
+
 
 export type APIRequest = {
   path: string;
   body: object | null;
   headers: object | null;
+  params: object | null;
 };
 
 export type APIResponse = {
@@ -18,7 +47,7 @@ export type APIResponse = {
   error: object | null;
 };
 
-class BaseAPI {
+abstract class BaseAPI {
 
   private base_url: string = BASE_URL;
   private base_path: string;
@@ -30,6 +59,9 @@ class BaseAPI {
   async sendGetRequest(r: APIRequest): Promise<APIResponse> {
     try {
       const config = {
+        params: {
+          ...r.params
+        },
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
           ...r.headers,
@@ -71,6 +103,9 @@ class BaseAPI {
   async sendPostRequest(r: APIRequest): Promise<APIResponse> {
     try {
       const config = {
+        params: {
+          ...r.params
+        },
         headers: {
           ...r.headers,
         },
@@ -110,4 +145,35 @@ class BaseAPI {
   }
 }
 
-export { BASE_URL, BaseAPI };
+abstract class BaseListAPI extends BaseAPI {
+  get_path: string
+  // add_path: string
+  // edit_path: string
+  // remove_path: string
+  // get_report_path: string
+
+  constructor(base_path: string, get_path: string = 'all/') {
+    super(base_path)
+    this.get_path = get_path
+  }
+
+  async get(fieldFilters: FieldFilter[]) {
+    
+    const paramDict = Object.fromEntries(fieldFilters.map(field => field.get_pair()))
+    const params = new URLSearchParams([['role', 'S']]);
+    console.log()
+    console.log(params)
+
+    const response = await this.sendAuthorizedGetRequest({
+      path: this.get_path,
+      body: null,
+      headers: null,
+      params: paramDict,
+    });
+
+    return response;
+  }
+}
+
+
+export { BASE_URL, BaseAPI, BaseListAPI };

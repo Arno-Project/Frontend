@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Badge, Button, Center, Pagination, Space, Table, TextInput, Title } from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
-import { UserRole } from "../../models";
+import { User, UserGeneralRole, UserRole } from "../../models";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 
 import { Helmet } from "react-helmet";
+import { AccountAPI } from "../../api/accounts";
+import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
+import { APIDataToUsers } from "../../models/utils";
 const TITLE = "متخصصان";
 
 const SpecialistsView = () => {
@@ -16,6 +19,18 @@ const SpecialistsView = () => {
   const PAGE_SIZE = 5;
   const [activePage, setPage] = useState(1);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  const getData = async () => {
+    const filter = new FieldFilter(FieldFilterName.Role, UserRole.Specialist, FieldFilterType.Exact)
+    let res = await AccountAPI.getInstance().get([filter]);
+    const users = APIDataToUsers(res)
+    setUsers(users)
+  };
+  
+  useEffect(() => {
+    getData()
+  }, [])
 
   return (
     <>
@@ -108,6 +123,20 @@ const SpecialistsView = () => {
           </tr>
         </thead>
         <tbody>
+          {users.map(user => {
+            return (
+              <tr>
+              <td>{user.id}</td>
+              <td>{user.firstName} {user.lastName}</td>
+              <td>
+                <Badge color="cyan" variant="filled">
+                  سخت‌افزار
+                </Badge>
+              </td>
+              <td>4.85</td>
+            </tr>
+            )
+          })}
           <tr>
             <td>1</td>
             <td>مصطفی</td>

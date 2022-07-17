@@ -27,7 +27,9 @@ export class AuthAPI extends BaseAPI {
       path: `login/`,
       body: renamed_params,
       headers: null,
+      params: null,
     });
+
 
     console.info("LOGIN", response);
     return response;
@@ -48,6 +50,7 @@ export class AuthAPI extends BaseAPI {
       path: `register/${role}/`,
       body: renamed_params,
       headers: null,
+      params: null,
     });
 
     console.info("SIGNUP", response);
@@ -59,6 +62,7 @@ export class AuthAPI extends BaseAPI {
       path: `logout/`,
       body: {},
       headers: null,
+      params: null,
     });
 
     console.info("LOGOUT", response);

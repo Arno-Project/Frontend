@@ -7,6 +7,11 @@ enum UserRole {
   TechnicalManager = "TM",
 }
 
+enum UserGeneralRole {
+  NormalUser = "normal_user",
+  ManagerUser = "manager_user",
+}
+
 type User = {
   id: number;
   username: string;
@@ -17,5 +22,5 @@ type User = {
   phone: string;
 };
 
-export { UserRole };
+export { UserRole, UserGeneralRole};
 export type { User };
