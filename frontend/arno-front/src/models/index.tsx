@@ -12,6 +12,12 @@ enum UserGeneralRole {
   ManagerUser = "manager_user",
 }
 
+type Speciality = {
+  id: number;
+  title: string;
+  description: string;
+}
+
 type User = {
   id: number;
   username: string;
@@ -20,7 +26,9 @@ type User = {
   email: string;
   role: UserRole;
   phone: string;
+  score: number;
+  speciality: Array<Speciality>;
 };
 
 export { UserRole, UserGeneralRole};
-export type { User };
+export type { User , Speciality};

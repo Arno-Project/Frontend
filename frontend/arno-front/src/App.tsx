@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MantineProvider, LoadingOverlay } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
@@ -26,7 +26,7 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const getAccountInfo = async () => {
+  const getData = async () => {
     let res = await AccountAPI.getInstance().getMyAccount();
     let data = res.data;
 
@@ -53,9 +53,11 @@ export default function App() {
   const user = useAppSelector((state) => state.auth.user);
   const token = useAppSelector((state) => state.auth.token);
 
-  if (user === null) {
-    getAccountInfo();
-  }
+  useEffect(() => {
+    if (token && user === null) {
+      getData()
+    }
+  }, [])
 
   let component = <></>;
   if (!loading) {

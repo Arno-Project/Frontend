@@ -1,10 +1,10 @@
 import { UserRole } from "../models";
 
 export const RoleDict: any = {
-  customer: "مشتری",
-  specialist: "متخصص",
-  technicalManager: "مدیر فنی",
-  companyManager: "مدیر شرکت",
+  "C": "مشتری",
+  "S": "متخصص",
+  "TM": "مدیر فنی",
+  "CM": "مدیر شرکت",
 };
 
 export const Specialities = [
@@ -40,3 +40,20 @@ export const RequestStatus: any = {
   "Cancelled": { message: "لغو شده", color: "gray" },
   "Doing": { message: "در حال انجام", color: "cyan" },
 };
+
+
+export const mantine_colors = [
+"gray",
+"red",
+"pink",
+"grape",
+"violet",
+"indigo",
+"blue",
+"cyan",
+"teal",
+"green",
+"lime",
+"yellow",
+"orange",
+]

@@ -11,6 +11,7 @@ import { Helmet } from "react-helmet";
 import { AccountAPI } from "../../api/accounts";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { APIDataToUsers } from "../../models/utils";
+import { mantine_colors } from "../../assets/consts";
 const TITLE = "متخصصان";
 
 const SpecialistsView = () => {
@@ -24,8 +25,10 @@ const SpecialistsView = () => {
   const getData = async () => {
     const filter = new FieldFilter(FieldFilterName.Role, UserRole.Specialist, FieldFilterType.Exact)
     let res = await AccountAPI.getInstance().get([filter]);
+    console.log("RES", res)
     const users = APIDataToUsers(res)
     setUsers(users)
+    console.log("SPECIALIST", users)
   };
   
   useEffect(() => {
@@ -123,17 +126,22 @@ const SpecialistsView = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map(user => {
+          {users.map((user, i) => {
             return (
-              <tr>
-              <td>{user.id}</td>
+              <tr key={user.id}>
+              <td>{i+1}</td>
               <td>{user.firstName} {user.lastName}</td>
               <td>
-                <Badge color="cyan" variant="filled">
-                  سخت‌افزار
+                {user.speciality.map(s => {
+                  return (
+                  <Badge key ={s.id} color={mantine_colors[s.id % mantine_colors.length]} variant="filled">
+                  {s.title}
                 </Badge>
+                  )
+                })}
+                
               </td>
-              <td>4.85</td>
+              <td>{user.score}</td>
             </tr>
             )
           })}
@@ -141,7 +149,7 @@ const SpecialistsView = () => {
             <td>1</td>
             <td>مصطفی</td>
             <td>
-              <Badge color="cyan" variant="filled">
+              <Badge color="id" variant="filled">
                 سخت‌افزار
               </Badge>
             </td>
