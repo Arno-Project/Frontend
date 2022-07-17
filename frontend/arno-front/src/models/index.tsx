@@ -28,6 +28,7 @@ type User = {
   phone: string;
   score: number;
   speciality: Array<Speciality>;
+  is_validated: boolean;
 };
 
 export { UserRole, UserGeneralRole};

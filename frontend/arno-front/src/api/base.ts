@@ -157,12 +157,8 @@ abstract class BaseListAPI extends BaseAPI {
     this.get_path = get_path
   }
 
-  async get(fieldFilters: FieldFilter[]) {
-    
+  async get(fieldFilters: FieldFilter[]) {    
     const paramDict = Object.fromEntries(fieldFilters.map(field => field.get_pair()))
-    const params = new URLSearchParams([['role', 'S']]);
-    console.log()
-    console.log(params)
 
     const response = await this.sendAuthorizedGetRequest({
       path: this.get_path,

@@ -25,10 +25,8 @@ const SpecialistsView = () => {
   const getData = async () => {
     const filter = new FieldFilter(FieldFilterName.Role, UserRole.Specialist, FieldFilterType.Exact)
     let res = await AccountAPI.getInstance().get([filter]);
-    console.log("RES", res)
     const users = APIDataToUsers(res)
     setUsers(users)
-    console.log("SPECIALIST", users)
   };
   
   useEffect(() => {
@@ -59,28 +57,36 @@ const SpecialistsView = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>امیرمهدی نامجو</td>
-                <td>
-                  <Badge color="indigo" variant="filled">
-                    نرم‌افزار
-                  </Badge>
-                  <Badge color="cyan" variant="filled">
-                    سخت‌افزار
-                  </Badge>
-                </td>
+            {users.map((user, i) => {
+            if (!user.is_validated)
+            return (
+
+              <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.firstName} {user.lastName}</td>
+              <td>
+                {user.speciality.map(s => {
+                  return (
+                  <Badge key ={s.id} color={mantine_colors[s.id % mantine_colors.length]} variant="filled">
+                  {s.title}
+                </Badge>
+                  )
+                })}
+              </td>  
                 <td>
                   <Paperclip size={24} />
                 </td>
-                <td>
-                  <div style={{ display: "flex" }}>
+              <td>
+              <div style={{ display: "flex" }}>
                     <Check color="green" size={22} />
                     <Space w="lg" />
                     <X color="red" size={22} />
                   </div>
-                </td>
-              </tr>
+                  </td>
+            </tr>
+            )
+          })}
+             
             </tbody>
           </Table>
         </>
@@ -127,6 +133,7 @@ const SpecialistsView = () => {
         </thead>
         <tbody>
           {users.map((user, i) => {
+            if (user.is_validated)
             return (
               <tr key={user.id}>
               <td>{i+1}</td>
@@ -145,42 +152,6 @@ const SpecialistsView = () => {
             </tr>
             )
           })}
-          <tr>
-            <td>1</td>
-            <td>مصطفی</td>
-            <td>
-              <Badge color="id" variant="filled">
-                سخت‌افزار
-              </Badge>
-            </td>
-            <td>4.85</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>امیرمهدی</td>
-            <td>
-              <Badge color="indigo" variant="filled">
-                نرم‌افزار
-              </Badge>
-              <Badge color="orange" variant="filled">
-                شبکه
-              </Badge>
-            </td>
-            <td>4</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>علیرضا</td>
-            <td>
-              <Badge color="indigo" variant="filled">
-                نرم‌افزار
-              </Badge>
-              <Badge color="pink" variant="filled">
-                فرانت‌اند
-              </Badge>
-            </td>
-            <td>2.5</td>
-          </tr>
         </tbody>
       </Table>
       <Center mt="sm">
