@@ -54,5 +54,21 @@ type Feedback = {
   user: number;
 }
 
-export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus};
-export type { User , Speciality, Feedback};
+enum RequestStatus {
+  Pending = "PEND",
+  Wait = "WAIT",
+  In_progress = "PROG",
+  Done = "DONE",
+  Cancelled = "CNCL",
+  Rejected = "REJC",
+}
+
+type ServiceSummary = {
+  id: number;
+  customer: string;
+  specialist: string | null;
+  status: string;
+}
+
+export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus};
+export type { User , Speciality, Feedback, ServiceSummary};
