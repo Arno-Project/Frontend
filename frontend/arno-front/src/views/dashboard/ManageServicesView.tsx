@@ -1,67 +1,68 @@
 import { useEffect, useState } from "react";
 
-import { Badge, Space, Table, Title, UnstyledButton } from "@mantine/core";
+import { Badge, Table, Title, UnstyledButton } from "@mantine/core";
 import { Check, X } from "tabler-icons-react";
 
-import { RequestStatus } from "../../assets/consts";
+import { RequestStatusBadge } from "../../assets/consts";
 import { showNotification } from "@mantine/notifications";
 
+import { CoreAPI } from "../../api/core";
+import { RequestStatus, ServiceSummary } from "../../models";
+
 import { Helmet } from "react-helmet";
+import { APIDataToServiceSummary } from "../../models/utils";
 const TITLE = "مدیریت خدمات";
-
-interface ServiceSummary {
-  customer: string;
-  service: string;
-  status: string;
-}
-
-const fake: ServiceSummary[] = [
-  { customer: "علیرضا", service: "بار", status: "Done" },
-  { customer: "ممد", service: "ویندوز", status: "WaitingForSpecialist" },
-  { customer: "امیر", service: "شبکه", status: "WaitingToAssign" },
-  { customer: "رضا", service: "اسباب‌کشی", status: "Cancelled" },
-  { customer: "مهدی", service: "جوجه‌کشی", status: "Doing" },
-];
 
 const ManageServicesView = () => {
   const [rows, setRows] = useState<ServiceSummary[]>([]);
 
+  const getData = async () => {
+    const res = await CoreAPI.getInstance().getAllRequestsSummary();
+    if (res.success) {
+      const data = APIDataToServiceSummary(res);
+      setRows(data);
+    }
+  };
+
   useEffect(() => {
-    // fetch rows from the server
-    setRows(fake);
+    getData();
   }, []);
 
-  const abortService = async (id: any) => {
-    if (true) {
+  const cancelService = async (id: number) => {
+    // TODO an "Are you sure" modal
+    const res = await CoreAPI.getInstance().cancelRequestByManager(id);
+    if (res.success) {
       showNotification({
         title: "لغو موفقیت‌آمیز",
         message: "خدمت موردنظر با موفقیت لغو شد.",
         color: "teal",
         icon: <Check size={18} />,
       });
-    }
+    } // TODO else
     // TODO reload the list
   };
-  
+
   const renderRows = () => {
     const body: any[] = rows.map((obj: ServiceSummary, i) => (
-          <tr key={i}>
-            <td>{i + 1}</td>
-            <td>{obj.customer}</td>
-            <td>{obj.service}</td>
-            <td>
-              <Badge color={RequestStatus[obj.status].color} variant="filled">
-                {RequestStatus[obj.status].message}
-              </Badge>
-            </td>
-            <td>
-              {obj.status !== "Cancelled" && <UnstyledButton onClick={() => abortService(i)}>
-                <X color="red" size={22} />
-              </UnstyledButton>}
-            </td>
-          </tr>
+      <tr key={i}>
+        <td>{i + 1}</td>
+        <td>{obj.customer}</td>
+        <td>{!!obj.specialist ? obj.specialist : "-"}</td>
+        <td>
+          <Badge color={RequestStatusBadge[obj.status].color} variant="filled">
+            {RequestStatusBadge[obj.status].message}
+          </Badge>
+        </td>
+        <td>
+          {obj.status !== RequestStatus.Cancelled && (
+            <UnstyledButton onClick={() => cancelService(obj.id)}>
+              <X color="red" size={22} />
+            </UnstyledButton>
+          )}
+        </td>
+      </tr>
     ));
-    return <tbody>{body}</tbody>
+    return <tbody>{body}</tbody>;
   };
 
   return (
@@ -78,7 +79,7 @@ const ManageServicesView = () => {
           <tr>
             <th>ردیف</th>
             <th>نام مشتری</th>
-            <th>نام خدمت</th>
+            <th>نام متخصص</th>
             <th>وضعیت</th>
             <th>لغو خدمت</th>
           </tr>

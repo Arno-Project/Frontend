@@ -3,45 +3,43 @@ import { useEffect, useState } from "react";
 
 import { Check, X } from "tabler-icons-react";
 
-import { RequestStatus } from "../../assets/consts";
+import { RequestStatusBadge } from "../../assets/consts";
+
+import { ServiceSummary } from "../../models";
+
+import { CoreAPI } from "../../api/core";
+import { APIDataToRequestsSummary } from "../../models/utils";
 
 import { Helmet } from "react-helmet";
 const TITLE = "سفارش‌های من";
 
-interface ServiceSummary {
-  customer: string;
-  service: string;
-  status: string;
-  lastModified?: string;
-}
-
-const fake: ServiceSummary[] = [
-  { customer: "علیرضا", service: "بار", status: "Done", lastModified: "11 تیر 1401" },
-  { customer: "ممد", service: "ویندوز", status: "WaitingForSpecialist", lastModified: "12 تیر 1401" },
-  { customer: "امیر", service: "شبکه", status: "WaitingToAssign", lastModified: "13 تیر 1401" },
-  { customer: "رضا", service: "اسباب‌کشی", status: "Cancelled", lastModified: "14 تیر 1401" },
-  { customer: "مهدی", service: "جوجه‌کشی", status: "Doing", lastModified: "15 تیر 1401" },
-];
-
 const CustomerRequestsView = () => {
   const [rows, setRows] = useState<ServiceSummary[]>([]);
 
+  const getData = async () => {
+    const res = await CoreAPI.getInstance().getMyRequestsStatus();
+    console.log('$$$', res);
+    if (res.success) {
+      const data = APIDataToRequestsSummary(res);
+      setRows(data);
+    }
+  };
+  
   useEffect(() => {
-    // fetch rows from the server
-    setRows(fake);
+    getData();
   }, []);
   
   const renderRows = () => {
     const body: any[] = rows.map((obj: ServiceSummary, i) => (
           <tr key={i}>
             <td>{i + 1}</td>
-            <td>{obj.service}</td>
+            <td>{!!obj.specialist ? obj.specialist : "-"}</td>
             <td>
-              <Badge color={RequestStatus[obj.status].color} variant="filled">
-                {RequestStatus[obj.status].message}
+              <Badge color={RequestStatusBadge[obj.status].color} variant="filled">
+                {RequestStatusBadge[obj.status].message}
               </Badge>
             </td>
-            <td>{obj.lastModified}</td>
+            <td>{!!obj.description ? obj.description : "-"}</td>
           </tr>
     ));
     return <tbody>{body}</tbody>
@@ -90,9 +88,9 @@ const CustomerRequestsView = () => {
             <thead>
               <tr>
                 <th>ردیف</th>
-                <th>نام خدمت</th>
+                <th>نام متخصص</th>
                 <th>وضعیت</th>
-                <th>تاریخ آخرین تغییر</th>
+                <th>توضیحات</th>
               </tr>
             </thead>
             { renderRows() }

@@ -40,6 +40,7 @@ export function ObjectToServiceSummary(data: Object): ServiceSummary {
     customer: `${data["customer" as keyof object]["user"]["first_name"]} ${data["customer" as keyof object]["user"]["last_name"]}`,
     specialist: !!data["specialist" as keyof object] ? `${data["specialist" as keyof object]["user"]["first_name"]} ${data["specialist" as keyof object]["user"]["last_name"]}` : null,
     status: data["status" as keyof object] as RequestStatus,
+    description: data["description" as keyof object],
   };
   return serviceSummary;
 }
@@ -66,4 +67,9 @@ export function APIDataToServiceSummary(res: APIResponse): ServiceSummary[] {
   let data = res.data as Array<Object>;
   const summaries = data.map((r) => ObjectToServiceSummary(r));
   return summaries;
+}
+
+export function APIDataToRequestsSummary(res: APIResponse): ServiceSummary[] {
+  let data = res.data!["requests" as keyof object] as Array<Object>;
+  return data.map((r) => ObjectToServiceSummary(r));
 }

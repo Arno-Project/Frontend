@@ -68,6 +68,7 @@ type ServiceSummary = {
   customer: string;
   specialist: string | null;
   status: string;
+  description: string;
 }
 
 export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus};
