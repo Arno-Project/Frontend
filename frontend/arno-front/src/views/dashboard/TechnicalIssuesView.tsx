@@ -20,12 +20,14 @@ import {
 } from "tabler-icons-react";
 import { useAppSelector } from "../../redux/hooks";
 
-import { UserRole } from "../../models";
+import { Feedback, UserRole } from "../../models";
 
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/hooks";
 
 import { Helmet } from "react-helmet";
+import { FeedbackAPI } from "../../api/feedback";
+import { APIDataToFeedbacks } from "../../models/utils";
 const TITLE = "مشکلات فنی";
 
 interface TechnicalIssue {
@@ -34,16 +36,10 @@ interface TechnicalIssue {
   response: string;
 }
 
-const fake: TechnicalIssue[] = [
-  { sender: "علیرضا", text: "سلاام", response: "سلام به روی ماهت" },
-  { sender: "ممد", text: "این چه شتیه دیگه", response: "چاکریم" },
-  { sender: "امیر", text: "آب قطعه", response: "" },
-];
-
 const TechnicalIssuesView = () => {
   const user = useAppSelector((state) => state.auth.user);
 
-  const [rows, setRows] = useState<TechnicalIssue[]>([]);
+  const [rows, setRows] = useState<Feedback[]>([]);
 
   const [rowId, setRowId] = useState<number>(-1);
   const [viewOpened, setViewOpened] = useState<boolean>(false);
@@ -51,9 +47,14 @@ const TechnicalIssuesView = () => {
 
   const [newResponse, setNewResponse] = useState("");
 
+  const getData = async () => {
+    const res = await FeedbackAPI.getInstance().getTechnicalFeedbacks();
+    const data = APIDataToFeedbacks(res);
+    setRows(data);
+  };
+
   useEffect(() => {
-    // fetch rows from the server
-    setRows(fake);
+    getData();
   }, []);
 
   const viewResponse = (id: number) => {
@@ -63,13 +64,12 @@ const TechnicalIssuesView = () => {
 
   const writeResponse = (id: number) => {
     setRowId(id);
-    setNewResponse(rows[id].response);
     setWriteOpened(true);
   };
 
   const techManagerResponseForm = useForm({
     initialValues: {
-      techResponse: "",
+      techResponse: "placeholder",
     },
 
     validationRules: {
@@ -81,10 +81,11 @@ const TechnicalIssuesView = () => {
     },
   });
   
-  const submitResponse = () => {
-    console.log(newResponse);
-    // TODO post
-    if (true) {
+  const submitResponse = async () => {
+    const reply = {system_feedback: rows[rowId]["id"], text: newResponse};
+    console.log(reply);
+    const res = await FeedbackAPI.getInstance().submitReply(reply);
+    if (res.success) {
       showNotification({
         title: "ارسال موفقیت‌آمیز",
         message: "پاسخ شما با موفقیت ارسال شد.",
@@ -95,14 +96,14 @@ const TechnicalIssuesView = () => {
   };
 
   const renderRows = () => {
-    const body: any[] = rows.map((obj: TechnicalIssue, i) => (
+    const body: any[] = rows.map((obj: Feedback, i) => (
       <tr key={i}>
         <td>{i + 1}</td>
-        <td>{obj.sender}</td>
+        <td>{obj.user}</td>
         <td>{obj.text}</td>
         {user!.role === UserRole.CompanyManager && (
           <td>
-            {!!obj.response ? (
+            {!!obj.reply ? (
               <UnstyledButton onClick={() => viewResponse(i)}>
                 <ClipboardText size={24} strokeWidth={2} color="blue" />
               </UnstyledButton>
@@ -146,7 +147,7 @@ const TechnicalIssuesView = () => {
         <thead>
           <tr>
             <th>ردیف</th>
-            <th>نام ارسال‌کننده</th>
+            <th>ارسال‌کننده</th>
             <th>متن مشکل</th>
             {user!.role === UserRole.CompanyManager && <th>مشاهده پاسخ</th>}
             {user!.role === UserRole.TechnicalManager && <th>ارسال پاسخ</th>}
@@ -161,7 +162,7 @@ const TechnicalIssuesView = () => {
         title="مشاهده‌ی پاسخ"
       >
         <Text>
-          {rows.length > 0 && rowId !== -1 ? rows[rowId].response : ""}
+          {rows.length > 0 && rowId !== -1 && rows[rowId].reply ? rows[rowId].reply : ""}
         </Text>
       </Modal>
 

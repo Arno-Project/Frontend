@@ -3,15 +3,15 @@ import { useState } from "react";
 import { Button, Center, Select, Text, Textarea, Title } from "@mantine/core";
 import { useForm } from "@mantine/hooks";
 
-import { useAppSelector } from "../../redux/hooks";
-
-import { Helmet } from "react-helmet";
 import { showNotification } from "@mantine/notifications";
 import { Check } from "tabler-icons-react";
+import { FeedbackAPI } from "../../api/feedback";
+
+import { Helmet } from "react-helmet";
+import { FeedbackType } from "../../models";
 const TITLE = "انتقادات و پیشنهادات";
 
 const UserFeedbackView = () => {
-  const user = useAppSelector((state) => state.auth.user);
 
   const userFeedbackForm = useForm({
     initialValues: {
@@ -20,7 +20,7 @@ const UserFeedbackView = () => {
     },
 
     validationRules: {
-      type: (value) => value.trim().length >= 2,
+      type: (value) => value.trim().length === 1,
       text: (value) => value.trim().length >= 2,
     },
 
@@ -31,15 +31,15 @@ const UserFeedbackView = () => {
   });
 
   const handleSubmit = async (values: any) => {
-    console.log(values);
-    // const data = await ();
-    if (true) {
+    const res = await FeedbackAPI.getInstance().submitFeedback(values);
+    if (res.success) {
       showNotification({
         title: "ثبت موفقیت‌آمیز",
         message: "بازخورد شما با موفقیت ارسال شد.",
         color: "teal",
         icon: <Check size={18} />,
       });
+      userFeedbackForm.reset();
     }
   };
 
@@ -62,9 +62,9 @@ const UserFeedbackView = () => {
           placeholder="موضوع بازخورد"
           required
           data={[
-            { value: "complaint", label: "انتقاد" },
-            { value: "suggestion", label: "پیشنهاد" },
-            { value: "technical", label: "مشکل فنی" },
+            { value: FeedbackType.Complaint, label: "انتقاد" },
+            { value: FeedbackType.Suggestion, label: "پیشنهاد" },
+            { value: FeedbackType.Technical, label: "مشکل فنی" },
           ]}
           {...userFeedbackForm.getInputProps("type")}
         />
