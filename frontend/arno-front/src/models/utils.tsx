@@ -1,4 +1,4 @@
-import { Feedback, FeedbackStatus, FeedbackType, Speciality, User, UserRole } from ".";
+import { Feedback, FeedbackStatus, FeedbackType, RequestStatus, ServiceSummary, Speciality, User, UserRole } from ".";
 import { APIResponse } from "../api/base";
 
 export function ObjectToUser(data: Object): User {
@@ -33,6 +33,17 @@ export function ObjectToFeedback(data: Object): Feedback {
   return feedback;
 }
 
+export function ObjectToServiceSummary(data: Object): ServiceSummary {
+  console.log("OBJECTOT", data);
+  let serviceSummary: ServiceSummary = {
+    id: data["id" as keyof object],
+    customer: `${data["customer" as keyof object]["user"]["first_name"]} ${data["customer" as keyof object]["user"]["last_name"]}`,
+    specialist: !!data["specialist" as keyof object] ? `${data["specialist" as keyof object]["user"]["first_name"]} ${data["specialist" as keyof object]["user"]["last_name"]}` : null,
+    status: data["status" as keyof object] as RequestStatus,
+  };
+  return serviceSummary;
+}
+
 export function APIDataToUser(res: APIResponse): User {
   let data = res.data;
   return ObjectToUser(data!);
@@ -49,4 +60,10 @@ export function APIDataToFeedbacks(res: APIResponse): Feedback[] {
   let data = res.data as Array<Object>;
   const feedbacks = data.map((f) => ObjectToFeedback(f));
   return feedbacks;
+}
+
+export function APIDataToServiceSummary(res: APIResponse): ServiceSummary[] {
+  let data = res.data as Array<Object>;
+  const summaries = data.map((r) => ObjectToServiceSummary(r));
+  return summaries;
 }

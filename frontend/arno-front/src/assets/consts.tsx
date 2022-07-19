@@ -33,12 +33,13 @@ export const AccessRules: any = {
   "/manage_services": [UserRole.TechnicalManager, UserRole.CompanyManager],
 };
 
-export const RequestStatus: any = {
-  "Done": { message: "انجام شده", color: "teal" },
-  "WaitingForSpecialist": { message: "در انتظار پذیرش متخصص", color: "violet" },
-  "WaitingToAssign": { message: "در انتظار تعیین متخصص", color: "yellow" },
-  "Cancelled": { message: "لغو شده", color: "gray" },
-  "Doing": { message: "در حال انجام", color: "cyan" },
+export const RequestStatusBadge: any = {
+  "PEND": { message: "در انتظار تعیین متخصص", color: "yellow" },
+  "WAIT": { message: "در انتظار پذیرش متخصص", color: "violet" },
+  "PROG": { message: "در حال انجام", color: "cyan" },
+  "DONE": { message: "انجام شده", color: "teal" },
+  "CNCL": { message: "لغو شده", color: "gray" },
+  "REJC": { message: "رد شده", color: "orange" },
 };
 
 
