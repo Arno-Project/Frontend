@@ -31,5 +31,28 @@ type User = {
   is_validated: boolean;
 };
 
-export { UserRole, UserGeneralRole};
-export type { User , Speciality};
+enum FeedbackType {
+  Technical = "T",
+  Complaint = "C",
+  Suggestion = "S",
+  Other = "O", // TODO remove
+}
+
+enum FeedbackStatus {
+  New = "N",
+  Viewed = "V",
+  Replied = "R",
+}
+
+type Feedback = {
+  created_at: string;
+  id: number;
+  reply: string | null;
+  status: FeedbackStatus;
+  text: string;
+  type: string;
+  user: number;
+}
+
+export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus};
+export type { User , Speciality, Feedback};
