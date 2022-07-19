@@ -39,10 +39,10 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
-  async submitRequest() {
+  async submitRequest(requestBody: any) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/submit/",
-      body: {},
+      body: requestBody,
       headers: null,
       params: null,
     });
