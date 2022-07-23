@@ -14,3 +14,29 @@
     font-family: Vazirmatn !important;
   }
 }
+
+.transparent-paper {
+  background-color: rgba(255, 255 , 255, 0.4);
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px 0px #229bcc;
+  padding: 15px 5% 15px;
+}
+
+.dashboard-container {
+  @extend .transparent-paper;
+  // custom styles
+}
+
+@font-face {
+  font-family: Yekan;
+  src: url("../assets/fonts/yekan.eot");
+  src: url("../assets/fonts/yekan.eot?#iefix") format("embedded-opentype"),
+    url("../assets/fonts/yekan.woff") format("woff"),
+    url("../assets/fonts/yekan.ttf") format("truetype");
+  font-weight: normal;
+  unicode-range: U+30-39;
+}
+
+* {
+  font-family: Yekan, 'Vazirmatn', 'Segoe UI', Tahoma, Verdana, sans-serif !important;
+}
