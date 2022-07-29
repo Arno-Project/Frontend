@@ -26,38 +26,39 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const getData = async () => {
-    let res = await AccountAPI.getInstance().getMyAccount();
-    let data = res.data;
+  const getData = async (user: User | null, token: string | null) => {
+    if (token && user === null) {
+      let res = await AccountAPI.getInstance().getMyAccount();
+      let data = res.data;
 
-    if (res.success && data !== null) {
-      let user = APIDataToUser(res);
+      if (res.success && data !== null) {
+        let user = APIDataToUser(res);
 
-      dispatch(setUserInfo(user));
+        dispatch(setUserInfo(user));
 
-      if (location.pathname === "/register") {
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 500);
+        if (location.pathname === "/register") {
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 500);
+        }
       }
-    } else {
-      dispatch(logout());
-      if (location.pathname !== "/register")
-        setTimeout(() => {
-          navigate("/register");
-        }, 500);
+      return;
     }
-    setLoading(false);
+
+    dispatch(logout());
+    if (location.pathname !== "/register")
+      setTimeout(() => {
+        navigate("/register");
+      }, 500);
   };
 
   const user = useAppSelector((state) => state.auth.user);
   const token = useAppSelector((state) => state.auth.token);
 
   useEffect(() => {
-    if (token && user === null) {
-      getData()
-    }
-  }, [])
+    getData(user, token);
+    setLoading(false);
+  }, []);
 
   let component = <></>;
   if (!loading) {
