@@ -44,14 +44,22 @@ enum FeedbackStatus {
   Replied = "R",
 }
 
+
+type FeedbackReply = {
+  created_at: string;
+  id: number;
+  text: string;
+  user: User;
+}
+
 type Feedback = {
   created_at: string;
   id: number;
-  reply: string | null;
+  reply: FeedbackReply | null;
   status: FeedbackStatus;
   text: string;
   type: string;
-  user: number;
+  user: User;
 }
 
 enum RequestStatus {
@@ -72,4 +80,4 @@ type ServiceSummary = {
 }
 
 export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus};
-export type { User , Speciality, Feedback, ServiceSummary};
+export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary};

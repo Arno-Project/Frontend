@@ -278,6 +278,7 @@ const SignUpPage = () => {
                 placeholder="رمز عبور"
                 label="رمز عبور"
                 icon={<Lock />}
+                autoComplete="current-password"
                 {...registerForm.getInputProps("password")}
               />
 
@@ -349,6 +350,7 @@ const SignUpPage = () => {
               placeholder="رمز عبور"
               label="رمز عبور"
               icon={<Lock />}
+              autoComplete="current-password"
               {...loginForm.getInputProps("password")}
             />
 

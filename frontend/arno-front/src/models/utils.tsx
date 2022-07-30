@@ -28,8 +28,11 @@ export function ObjectToFeedback(data: Object): Feedback {
     status: data["status" as keyof object] as FeedbackStatus,
     text: data["text" as keyof object],
     type: data["type" as keyof object] as FeedbackType,
-    user: data["user" as keyof object],
+    user: ObjectToUser(data["user" as keyof object]),
   };
+  if (feedback.reply)
+    feedback.reply!.user = ObjectToUser(data["reply" as keyof object]["user" as keyof object])
+    
   return feedback;
 }
 

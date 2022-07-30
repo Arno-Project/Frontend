@@ -31,25 +31,32 @@ export default function App() {
       let res = await AccountAPI.getInstance().getMyAccount();
       let data = res.data;
 
+      console.log(1)
+      console.log(data)
       if (res.success && data !== null) {
+        console.log(2)
         let user = APIDataToUser(res);
 
         dispatch(setUserInfo(user));
 
         if (location.pathname === "/register") {
+          console.log(3)
           setTimeout(() => {
             navigate("/dashboard");
-          }, 500);
-        }
+          }, 10);
+        }        
+        setLoading(false);
+        return;
       }
-      return;
     }
 
+    console.log(4)
     dispatch(logout());
     if (location.pathname !== "/register")
       setTimeout(() => {
         navigate("/register");
-      }, 500);
+      }, 10);
+    setLoading(false);
   };
 
   const user = useAppSelector((state) => state.auth.user);
@@ -57,11 +64,10 @@ export default function App() {
 
   useEffect(() => {
     getData(user, token);
-    setLoading(false);
   }, []);
 
   let component = <></>;
-  if (!loading && user) {
+  if (!loading) {
     component = (
       <MantineProvider
         // withGlobalStyles

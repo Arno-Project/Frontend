@@ -15,6 +15,7 @@ import {
   Check,
   ClipboardText,
   Download,
+  Line,
   MessageReport,
   ReportOff,
 } from "tabler-icons-react";
@@ -28,6 +29,7 @@ import { useForm } from "@mantine/hooks";
 import { Helmet } from "react-helmet";
 import { FeedbackAPI } from "../../api/feedback";
 import { APIDataToFeedbacks } from "../../models/utils";
+import { formatDateString } from "../../dateUtils";
 const TITLE = "مشکلات فنی";
 
 interface TechnicalIssue {
@@ -80,9 +82,9 @@ const TechnicalIssuesView = () => {
       techResponse: "این بخش نمی‌تواند خالی باشد",
     },
   });
-  
+
   const submitResponse = async () => {
-    const reply = {system_feedback: rows[rowId]["id"], text: newResponse};
+    const reply = { system_feedback: rows[rowId]["id"], text: newResponse };
     console.log(reply);
     const res = await FeedbackAPI.getInstance().submitReply(reply);
     if (res.success) {
@@ -99,7 +101,7 @@ const TechnicalIssuesView = () => {
     const body: any[] = rows.map((obj: Feedback, i) => (
       <tr key={i}>
         <td>{i + 1}</td>
-        <td>{obj.user}</td>
+        <td>{obj.user.username}</td>
         <td>{obj.text}</td>
         {user!.role === UserRole.CompanyManager && (
           <td>
@@ -159,11 +161,24 @@ const TechnicalIssuesView = () => {
       <Modal
         opened={viewOpened}
         onClose={() => setViewOpened(false)}
-        title="مشاهده‌ی پاسخ"
+        title="گزارش مشکل فنی"
       >
-        <Text>
-          {rows.length > 0 && rowId !== -1 && rows[rowId].reply ? rows[rowId].reply : ""}
-        </Text>
+        {rows.length > 0 && rowId !== -1 ? (
+          <>
+          
+            <Text weight={700}>ارسال شده توسط:</Text>
+             <Text>{rows[rowId].user.username}</Text>
+             <Text weight={700}>تاریخ:</Text>
+             <Text>{formatDateString(rows[rowId].created_at)}</Text>
+            <Text weight={700}>متن مشکل:</Text>
+            <Text>{rows[rowId].text}</Text>
+            <Text weight={700}> پاسخ:</Text>
+            <Text>{rows[rowId].reply ? rows[rowId].reply!.text : ""}</Text>
+            <Text size="sm">پاسخ داده شده توسط {rows[rowId].reply!.user.username} در {formatDateString(rows[rowId].reply!.created_at)}</Text>
+          </>
+        ) : (
+          <></>
+        )}
       </Modal>
 
       <Modal
