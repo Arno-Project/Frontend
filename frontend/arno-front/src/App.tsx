@@ -61,7 +61,7 @@ export default function App() {
   }, []);
 
   let component = <></>;
-  if (!loading) {
+  if (!loading && user) {
     component = (
       <MantineProvider
         // withGlobalStyles
