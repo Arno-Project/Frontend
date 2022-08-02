@@ -1,6 +1,6 @@
 import { Group, ActionIcon, Box, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { Logout } from "tabler-icons-react";
+import { Logout, Bell, Notification, Message } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import { logout } from "../../redux/auth";
@@ -16,6 +16,10 @@ export function Brand() {
     dispatch(logout());
     navigate("/");
   };
+
+  const navigateToMessages = () => {
+    navigate("/chats");
+  }
 
   return (
     <Box
@@ -39,9 +43,14 @@ export function Brand() {
         >
           داشبورد
         </Text>
+        <Group>
+        <ActionIcon variant="default" onClick={() => navigateToMessages()} size={30}>
+          <Bell size={16} />
+        </ActionIcon>
         <ActionIcon variant="default" onClick={() => doLogout()} size={30}>
           <Logout size={16} />
         </ActionIcon>
+        </Group>
       </Group>
     </Box>
   );

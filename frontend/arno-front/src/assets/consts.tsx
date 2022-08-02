@@ -34,6 +34,7 @@ export const AccessRules: any = {
   "/request_service": [UserRole.Customer],
   "/create_request": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/manage_services": [UserRole.TechnicalManager, UserRole.CompanyManager],
+  "/chats": [UserRole.Customer, UserRole.Specialist],
 };
 
 export const RequestStatusBadge: any = {
