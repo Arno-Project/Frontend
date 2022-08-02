@@ -25,6 +25,7 @@ import { APIDataToUsers } from "../../models/utils";
 import { mantine_colors } from "../../assets/consts";
 import { formatDateString } from "../../dateUtils";
 import { Link, NavLink } from "react-router-dom";
+import { ChatsAPI } from "../../api/chats";
 
 const TITLE = "پیام‌ها";
 
@@ -37,7 +38,8 @@ const ChatsView = () => {
   const [chats, setChats] = useState<Chat[]>([]);
 
   const getData = async () => {
-   
+    let res = await ChatsAPI.getInstance().getUserChatsList();
+    console.log(res)
   };
 
   useEffect(() => {

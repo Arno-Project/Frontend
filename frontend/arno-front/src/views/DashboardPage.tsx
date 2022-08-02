@@ -84,8 +84,8 @@ const DashboardPage = () => {
             <Route path="/create_request" element={<CreateRequestView />} />
             <Route path="/manage_services" element={<ManageServicesView />} />
             <Route path="/profile" element={<EditProfileView />} />
+            <Route path="/chats/:peerID" element={<SingleChatView />} />
             <Route path="/chats" element={<ChatsView />} />
-            <Route path="/chats/:username" element={<SingleChatView />} />
           </Routes>
         </Container>
       </AppShell>

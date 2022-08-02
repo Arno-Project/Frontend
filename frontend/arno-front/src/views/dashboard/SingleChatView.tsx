@@ -10,12 +10,12 @@ import {
   TextInput,
   Title,
   Avatar,
-  Anchor
+  Anchor,
 } from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
-import { Chat, User, UserGeneralRole, UserRole } from "../../models";
+import { Chat, Message, User, UserGeneralRole, UserRole } from "../../models";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 
 import { Helmet } from "react-helmet";
@@ -24,24 +24,24 @@ import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { APIDataToUsers } from "../../models/utils";
 import { mantine_colors } from "../../assets/consts";
 import { formatDateString } from "../../dateUtils";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useParams } from "react-router-dom";
 
 const TITLE = "پیام‌ها";
 
-const SingleChatView = () => {
+const SingleChatView = (props: any) => {
   const user = useAppSelector((state) => state.auth.user);
 
   const PAGE_SIZE = 5;
   const [activePage, setPage] = useState(1);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
-  const getData = async () => {
-   
-  };
+  const params = useParams();
+  const getData = async (peerId: number) => {};
+  const peerId = Number(params.peerID);
 
   useEffect(() => {
-    getData();
+    getData(peerId!);
   }, []);
 
   return (
@@ -51,43 +51,19 @@ const SingleChatView = () => {
       </Helmet>
       <Title order={2}>{TITLE}</Title>
       <>
-      <Title order={2}></Title>
-        <Table striped highlightOnHover verticalSpacing="lg">
-            <thead></thead>
-          <tbody>
-            <tr>
-            <td> <Avatar radius="xl" color="pink" /></td>
-            <td>user</td>
-              <td>فلانی</td>
-              <td>سلام خوبی؟</td>
-              <td>2022-10-2</td>
-            </tr>
-            <tr>
-            <td> <Avatar radius="xl" /></td>
-            <td>user2</td>
-            <td>فلانی</td>
-              <td>سلام خوبی؟</td>
-              <td>2022-10-2</td>
-            </tr>
-            {chats.map((chat, i) => {
-                return (
-                    <a href={`/chats/${chat.peer.id}`}> 
-                  <tr key={i}>
-                     <td> <Avatar radius="xl" color="pink" /></td>
-                     <td>{chat.peer.username} </td>
-                    <td>{chat.peer.firstName} {chat.peer.lastName}</td>
-                    <td>
-                      {chat.lastMessage.text}
-                    </td>
-                    <td>
-                    {formatDateString(chat.lastMessage.created_at)}
-                    </td>
-                  </tr>
-                  </a>
-            )}
-            )}
-          </tbody>
-        </Table>
+        <Title order={2}></Title> 
+        {messages.map((msg, i) => {
+          return (
+            <div key={i}>
+              <Avatar
+                radius="xl"
+                color={msg.sender.id == peerId ? "pink" : "blue"}
+              />
+              {msg.text}
+              {formatDateString(msg.created_at)}
+            </div>
+          );
+        })}
       </>
     </>
   );
