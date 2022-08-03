@@ -1,14 +1,11 @@
-import { useState } from "react";
-
 import { Button, Center, Select, Text, Textarea, Title } from "@mantine/core";
 import { useForm } from "@mantine/hooks";
 
-import { showNotification } from "@mantine/notifications";
-import { Check } from "tabler-icons-react";
 import { FeedbackAPI } from "../../api/feedback";
 
 import { Helmet } from "react-helmet";
 import { FeedbackType } from "../../models";
+import { notifyUser } from "../utils";
 const TITLE = "انتقادات و پیشنهادات";
 
 const UserFeedbackView = () => {
@@ -32,13 +29,10 @@ const UserFeedbackView = () => {
 
   const handleSubmit = async (values: any) => {
     const res = await FeedbackAPI.getInstance().submitFeedback(values);
+    
+    notifyUser(res, "ثبت موفقیت‌آمیز", "بازخورد شما با موفقیت ارسال شد.");
+    
     if (res.success) {
-      showNotification({
-        title: "ثبت موفقیت‌آمیز",
-        message: "بازخورد شما با موفقیت ارسال شد.",
-        color: "teal",
-        icon: <Check size={18} />,
-      });
       userFeedbackForm.reset();
     }
   };

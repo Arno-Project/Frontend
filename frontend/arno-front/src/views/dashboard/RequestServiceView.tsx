@@ -1,17 +1,15 @@
-import { useState } from "react";
 import 'dayjs/locale/fa';
 
 import { Button, Center, Select, Textarea, Title } from "@mantine/core";
 import { useForm } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
 import { DatePicker } from '@mantine/dates';
-import { Check, Send, UserSearch } from "tabler-icons-react";
+import { Send, UserSearch } from "tabler-icons-react";
 
 import { CoreAPI } from "../../api/core";
-import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 
 import { Helmet } from "react-helmet";
 import { Specialities, SpecialitiesId } from "../../assets/consts";
+import { notifyUser } from "../utils";
 const TITLE = "درخواست خدمات";
 
 const RequestServiceView = () => {
@@ -35,13 +33,10 @@ const RequestServiceView = () => {
   const submitForm = async (values: any) => {
     values["requested_speciality"] = SpecialitiesId[values["requested_speciality"] as keyof object];
     const res = await CoreAPI.getInstance().submitRequest(values);
+    
+    notifyUser(res, "ثبت موفقیت‌آمیز", "درخواست شما با موفقیت ارسال شد.");
+    
     if (res.success) {
-      showNotification({
-        title: "ثبت موفقیت‌آمیز",
-        message: "درخواست شما با موفقیت ارسال شد.",
-        color: "teal",
-        icon: <Check size={18} />,
-      });
       submitRequestForm.reset();
     }
   }

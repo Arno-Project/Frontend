@@ -12,10 +12,8 @@ import {
 } from "@mantine/core";
 
 import {
-  Check,
   ClipboardText,
   Download,
-  Line,
   MessageReport,
   ReportOff,
 } from "tabler-icons-react";
@@ -23,20 +21,14 @@ import { useAppSelector } from "../../redux/hooks";
 
 import { Feedback, UserRole } from "../../models";
 
-import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/hooks";
 
 import { Helmet } from "react-helmet";
 import { FeedbackAPI } from "../../api/feedback";
 import { APIDataToFeedbacks } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
+import { notifyUser } from "../utils";
 const TITLE = "مشکلات فنی";
-
-interface TechnicalIssue {
-  sender: string;
-  text: string;
-  response: string;
-}
 
 const TechnicalIssuesView = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -85,16 +77,10 @@ const TechnicalIssuesView = () => {
 
   const submitResponse = async () => {
     const reply = { system_feedback: rows[rowId]["id"], text: newResponse };
-    console.log(reply);
+    
     const res = await FeedbackAPI.getInstance().submitReply(reply);
-    if (res.success) {
-      showNotification({
-        title: "ارسال موفقیت‌آمیز",
-        message: "پاسخ شما با موفقیت ارسال شد.",
-        color: "teal",
-        icon: <Check size={18} />,
-      });
-    }
+    
+    notifyUser(res, "ارسال موفقیت‌آمیز", "پاسخ شما با موفقیت ارسال شد.");
   };
 
   const renderRows = () => {

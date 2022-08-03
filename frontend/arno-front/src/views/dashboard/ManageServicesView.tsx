@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 
 import { Badge, Table, Title, UnstyledButton } from "@mantine/core";
-import { Check, X } from "tabler-icons-react";
+import { X } from "tabler-icons-react";
 
 import { RequestStatusBadge } from "../../assets/consts";
-import { showNotification } from "@mantine/notifications";
 
 import { CoreAPI } from "../../api/core";
 import { RequestStatus, ServiceSummary } from "../../models";
 
 import { Helmet } from "react-helmet";
 import { APIDataToServiceSummary } from "../../models/utils";
+import { notifyUser } from "../utils";
 const TITLE = "مدیریت خدمات";
 
 const ManageServicesView = () => {
@@ -31,15 +31,11 @@ const ManageServicesView = () => {
   const cancelService = async (id: number) => {
     // TODO an "Are you sure" modal
     const res = await CoreAPI.getInstance().cancelRequestByManager(id);
+    notifyUser(res, "لغو موفقیت‌آمیز", "خدمت موردنظر با موفقیت لغو شد.")
     if (res.success) {
-      showNotification({
-        title: "لغو موفقیت‌آمیز",
-        message: "خدمت موردنظر با موفقیت لغو شد.",
-        color: "teal",
-        icon: <Check size={18} />,
-      });
-    } // TODO else
-    // TODO reload the list
+      // TODO reload the list
+      getData();
+    }
   };
 
   const renderRows = () => {
