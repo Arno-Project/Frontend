@@ -11,6 +11,11 @@ import {
   Title,
   Avatar,
   Anchor,
+  Timeline,
+  Text,
+  CSSObject,
+  Paper,
+  Group,
 } from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
@@ -21,47 +26,83 @@ import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { Helmet } from "react-helmet";
 import { AccountAPI } from "../../api/accounts";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
-import { APIDataToUsers } from "../../models/utils";
+import { APIDataToMessages, APIDataToUsers } from "../../models/utils";
 import { mantine_colors } from "../../assets/consts";
 import { formatDateString } from "../../dateUtils";
-import { Link, NavLink, useParams } from "react-router-dom";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
+import { ChatsAPI } from "../../api/chats";
+import { useInterval } from "@mantine/hooks";
 
 const TITLE = "پیام‌ها";
 
 const SingleChatView = (props: any) => {
   const user = useAppSelector((state) => state.auth.user);
 
-  const PAGE_SIZE = 5;
-  const [activePage, setPage] = useState(1);
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [chats, setChats] = useState<Message[]>([]);
 
   const params = useParams();
-  const getData = async (peerId: number) => {};
   const peerId = Number(params.peerID);
 
+  const getData = async () => {
+    let res = await ChatsAPI.getInstance().getUserChatsWithPeer(peerId);
+    if (res.success) {
+      const data = APIDataToMessages(res);
+      setChats(data);
+    }
+  };
+
+  const interval = useInterval(() => getData(), 5000);
+
   useEffect(() => {
-    getData(peerId!);
+    getData();
+    interval.start();
+    return interval.stop;
   }, []);
+
+  let navigate = useNavigate();
+
+  const navigateToChats = () => {
+    navigate("/dashboard/chats");
+  };
 
   return (
     <>
       <Helmet>
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
-      <Title order={2}>{TITLE}</Title>
+      <Group position="apart">
+        <Title order={2}>{TITLE}</Title>
+        <Button variant="light" color="cyan"
+          onClick={navigateToChats}
+        >
+          بازگشت
+        </Button>
+      </Group>
       <>
-        <Title order={2}></Title> 
-        {messages.map((msg, i) => {
+        <Space h="lg" />
+        {chats.map((msg, i) => {
+          let name =
+            msg.sender.id == peerId
+              ? msg.sender.firstName + " " + msg.sender.lastName
+              : "شما";
           return (
-            <div key={i}>
-              <Avatar
-                radius="xl"
-                color={msg.sender.id == peerId ? "pink" : "blue"}
-              />
-              {msg.text}
-              {formatDateString(msg.created_at)}
-            </div>
+            <>
+              <Group align={"center"}>
+                <Avatar
+                  radius="xl"
+                  color={msg.sender.id == peerId ? "blue" : "pink"}
+                />
+                <Paper shadow="sm" radius="md" p="md" withBorder>
+                  <Group position="apart">
+                    <Text>{msg.text}</Text>
+
+                    <Text color="dimmed">
+                      {name + " در " + formatDateString(msg.created_at)}
+                    </Text>
+                  </Group>
+                </Paper>
+              </Group>
+            </>
           );
         })}
       </>

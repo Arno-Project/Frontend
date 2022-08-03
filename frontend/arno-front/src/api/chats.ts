@@ -27,6 +27,20 @@ export class ChatsAPI extends BaseListAPI {
     return response;
   }
 
+  async getUserChatsWithPeer(peerId: number) {
+    const response = await this.sendAuthorizedGetRequest({
+      path: `all/${peerId}/`,
+      body: null,
+      headers: null,
+      params: null,
+    });
+
+    console.info("getMsgs", response);
+    return response;
+  }
+
+  
+
   async submitFeedback(feedback: Feedback) {
     const response = await this.sendAuthorizedPostRequest({
       path: "system/submit/",

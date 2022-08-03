@@ -18,7 +18,7 @@ export function Brand() {
   };
 
   const navigateToMessages = () => {
-    navigate("/chats");
+    navigate("/dashboard/chats");
   }
 
   return (
