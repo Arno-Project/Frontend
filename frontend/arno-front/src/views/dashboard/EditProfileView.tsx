@@ -22,6 +22,7 @@ import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 
 import { UserRole } from "../../models";
 import { notifyUser } from "../utils";
+import { AccountAPI } from "../../api/accounts";
 
 import { Helmet } from "react-helmet";
 const TITLE = "اطلاعات کاربری";
@@ -44,8 +45,8 @@ const EditProfileView = () => {
 
   const editProfileForm = useForm({
     initialValues: {
-      firstName: user?.firstName,
-      lastName: user?.lastName,
+      first_name: user?.firstName,
+      last_name: user?.lastName,
       username: user?.username,
       email: user?.email,
       phone: user?.phone,
@@ -53,8 +54,8 @@ const EditProfileView = () => {
     },
 
     validationRules: {
-      firstName: (value) => value!.trim().length >= 2,
-      lastName: (value) => value!.trim().length >= 2,
+      first_name: (value) => value!.trim().length >= 2,
+      last_name: (value) => value!.trim().length >= 2,
       email: (value) => /^\S+@\S+$/.test(value!),
       phone: (value) => /^(\+|0)\d{10}$/.test(value!),
     },
@@ -67,38 +68,33 @@ const EditProfileView = () => {
 
   const changePasswordForm = useForm({
     initialValues: {
-      oldPassword: "",
-      newPassword: "",
-      confirmPassword: "",
+      old_password: "",
+      password: "",
+      confirm_password: "",
     },
 
     validationRules: {
-      confirmPassword: (val, values: any) => val === values.password,
+      confirm_password: (val, values: any) => val === values.password,
     },
 
     errorMessages: {
       // password:
       //   "Password should contain 1 number, 1 letter and at least 6 characters",
-      confirmPassword: "تکرار رمز مطابق رمز وارد شده نیست.",
+      confirm_password: "تکرار رمز مطابق رمز وارد شده نیست.",
     },
   });
 
-  const submitEditProfileForm = (values: any) => {
-    console.log(values);
-    // notifyUser(
-    //   null,
-    //   "ویرایش موفقیت‌آمیز",
-    //   "اطلاعات کاربری با موفقیت ویرایش شد."
-    // );
-  };
-
-  const submitChangePasswordForm = (values: any) => {
-    console.log(values);
-    // notifyUser(
-    //   null,
-    //   "تغییر موفقیت‌آمیز",
-    //   "رمز عبور با موفقیت تغییر کرد. لطفاً دوباره وارد سامانه شوید."
-    // );
+  const submitEditProfileForm = async (values: any) => {
+    const res = await AccountAPI.getInstance().editMyProfile(values);
+    notifyUser(
+      res,
+      "ویرایش موفقیت‌آمیز",
+      "اطلاعات کاربری با موفقیت ویرایش شد."
+    );
+    if (res.success) {
+      // TODO find a better way
+      window.location.reload();
+    }
   };
 
   return (
@@ -115,14 +111,14 @@ const EditProfileView = () => {
             required
             placeholder={user?.firstName}
             label="نام"
-            {...editProfileForm.getInputProps("firstName")}
+            {...editProfileForm.getInputProps("first_name")}
           />
 
           <TextInput
             required
             placeholder={user?.lastName}
             label="نام خانوادگی"
-            {...editProfileForm.getInputProps("lastName")}
+            {...editProfileForm.getInputProps("last_name")}
           />
         </Group>
 
@@ -200,14 +196,14 @@ const EditProfileView = () => {
         onClose={() => setPasswordModalOpened(false)}
         title="ویرایش رمز عبور"
       >
-        <form onSubmit={changePasswordForm.onSubmit(submitChangePasswordForm)}>
+        <form onSubmit={changePasswordForm.onSubmit(submitEditProfileForm)}>
           <PasswordInput
             mt="md"
             required
             placeholder="رمز عبور قدیمی"
             label="رمز عبور قدیمی"
             icon={<Lock />}
-            {...changePasswordForm.getInputProps("oldPassword")}
+            {...changePasswordForm.getInputProps("old_password")}
           />
           <PasswordInput
             mt="md"
@@ -215,7 +211,7 @@ const EditProfileView = () => {
             placeholder="رمز عبور جدید"
             label="رمز عبور جدید"
             icon={<Lock />}
-            {...changePasswordForm.getInputProps("newPassword")}
+            {...changePasswordForm.getInputProps("password")}
           />
 
           <PasswordInput
@@ -224,7 +220,7 @@ const EditProfileView = () => {
             label="تکرار رمز عبور"
             placeholder="تکرار رمز عبور"
             icon={<Lock />}
-            {...changePasswordForm.getInputProps("confirmPassword")}
+            {...changePasswordForm.getInputProps("confirm_password")}
           />
 
           <Center>
