@@ -16,6 +16,8 @@ import {
   CSSObject,
   Paper,
   Group,
+  Textarea,
+  Grid,
 } from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
@@ -31,7 +33,7 @@ import { mantine_colors } from "../../assets/consts";
 import { formatDateString } from "../../dateUtils";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import { ChatsAPI } from "../../api/chats";
-import { useInterval } from "@mantine/hooks";
+import { useForm, useInterval } from "@mantine/hooks";
 
 const TITLE = "پیام‌ها";
 
@@ -51,7 +53,14 @@ const SingleChatView = (props: any) => {
     }
   };
 
-  const interval = useInterval(() => getData(), 5000);
+  const sendData = async (text: string) => {
+    let res = await ChatsAPI.getInstance().sendNewMessage(peerId, text);
+    if (res.success) {
+      console.log(res);
+    }
+  };
+
+  const interval = useInterval(() => getData(), 30000);
 
   useEffect(() => {
     getData();
@@ -65,6 +74,23 @@ const SingleChatView = (props: any) => {
     navigate("/dashboard/chats");
   };
 
+  const form = useForm({
+    initialValues: {
+      text: "",
+    },
+
+    validationRules: {
+      text: (value) => Boolean(value),
+    },
+  });
+
+  const sendNewMessage = async (values: any) => {
+    sendData(values["text"]);
+    form.reset()
+    await new Promise((r) => setTimeout(r, 1000));
+    getData();
+  };
+
   return (
     <>
       <Helmet>
@@ -72,13 +98,33 @@ const SingleChatView = (props: any) => {
       </Helmet>
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
-        <Button variant="light" color="cyan"
-          onClick={navigateToChats}
-        >
+        <Button variant="light" color="cyan" onClick={navigateToChats}>
           بازگشت
         </Button>
       </Group>
       <>
+        <Space h="lg" />
+        <form onSubmit={form.onSubmit((values) => sendNewMessage(values))}>
+          <Grid align={"center"}>
+            <Grid.Col span={1}>
+              <Avatar radius="xl" color={"pink"} />
+            </Grid.Col>
+            <Grid.Col span={9}>
+              <Textarea
+                placeholder="پیام خود را بنویسید..."
+                radius="lg"
+                required
+                {...form.getInputProps("text")}
+              />
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <Button variant="light" color="pink" type="submit">
+                ارسال
+              </Button>
+            </Grid.Col>
+          </Grid>
+        </form>
+
         <Space h="lg" />
         {chats.map((msg, i) => {
           let name =

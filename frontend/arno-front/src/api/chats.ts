@@ -40,16 +40,15 @@ export class ChatsAPI extends BaseListAPI {
   }
 
   
-
-  async submitFeedback(feedback: Feedback) {
+  async sendNewMessage(peerId: number, text: string) {
     const response = await this.sendAuthorizedPostRequest({
-      path: "system/submit/",
-      body: feedback,
+      path: `all/${peerId}/`,
+      body: {'text': text},
       headers: null,
       params: null,
     });
 
-    console.info("submitFeedback", response);
+    console.info("sendNewMessage", response);
     return response;
   }
 
