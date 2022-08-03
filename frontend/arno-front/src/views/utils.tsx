@@ -20,7 +20,7 @@ export function notifyUser(
   }
   showNotification({
     title: "خطا",
-    message: res.error!["messaage" as keyof object],
+    message: res.error!["error" as keyof object],
     color: "red",
     icon: <X size={18} />,
   });
