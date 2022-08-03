@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import {
   ColorScheme,
@@ -33,10 +33,15 @@ const TITLE = "آرنو | داشبورد";
 
 const DashboardPage = () => {
   const theme = useMantineTheme();
+  const location = useLocation();
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
+  const inDashboardMainPage = () => {
+    return location.pathname === "/dashboard";
+  };
 
   return (
     <ColorSchemeProvider
@@ -48,9 +53,7 @@ const DashboardPage = () => {
       </Helmet>
       <AppShell
         padding="md"
-        navbar={
-          <DashboardNav />
-        }
+        navbar={<DashboardNav />}
         header={
           <Header height={60} p="xs">
             <Brand />
@@ -65,7 +68,9 @@ const DashboardPage = () => {
           },
         })}
       >
-        <Container className="dashboard-container">
+        <Container
+          className={inDashboardMainPage() ? "" : "dashboard-container"}
+        >
           <Routes>
             <Route path="/technical_issues" element={<TechnicalIssuesView />} />
             <Route path="/specialists" element={<SpecialistsView />} />
