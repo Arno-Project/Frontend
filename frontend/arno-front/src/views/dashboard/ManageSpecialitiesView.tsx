@@ -1,4 +1,4 @@
-import { Button, Center, TextInput, Table, Textarea, Title } from "@mantine/core";
+import { Button, Center, TextInput, Table, Textarea, Title, Pagination } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/hooks";
 
@@ -13,15 +13,17 @@ import { Plus, X } from "tabler-icons-react";
 
 import { Helmet } from "react-helmet";
 const TITLE = "مدیریت تخصص‌ها";
+const PAGE_SIZE = 4;
 
 const ManageSpecialitiesView = () => {
-  const [rows, setRows] = useState<Speciality[]>([]);
+  const [specialities, setSpecialities] = useState<Speciality[]>([]);
+  const [activePage, setPage] = useState(1);
 
   const getData = async () => {
     const res = await AccountAPI.getInstance().getSpecialities();
     if (res.success) {
       const data = APIDataToSpecialities(res);
-      setRows(data);
+      setSpecialities(data.sort((a, b) => (a.id > b.id) ? 1 : -1));
     } else {
       showNotification({
         title: "خطا",
@@ -60,10 +62,11 @@ const ManageSpecialitiesView = () => {
     
     if (res.success) {
       newSpecialityForm.reset();
-      // TODO does it even work or should we just reload this shit
       getData();
     }
   };
+
+  const rows = specialities.slice(PAGE_SIZE * (activePage - 1), PAGE_SIZE * activePage);
 
   return (
     <>
@@ -85,7 +88,7 @@ const ManageSpecialitiesView = () => {
         <tbody>
           {rows.map((row: Speciality, i) => (
             <tr key={i}>
-              <td>{i + 1}</td>
+              <td>{row.id}</td>
               <td>{row.title}</td>
               <td>{row.description}</td>
               {/* <td>
@@ -97,6 +100,16 @@ const ManageSpecialitiesView = () => {
           ))}
         </tbody>
       </Table>
+      <Center mt="sm">
+        <Pagination
+          total={Math.ceil(specialities.length / PAGE_SIZE)}
+          color="teal"
+          radius="md"
+          withEdges
+          page={activePage}
+          onChange={setPage}
+        />
+      </Center>
       <Title order={3} my="md">
         افزودن تخصص جدید
       </Title>
