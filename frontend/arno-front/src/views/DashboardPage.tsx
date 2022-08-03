@@ -29,6 +29,8 @@ import EditProfileView from "./dashboard/EditProfileView";
 
 import { Helmet } from "react-helmet";
 import { Brand } from "../components/dashboard/_brand";
+import ChatsView from "./dashboard/ChatsView";
+import SingleChatView from "./dashboard/SingleChatView";
 const TITLE = "آرنو | داشبورد";
 
 const DashboardPage = () => {
@@ -48,9 +50,7 @@ const DashboardPage = () => {
       </Helmet>
       <AppShell
         padding="md"
-        navbar={
-          <DashboardNav />
-        }
+        navbar={<DashboardNav />}
         header={
           <Header height={60} p="xs">
             <Brand />
@@ -84,6 +84,8 @@ const DashboardPage = () => {
             <Route path="/create_request" element={<CreateRequestView />} />
             <Route path="/manage_services" element={<ManageServicesView />} />
             <Route path="/profile" element={<EditProfileView />} />
+            <Route path="/chats/:peerID" element={<SingleChatView />} />
+            <Route path="/chats" element={<ChatsView />} />
           </Routes>
         </Container>
       </AppShell>

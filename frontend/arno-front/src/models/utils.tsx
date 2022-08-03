@@ -1,8 +1,8 @@
-import { Feedback, FeedbackStatus, FeedbackType, RequestStatus, ServiceSummary, Speciality, User, UserRole } from ".";
+import { Chat, Feedback, FeedbackStatus, FeedbackType, Message, RequestStatus, ServiceSummary, Speciality, User, UserRole } from ".";
 import { APIResponse } from "../api/base";
 
 export function ObjectToUser(data: Object): User {
-  console.log("OBJECTOT", data);
+  console.info("ObjectToUser", data);
   let userData = data!["user" as keyof object];
   let user: User = {
     id: userData["id"],
@@ -20,7 +20,6 @@ export function ObjectToUser(data: Object): User {
 }
 
 export function ObjectToFeedback(data: Object): Feedback {
-  console.log("OBJECTOT", data);
   let feedback: Feedback = {
     created_at: data["created_at" as keyof object],
     id: data["id" as keyof object],
@@ -37,7 +36,6 @@ export function ObjectToFeedback(data: Object): Feedback {
 }
 
 export function ObjectToServiceSummary(data: Object): ServiceSummary {
-  console.log("OBJECTOT", data);
   let serviceSummary: ServiceSummary = {
     id: data["id" as keyof object],
     customer: `${data["customer" as keyof object]["user"]["first_name"]} ${data["customer" as keyof object]["user"]["last_name"]}`,
@@ -46,6 +44,19 @@ export function ObjectToServiceSummary(data: Object): ServiceSummary {
     description: data["description" as keyof object],
   };
   return serviceSummary;
+}
+
+
+export function ObjectToMessage(data: Object): Message {
+  let msg: Message = {
+    id: data["id" as keyof object],
+    receiver: ObjectToUser(data["receiver" as keyof object]),
+    sender: ObjectToUser(data["sender" as keyof object]),
+    text: data["text" as keyof object],
+    created_at: data["created_at" as keyof object],
+    is_read: data["is_read" as keyof object],
+  };
+  return msg;
 }
 
 export function APIDataToUser(res: APIResponse): User {
@@ -76,3 +87,19 @@ export function APIDataToRequestsSummary(res: APIResponse): ServiceSummary[] {
   let data = res.data!["requests" as keyof object] as Array<Object>;
   return data.map((r) => ObjectToServiceSummary(r));
 }
+
+export function APIDataToMessages(res: APIResponse): Message[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToMessage(r));
+}
+
+export function APIDataToChats(res: APIResponse, user: User): Chat[] {
+  let msgs = APIDataToMessages(res);
+  return msgs.map((m) => {
+    return {
+      lastMessage: m,
+      peer: m.receiver.id == user.id? m.sender : m.receiver
+    }
+  })
+}
+

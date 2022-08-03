@@ -14,6 +14,7 @@ import {
   Bucket,
   ReportAnalytics,
   MathFunction,
+  Message,
 } from "tabler-icons-react";
 
 import { UserCard } from "./_user";
@@ -108,6 +109,12 @@ const links: MainLinkProps[] = [
     color: "blue",
     label: "مدیریت خدمات",
     path: "/manage_services",
+  },
+  {
+    icon: <Message size={16} />,
+    color: "red",
+    label: "پیام‌ها",
+    path: "/chats",
   },
 ];
 

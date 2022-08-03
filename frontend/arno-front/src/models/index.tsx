@@ -79,5 +79,19 @@ type ServiceSummary = {
   description: string;
 }
 
+type Message = {
+  id: number;
+  receiver: User;
+  sender: User;
+  text: string;
+  created_at: string;
+  is_read: boolean;
+}
+
+type Chat = {
+  lastMessage: Message;
+  peer: User;
+}
+
 export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus};
-export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary};
+export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary, Message, Chat};
