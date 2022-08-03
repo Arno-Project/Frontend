@@ -76,3 +76,15 @@ export function APIDataToRequestsSummary(res: APIResponse): ServiceSummary[] {
   let data = res.data!["requests" as keyof object] as Array<Object>;
   return data.map((r) => ObjectToServiceSummary(r));
 }
+
+export function APIDataToSpecialities(res: APIResponse): Speciality[] {
+  let data = res.data!["specialities" as keyof object] as Array<Object>;
+  return data.map((r: any) => {
+    let spec : Speciality = {
+      id: r["id" as keyof Object],
+      title: r["title" as keyof Object],
+      description: r["description" as keyof Object]
+    };
+    return spec;
+  });
+}

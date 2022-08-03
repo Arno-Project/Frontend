@@ -18,7 +18,7 @@ const CustomerRequestsView = () => {
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getMyRequestsStatus();
-    console.log('$$$', res);
+    
     if (res.success) {
       const data = APIDataToRequestsSummary(res);
       setRows(data);
