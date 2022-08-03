@@ -94,13 +94,49 @@ abstract class BaseAPI {
     }
   }
 
+async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          ...r.headers,
+        },
+        data: r.body,
+      };
+
+      const url = `${this.base_url}/${this.base_path}/${r.path}`;
+      const res = await axios.get(url, config);
+
+      const { data } = res;
+      return {
+        success: true,
+        data: data,
+        error: {},
+      };
+    } catch (error: any) {
+      if (error.code === "ERR_NETWORK") {
+        return {
+          success: false,
+          data: null,
+          error: NETWORK_ERROR_MSG,
+        };
+      } else {
+        return {
+          data: null,
+          success: false,
+          error: error.response.data,
+        };
+      }
+    }
+  }
+
   async sendAuthorizedGetRequest(r: APIRequest): Promise<APIResponse> {
     const token = window.localStorage.getItem("token");
     r.headers = { ...r.headers, Authorization: `Token ${token}` };
     return this.sendGetRequest(r);
   }
 
-  async sendPostRequest(r: APIRequest): Promise<APIResponse> {
+  async sendPutOrPostRequest(r: APIRequest, axiosMethod: any): Promise<APIResponse> {
     try {
       const config = {
         params: {
@@ -112,7 +148,7 @@ abstract class BaseAPI {
       };
 
       const url = `${this.base_url}/${this.base_path}/${r.path}`;
-      const res = await axios.post(url, r.body, config);
+      const res = await axiosMethod(url, r.body, config);
 
       const { data } = res;
       return {
@@ -138,10 +174,30 @@ abstract class BaseAPI {
     }
   }
 
+  async sendPostRequest(r: APIRequest): Promise<APIResponse> {
+    return this.sendPutOrPostRequest(r, axios.post);
+  }
+
+  async sendPutRequest(r: APIRequest): Promise<APIResponse> {
+    return this.sendPutOrPostRequest(r, axios.put);
+  }
+
   async sendAuthorizedPostRequest(r: APIRequest): Promise<APIResponse> {
     const token = window.localStorage.getItem("token");
     r.headers = { ...r.headers, Authorization: `Token ${token}` };
     return this.sendPostRequest(r);
+  }
+
+  async sendAuthorizedPutRequest(r: APIRequest): Promise<APIResponse> {
+    const token = window.localStorage.getItem("token");
+    r.headers = { ...r.headers, Authorization: `Token ${token}` };
+    return this.sendPutRequest(r);
+  }
+
+  async sendAuthorizedDeleteRequest(r: APIRequest): Promise<APIResponse> {
+    const token = window.localStorage.getItem("token");
+    r.headers = { ...r.headers, Authorization: `Token ${token}` };
+    return this.sendDeleteRequest(r);
   }
 }
 
