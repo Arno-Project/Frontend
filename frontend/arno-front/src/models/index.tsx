@@ -85,7 +85,7 @@ type Message = {
   sender: User;
   text: string;
   created_at: string;
-  read: boolean;
+  is_read: boolean;
 }
 
 type Chat = {
