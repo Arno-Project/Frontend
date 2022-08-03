@@ -26,6 +26,7 @@ import SpecialistsView from "./dashboard/SpecialistsView";
 import TechnicalIssuesView from "./dashboard/TechnicalIssuesView";
 import UserFeedbackView from "./dashboard/UserFeedbackView";
 import EditProfileView from "./dashboard/EditProfileView";
+import ManageSpecialitiesView from "./dashboard/ManageSpecialitiesView";
 
 import { Helmet } from "react-helmet";
 import { Brand } from "../components/dashboard/_brand";
@@ -88,6 +89,7 @@ const DashboardPage = () => {
             <Route path="/request_service" element={<RequestServiceView />} />
             <Route path="/create_request" element={<CreateRequestView />} />
             <Route path="/manage_services" element={<ManageServicesView />} />
+            <Route path="/manage_specialities" element={<ManageSpecialitiesView />} />
             <Route path="/profile" element={<EditProfileView />} />
           </Routes>
         </Container>

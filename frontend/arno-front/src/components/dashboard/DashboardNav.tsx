@@ -14,6 +14,7 @@ import {
   Bucket,
   ReportAnalytics,
   MathFunction,
+  Tool,
 } from "tabler-icons-react";
 
 import { UserCard } from "./_user";
@@ -109,6 +110,12 @@ const links: MainLinkProps[] = [
     label: "مدیریت خدمات",
     path: "/manage_services",
   },
+  {
+    icon: <Tool size={16} />,
+    color: "teal",
+    label: "مدیریت تخصص‌ها",
+    path: "/manage_specialities",
+  }
 ];
 
 export function DashboardNav() {
