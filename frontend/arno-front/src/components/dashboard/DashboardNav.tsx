@@ -19,10 +19,8 @@ import {
 
 import { UserCard } from "./_user";
 import { MainLinks } from "./_main-links";
-import { Brand } from "./_brand";
 import { useAppSelector } from "../../redux/hooks";
 import { AccessRules } from "../../assets/consts";
-import { useEffect } from "react";
 
 export interface MainLinkProps {
   icon: React.ReactNode;

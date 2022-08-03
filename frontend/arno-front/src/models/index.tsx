@@ -93,5 +93,22 @@ type Chat = {
   peer: User;
 }
 
-export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus};
-export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary, Message, Chat};
+enum NotificationType {
+  Info = "INF",
+  Error = "ERR",
+  Success = "SUC",
+}
+
+
+type Notification = {
+  title: string,
+  message: string,
+  link: string,
+  date: string,
+  is_read: boolean,
+  user: User,
+  type: NotificationType
+}
+
+export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType};
+export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary, Message, Chat, Notification};

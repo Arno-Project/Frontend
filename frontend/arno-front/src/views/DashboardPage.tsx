@@ -26,11 +26,13 @@ import SpecialistsView from "./dashboard/SpecialistsView";
 import TechnicalIssuesView from "./dashboard/TechnicalIssuesView";
 import UserFeedbackView from "./dashboard/UserFeedbackView";
 import EditProfileView from "./dashboard/EditProfileView";
+import ChatsView from "./dashboard/ChatsView";
+import SingleChatView from "./dashboard/SingleChatView";
 
 import { Helmet } from "react-helmet";
 import { Brand } from "../components/dashboard/_brand";
-import ChatsView from "./dashboard/ChatsView";
-import SingleChatView from "./dashboard/SingleChatView";
+import { useAppSelector } from "../redux/hooks";
+import NotificationsView from "./dashboard/NotificationsView";
 const TITLE = "آرنو | داشبورد";
 
 const DashboardPage = () => {
@@ -86,6 +88,7 @@ const DashboardPage = () => {
             <Route path="/profile" element={<EditProfileView />} />
             <Route path="/chats/:peerID" element={<SingleChatView />} />
             <Route path="/chats" element={<ChatsView />} />
+            <Route path="/notifications" element={<NotificationsView />} />
           </Routes>
         </Container>
       </AppShell>

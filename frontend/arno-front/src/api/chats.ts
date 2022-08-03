@@ -10,7 +10,7 @@ export class ChatsAPI extends BaseListAPI {
 
   public static getInstance(): ChatsAPI {
     if (!ChatsAPI.instance) {
-        ChatsAPI.instance = new ChatsAPI("chats");
+      ChatsAPI.instance = new ChatsAPI("chats");
     }
     return ChatsAPI.instance;
   }
@@ -39,11 +39,10 @@ export class ChatsAPI extends BaseListAPI {
     return response;
   }
 
-  
   async sendNewMessage(peerId: number, text: string) {
     const response = await this.sendAuthorizedPostRequest({
       path: `all/${peerId}/`,
-      body: {'text': text},
+      body: { text: text },
       headers: null,
       params: null,
     });
@@ -51,5 +50,4 @@ export class ChatsAPI extends BaseListAPI {
     console.info("sendNewMessage", response);
     return response;
   }
-
 }

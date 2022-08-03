@@ -1,9 +1,23 @@
-import { Chat, Feedback, FeedbackStatus, FeedbackType, Message, RequestStatus, ServiceSummary, Speciality, User, UserRole } from ".";
+import {
+  Chat,
+  Feedback,
+  FeedbackStatus,
+  FeedbackType,
+  Message,
+  RequestStatus,
+  ServiceSummary,
+  Speciality,
+  User,
+  UserRole,
+  Notification,
+} from ".";
 import { APIResponse } from "../api/base";
 
 export function ObjectToUser(data: Object): User {
-  console.info("ObjectToUser", data);
-  let userData = data!["user" as keyof object];
+  let userData:any = data!["user" as keyof object];
+  if (!userData)  {
+    userData = data
+  }
   let user: User = {
     id: userData["id"],
     username: userData["username"],
@@ -30,33 +44,28 @@ export function ObjectToFeedback(data: Object): Feedback {
     user: ObjectToUser(data["user" as keyof object]),
   };
   if (feedback.reply)
-    feedback.reply!.user = ObjectToUser(data["reply" as keyof object]["user" as keyof object])
-    
+    feedback.reply!.user = ObjectToUser(
+      data["reply" as keyof object]["user" as keyof object]
+    );
+
   return feedback;
 }
 
 export function ObjectToServiceSummary(data: Object): ServiceSummary {
   let serviceSummary: ServiceSummary = {
     id: data["id" as keyof object],
-    customer: `${data["customer" as keyof object]["user"]["first_name"]} ${data["customer" as keyof object]["user"]["last_name"]}`,
-    specialist: !!data["specialist" as keyof object] ? `${data["specialist" as keyof object]["user"]["first_name"]} ${data["specialist" as keyof object]["user"]["last_name"]}` : null,
+    customer: `${data["customer" as keyof object]["user"]["first_name"]} ${
+      data["customer" as keyof object]["user"]["last_name"]
+    }`,
+    specialist: !!data["specialist" as keyof object]
+      ? `${data["specialist" as keyof object]["user"]["first_name"]} ${
+          data["specialist" as keyof object]["user"]["last_name"]
+        }`
+      : null,
     status: data["status" as keyof object] as RequestStatus,
     description: data["description" as keyof object],
   };
   return serviceSummary;
-}
-
-
-export function ObjectToMessage(data: Object): Message {
-  let msg: Message = {
-    id: data["id" as keyof object],
-    receiver: ObjectToUser(data["receiver" as keyof object]),
-    sender: ObjectToUser(data["sender" as keyof object]),
-    text: data["text" as keyof object],
-    created_at: data["created_at" as keyof object],
-    is_read: data["is_read" as keyof object],
-  };
-  return msg;
 }
 
 export function APIDataToUser(res: APIResponse): User {
@@ -88,6 +97,18 @@ export function APIDataToRequestsSummary(res: APIResponse): ServiceSummary[] {
   return data.map((r) => ObjectToServiceSummary(r));
 }
 
+export function ObjectToMessage(data: Object): Message {
+  let msg: Message = {
+    id: data["id" as keyof object],
+    receiver: ObjectToUser(data["receiver" as keyof object]),
+    sender: ObjectToUser(data["sender" as keyof object]),
+    text: data["text" as keyof object],
+    created_at: data["created_at" as keyof object],
+    is_read: data["is_read" as keyof object],
+  };
+  return msg;
+}
+
 export function APIDataToMessages(res: APIResponse): Message[] {
   let data = res.data as Array<Object>;
   return data.map((r) => ObjectToMessage(r));
@@ -98,8 +119,25 @@ export function APIDataToChats(res: APIResponse, user: User): Chat[] {
   return msgs.map((m) => {
     return {
       lastMessage: m,
-      peer: m.receiver.id == user.id? m.sender : m.receiver
-    }
-  })
+      peer: m.receiver.id == user.id ? m.sender : m.receiver,
+    };
+  });
 }
 
+export function ObjectToNotification(data: Object): Notification {
+  let msg: Notification = {
+    title: data["title" as keyof object],
+    message: data["message" as keyof object],
+    link: data["link" as keyof object],
+    date: data["date" as keyof object],
+    is_read: data["is_read" as keyof object],
+    user: ObjectToUser(data["user" as keyof object]),
+    type: data["type" as keyof object],
+  };
+  return msg;
+}
+
+export function APIDataToNotifications(res: APIResponse): Notification[] {
+  let data = res.data!['notifications' as keyof object] as Array<Object>;
+  return data.map((r) => ObjectToNotification(r));
+}
