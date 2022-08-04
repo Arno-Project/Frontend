@@ -101,6 +101,7 @@ enum NotificationType {
 
 
 type Notification = {
+  id: number,
   title: string,
   message: string,
   link: string,

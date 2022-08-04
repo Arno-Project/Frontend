@@ -1,6 +1,6 @@
 import { Group, ActionIcon, Box, Text, Indicator, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { Logout, Bell, Message } from "tabler-icons-react";
+import { Logout, Bell, Message, AlertCircle } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout } from "../../redux/auth";

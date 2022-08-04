@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react";
 
-import { Table, Title, Avatar } from "@mantine/core";
-import {
-  BellRinging,
-  AlertCircle,
-} from "tabler-icons-react";
-
-
+import { Title, Text, Space, Alert, Group, Button } from "@mantine/core";
 import { Helmet } from "react-helmet";
-import { APIDataToChats } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
-import { ChatsAPI } from "../../api/chats";
-import { Group, ActionIcon, Box, Text, Indicator, Menu } from "@mantine/core";
-import { Link, useNavigate } from "react-router-dom";
-import { Logout, Bell, Message } from "tabler-icons-react";
+import { useNavigate } from "react-router-dom";
+import {
+  AlertCircle,
+  AlertTriangle,
+  Check,
+  InfoCircle,
+} from "tabler-icons-react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout } from "../../redux/auth";
 import { AuthAPI } from "../../api/auth";
 import { NotificationAPI } from "../../api/notifications";
-import { Notification } from "../../models";
+import { Notification, NotificationType } from "../../models";
 import { APIDataToNotifications } from "../../models/utils";
 
 const TITLE = "اعلان‌ها";
@@ -26,11 +22,11 @@ const TITLE = "اعلان‌ها";
 const NotificationsView = () => {
   const user = useAppSelector((state) => state.auth.user);
 
-
   let navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [notifs, setNotifs] = useState<Notification[]>([]);
+  const [notifsReadStatus, setNotifsReadStatus] = useState<boolean[]>([]);
 
   const doLogout = async () => {
     await AuthAPI.getInstance().logout();
@@ -43,10 +39,9 @@ const NotificationsView = () => {
     let data = res.data;
 
     if (res.success && data !== null) {
-      console.log("NOTIFS", res);
       let notifs = APIDataToNotifications(res);
-      console.log(notifs);
       setNotifs(notifs);
+      setNotifsReadStatus(notifs.map((n) => n.is_read));
     }
   };
 
@@ -59,38 +54,85 @@ const NotificationsView = () => {
     // navigate(link);
   };
 
+  const markAsRead = (index: number) => {
+    // NotificationAPI.getInstance().post([]);
+    setNotifsReadStatus(
+      notifs.map((n, i) => notifsReadStatus.at(i) || i === index)
+    );
+  };
+  const markAllAsRead = () => {
+    // NotificationAPI.getInstance().post([]);
+    setNotifsReadStatus(notifs.map((n) => true));
+  };
+
   return (
     <>
       <Helmet>
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
-      <Title order={2}>{TITLE}</Title>
+      <Group position="apart">
+        <Title order={2}>{TITLE}</Title>
+        <Button
+          variant="outline"
+          size="xs"
+          color="dark"
+          onClick={markAllAsRead}
+        >
+          علامت‌گذاری همه به عنوان خوانده شده
+        </Button>
+      </Group>
       <>
-        <Title order={2}></Title>
-        <Table striped highlightOnHover verticalSpacing="lg">
-          <thead></thead>
-          <tbody>
-            {notifs.map((notif, i) => {
-              return (
-                <tr key={i} onClick={() => navigateToPage(notif.link)}>
-                  <td width={50}>
-                    <ActionIcon
-                      variant="default"
-                      onClick={() => doLogout()}
-                      size={30}
-                    >
-                      <AlertCircle size={16} />
-                    </ActionIcon>
-                  </td>
-                  <td>{notif.title}</td>
-                  <td>{notif.message}</td>
-                  <td>{formatDateString(notif.date)}</td>
-                  <td>{notif.is_read ? <></> : <BellRinging />}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+        <Space h="lg" />
+        {notifs.length === 0 || notifsReadStatus.every((is_read) => is_read) ? (
+          <Alert radius="lg" title="" color="gray" variant="light">
+            شما اعلان خوانده نشده‌ای ندارید.
+          </Alert>
+        ) : (
+          <></>
+        )}
+        {notifs.map((notif, i) => {
+          if (notifsReadStatus.at(i)) {
+            return;
+          }
+          let color = "gray";
+          let icon = <AlertCircle />;
+          switch (notif.type) {
+            case NotificationType.Error:
+              color = "red";
+              icon = <AlertTriangle />;
+              break;
+            case NotificationType.Success:
+              color = "green";
+              icon = <Check />;
+              break;
+            case NotificationType.Info:
+              color = "cyan";
+              icon = <InfoCircle />;
+              break;
+            default:
+              break;
+          }
+          return (
+            <>
+              <Space h="lg" />
+              <Alert
+                radius="lg"
+                icon={icon}
+                title={notif.title}
+                color={color}
+                variant="light"
+                withCloseButton
+                closeButtonLabel="خواندم"
+                onClose={() => {
+                  markAsRead(i);
+                }}
+              >
+                {notif.message}
+                <Text color="dimmed"> {formatDateString(notif.date)}</Text>
+              </Alert>
+            </>
+          );
+        })}
       </>
     </>
   );

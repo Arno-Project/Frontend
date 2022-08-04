@@ -98,7 +98,10 @@ const SingleChatView = (props: any) => {
       </Helmet>
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
-        <Button variant="light" color="cyan" onClick={navigateToChats}>
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={navigateToChats}>
           بازگشت
         </Button>
       </Group>

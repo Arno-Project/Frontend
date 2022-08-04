@@ -132,7 +132,8 @@ export function ObjectToNotification(data: Object): Notification {
     date: data["date" as keyof object],
     is_read: data["is_read" as keyof object],
     user: ObjectToUser(data["user" as keyof object]),
-    type: data["type" as keyof object],
+    type: data["notification_type" as keyof object],
+    id: data["id" as keyof object],
   };
   return msg;
 }
