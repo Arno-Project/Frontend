@@ -3,7 +3,7 @@ import axios from "axios";
 const BASE_URL = "http://localhost:8000/api";
 
 const NETWORK_ERROR_MSG = {
-  custom_errors: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید.",
+  error: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید.",
 
 };
 
