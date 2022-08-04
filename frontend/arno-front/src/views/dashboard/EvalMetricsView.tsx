@@ -34,7 +34,7 @@ import { APIDataToChats, APIDataToMetrics } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 import { useNavigate } from "react-router-dom";
 import { ChatsAPI } from "../../api/chats";
-import { SystemFeedbackAPI } from "../../api/feedback";
+import { FeedbackAPI, SystemFeedbackAPI } from "../../api/feedback";
 import { MetricsAPI } from "../../api/metrics";
 import { RoleDict } from "../../assets/consts";
 import { showNotification } from "@mantine/notifications";
@@ -61,44 +61,60 @@ const EvalMetricsView = () => {
     getData();
   }, []);
 
-  const editMetric = (values: any) => {
+  const editMetric = async (values: any) => {
     const metric = toEditMetric;
+    const newValues = {
+      user_type: values["userType"],
+      ...values,
+    };
     console.log(values);
 
-    if (metric === null) 
-    {
+    if (metric === null) {
+      const res = await MetricsAPI.getInstance().add(newValues);
+      console.log(res);
+      if (res.success) {
+        showNotification({
+          title: "عملیات موفقیت‌آمیز",
+          message: "معیار ارزیابی با موفقیت اضافه شد.",
+          color: "teal",
+          icon: <Check size={18} />,
+        });
+      }
+    } else {
+      const res = await MetricsAPI.getInstance().edit(metric!.id, newValues);
+      console.log(res);
+      if (res.success) {
+        showNotification({
+          title: "عملیات موفقیت‌آمیز",
+          message: "معیار ارزیابی با موفقیت ویرایش شد.",
+          color: "teal",
+          icon: <Check size={18} />,
+        });
+      }
 
+      // const res = await MetricsAPI.getInstance().edit(id!);
     }
-
-
-
-    //todo call back
-
-    setToEditMetric(null);
     setMetricFormModalOpened(false);
+    setToEditMetric(null);
     getData();
-    showNotification({
-      title: "عملیات موفقیت‌آمیز",
-      message: "معیار ارزیابی با موفقیت اضافه/ویرایش شد.",
-      color: "teal",
-      icon: <Check size={18} />,
-    });
   };
 
-  const removeMetric = () => {
+  const removeMetric = async () => {
     const id = toRemoveMetricID;
     console.log("remove ", id);
 
-    //todo call back
+    const res = await MetricsAPI.getInstance().remove(id!);
 
-    setToRemoveMetricID(null);
-    getData();
-    showNotification({
-      title: "حذف موفقیت‌آمیز",
-      message: "معیار ارزیابی با موفقیت حذف شد.",
-      color: "teal",
-      icon: <Check size={18} />,
-    });
+    if (res.success) {
+      setToRemoveMetricID(null);
+      getData();
+      showNotification({
+        title: "حذف موفقیت‌آمیز",
+        message: "معیار ارزیابی با موفقیت حذف شد.",
+        color: "teal",
+        icon: <Check size={18} />,
+      });
+    }
   };
 
   let editMetricForm = useForm({
@@ -116,9 +132,15 @@ const EvalMetricsView = () => {
       </Helmet>
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
-        <Button variant="light" size="xs" color="violet" onClick={()=>{
-          setMetricFormModalOpened(true)
-        }}>
+        <Button
+          variant="light"
+          size="xs"
+          color="violet"
+          onClick={() => {
+            setToEditMetric(null);
+            setMetricFormModalOpened(true);
+          }}
+        >
           افزودن معیار جدید
         </Button>
       </Group>
@@ -198,7 +220,10 @@ const EvalMetricsView = () => {
       <Modal
         centered
         opened={metricFormModalOpened}
-        onClose={() => setMetricFormModalOpened(false)}
+        onClose={() => {
+          setMetricFormModalOpened(false);
+          setToEditMetric(null);
+        }}
         title="افزودن/ویرایش معیار"
         overlayOpacity={0.55}
         overlayBlur={3}

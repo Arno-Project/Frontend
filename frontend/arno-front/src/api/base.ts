@@ -265,7 +265,7 @@ abstract class BaseListAPI extends BaseAPI {
 
   async edit(itemID: number, newItem: any) {
     const response = await this.sendAuthorizedPutRequest({
-      path: `${this.get_path}/${itemID}/`,
+      path: `${this.get_path}${itemID}/`,
       body: newItem,
       headers: null,
       params: null,
@@ -276,7 +276,7 @@ abstract class BaseListAPI extends BaseAPI {
 
   async remove(itemID: number) {
     const response = await this.sendAuthorizedDeleteRequest({
-      path: `${this.get_path}/${itemID}/`,
+      path: `${this.get_path}${itemID}/`,
       body: null,
       headers: null,
       params: null,
