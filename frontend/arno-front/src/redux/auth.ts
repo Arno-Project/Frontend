@@ -6,12 +6,14 @@ interface AuthState {
   isLoggedIn: boolean;
   user: User | null;
   token: string | null;
+  notificationCount: number;
 }
 
 const initialState: AuthState = {
   isLoggedIn: false,
   user: null,
   token: window.localStorage.getItem("token"),
+  notificationCount: 0
 };
 
 export const authSlice = createSlice({
@@ -34,9 +36,12 @@ export const authSlice = createSlice({
       state.isLoggedIn = true;
       state.user = action.payload;
     },
+    setUserNotificationCount: (state, action: PayloadAction<number>) => {
+      state.notificationCount = action.payload
+    }
   },
 });
 
-export const { login, logout, setUserInfo } = authSlice.actions;
+export const { login, logout, setUserInfo, setUserNotificationCount } = authSlice.actions;
 
 export default authSlice.reducer;

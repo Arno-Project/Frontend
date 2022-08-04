@@ -50,7 +50,6 @@ const NotificationsView = () => {
   }, []);
 
   const navigateToPage = (link: string, index: number) => {
-    console.log(link);
     if (link) {
       markAsRead(index);
       navigate(link);
@@ -116,7 +115,7 @@ const NotificationsView = () => {
               break;
           }
           return (
-            <>
+            <div key={i}>
               <Space h="lg" />
               <Alert
                 onClick={() => navigateToPage(notif.link, i)}
@@ -134,7 +133,7 @@ const NotificationsView = () => {
                 {notif.message}
                 <Text color="dimmed"> {formatDateString(notif.date)}</Text>
               </Alert>
-            </>
+            </div>
           );
         })}
       </>

@@ -1,45 +1,34 @@
 import { useEffect, useState } from "react";
 
 import {
-  Badge,
   Button,
-  Center,
-  Pagination,
   Space,
-  Table,
-  TextInput,
   Title,
   Avatar,
-  Anchor,
-  Timeline,
   Text,
-  CSSObject,
   Paper,
   Group,
-  Textarea,
   Grid,
+  Input,
 } from "@mantine/core";
-import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
+import {
+  Cross,
+  Dots
+} from "tabler-icons-react";
 
-import { useAppSelector } from "../../redux/hooks";
-import { Chat, Message, User, UserGeneralRole, UserRole } from "../../models";
-import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
+import { Message} from "../../models";
 
 import { Helmet } from "react-helmet";
-import { AccountAPI } from "../../api/accounts";
-import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { APIDataToMessages, APIDataToUsers } from "../../models/utils";
-import { mantine_colors } from "../../assets/consts";
 import { formatDateString } from "../../dateUtils";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import { ChatsAPI } from "../../api/chats";
 import { useForm, useInterval } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 
 const TITLE = "پیام‌ها";
 
 const SingleChatView = (props: any) => {
-  const user = useAppSelector((state) => state.auth.user);
-
   const [chats, setChats] = useState<Message[]>([]);
 
   const params = useParams();
@@ -55,12 +44,17 @@ const SingleChatView = (props: any) => {
 
   const sendData = async (text: string) => {
     let res = await ChatsAPI.getInstance().sendNewMessage(peerId, text);
-    if (res.success) {
-      console.log(res);
+    if (!res.success) {
+      showNotification({
+        title: "خطا",
+        message: "در ارسال پیام شما خطایی به وجود آمد.",
+        color: "red",
+        icon: <Cross size={18} />,
+      });
     }
   };
 
-  const interval = useInterval(() => getData(), 30000);
+  const interval = useInterval(() => getData(), 3000);
 
   useEffect(() => {
     getData();
@@ -86,7 +80,7 @@ const SingleChatView = (props: any) => {
 
   const sendNewMessage = async (values: any) => {
     sendData(values["text"]);
-    form.reset()
+    form.reset();
     await new Promise((r) => setTimeout(r, 1000));
     getData();
   };
@@ -98,10 +92,7 @@ const SingleChatView = (props: any) => {
       </Helmet>
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
-        <Button
-          variant="outline"
-          size="xs"
-          onClick={navigateToChats}>
+        <Button variant="outline" size="xs" onClick={navigateToChats}>
           بازگشت به لیست پیام‌ها
         </Button>
       </Group>
@@ -113,10 +104,9 @@ const SingleChatView = (props: any) => {
               <Avatar radius="xl" color={"pink"} />
             </Grid.Col>
             <Grid.Col span={9}>
-              <Textarea
+              <Input
                 placeholder="پیام خود را بنویسید..."
-                radius="lg"
-                required
+                size="md"
                 {...form.getInputProps("text")}
               />
             </Grid.Col>
@@ -135,7 +125,7 @@ const SingleChatView = (props: any) => {
               ? msg.sender.firstName + " " + msg.sender.lastName
               : "شما";
           return (
-            <>
+            <div key={i}>
               <Group align={"center"}>
                 <Avatar
                   radius="xl"
@@ -151,7 +141,7 @@ const SingleChatView = (props: any) => {
                   </Group>
                 </Paper>
               </Group>
-            </>
+            </div>
           );
         })}
       </>

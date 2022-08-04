@@ -1,20 +1,16 @@
 import { Group, ActionIcon, Box, Text, Indicator, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { Logout, Bell, Message, AlertCircle } from "tabler-icons-react";
+import { Logout, Bell } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout } from "../../redux/auth";
 import { AuthAPI } from "../../api/auth";
-import { NotificationAPI } from "../../api/notifications";
-import { useEffect, useState } from "react";
-import { Notification } from "../../models";
-import { APIDataToNotifications } from "../../models/utils";
 
 export function Brand() {
   let navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const [notifs, setNotifs] = useState<Notification[]>([]);
+  const notificationCount = useAppSelector((state) => state.auth.notificationCount);
 
   const doLogout = async () => {
     await AuthAPI.getInstance().logout();
@@ -22,25 +18,10 @@ export function Brand() {
     navigate("/");
   };
 
-  const getData = async () => {
-    let res = await NotificationAPI.getInstance().get([]);
-    let data = res.data;
-
-    if (res.success && data !== null) {
-      console.log("NOTIFS", res);
-      let notifs = APIDataToNotifications(res);
-      console.log(notifs);
-      setNotifs(notifs);
-    }
-  };
-
   const navigateToNotifs = () => {
-    navigate("/dashboard/notifications"); //todo notif page
+    navigate("/dashboard/notifications"); 
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <Box
@@ -65,7 +46,7 @@ export function Brand() {
           داشبورد
         </Text>
         <Group>
-          <Indicator disabled={notifs.length === 0} color="red">
+          <Indicator disabled={notificationCount === 0} color="red">
             <ActionIcon
               variant="default"
               onClick={() => navigateToNotifs()}

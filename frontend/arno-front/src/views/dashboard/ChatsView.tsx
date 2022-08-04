@@ -42,7 +42,6 @@ const ChatsView = () => {
   }, []);
 
   const navigateToChatPage = (peerID: number) => {
-    console.log(peerID);
     navigate(`${peerID}`);
   };
 

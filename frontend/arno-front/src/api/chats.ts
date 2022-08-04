@@ -35,7 +35,6 @@ export class ChatsAPI extends BaseListAPI {
       params: null,
     });
 
-    console.info("getMsgs", response);
     return response;
   }
 
