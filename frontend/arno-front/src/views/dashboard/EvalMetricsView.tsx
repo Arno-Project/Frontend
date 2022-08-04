@@ -50,7 +50,6 @@ const EvalMetricsView = () => {
 
   const getData = async () => {
     let res = await MetricsAPI.getInstance().get([]);
-    console.log(res);
     if (res.success) {
       const data = APIDataToMetrics(res);
       setMetrics(data);
@@ -67,11 +66,9 @@ const EvalMetricsView = () => {
       user_type: values["userType"],
       ...values,
     };
-    console.log(values);
 
     if (metric === null) {
       const res = await MetricsAPI.getInstance().add(newValues);
-      console.log(res);
       if (res.success) {
         showNotification({
           title: "عملیات موفقیت‌آمیز",
@@ -82,7 +79,6 @@ const EvalMetricsView = () => {
       }
     } else {
       const res = await MetricsAPI.getInstance().edit(metric!.id, newValues);
-      console.log(res);
       if (res.success) {
         showNotification({
           title: "عملیات موفقیت‌آمیز",
@@ -91,8 +87,6 @@ const EvalMetricsView = () => {
           icon: <Check size={18} />,
         });
       }
-
-      // const res = await MetricsAPI.getInstance().edit(id!);
     }
     setMetricFormModalOpened(false);
     setToEditMetric(null);
@@ -101,7 +95,6 @@ const EvalMetricsView = () => {
 
   const removeMetric = async () => {
     const id = toRemoveMetricID;
-    console.log("remove ", id);
 
     const res = await MetricsAPI.getInstance().remove(id!);
 

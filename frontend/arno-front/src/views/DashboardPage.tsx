@@ -89,7 +89,7 @@ const DashboardPage = () => {
     }
 
     dispatch(logout());
-    if (location.pathname !== "/register") {
+    if (location.pathname !== "/register") { // TODO retry (probably in axios config)
       setTimeout(() => {
         setLoading(false);
         navigate("/register");
@@ -101,7 +101,7 @@ const DashboardPage = () => {
 
   const token = useAppSelector((state) => state.auth.token);
 
-  const interval = useInterval(() => getData(token), 30000);
+  const interval = useInterval(() => getData(token), 60000);
 
   useEffect(() => {
     getData(token);
