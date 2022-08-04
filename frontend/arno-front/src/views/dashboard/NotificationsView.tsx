@@ -49,19 +49,22 @@ const NotificationsView = () => {
     getData();
   }, []);
 
-  const navigateToPage = (link: string) => {
+  const navigateToPage = (link: string, index: number) => {
     console.log(link);
-    // navigate(link);
+    if (link) {
+      markAsRead(index);
+      navigate(link);
+    }
   };
 
   const markAsRead = (index: number) => {
-    // NotificationAPI.getInstance().post([]);
+    NotificationAPI.getInstance().markAsRead([notifs!.at(index)!.id]);
     setNotifsReadStatus(
       notifs.map((n, i) => notifsReadStatus.at(i) || i === index)
     );
   };
   const markAllAsRead = () => {
-    // NotificationAPI.getInstance().post([]);
+    NotificationAPI.getInstance().markAsRead(notifs.map((n) => n.id));
     setNotifsReadStatus(notifs.map((n) => true));
   };
 
@@ -116,6 +119,7 @@ const NotificationsView = () => {
             <>
               <Space h="lg" />
               <Alert
+                onClick={() => navigateToPage(notif.link, i)}
                 radius="lg"
                 icon={icon}
                 title={notif.title}

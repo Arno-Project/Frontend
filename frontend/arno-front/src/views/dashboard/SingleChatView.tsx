@@ -102,7 +102,7 @@ const SingleChatView = (props: any) => {
           variant="outline"
           size="xs"
           onClick={navigateToChats}>
-          بازگشت
+          بازگشت به لیست پیام‌ها
         </Button>
       </Group>
       <>
