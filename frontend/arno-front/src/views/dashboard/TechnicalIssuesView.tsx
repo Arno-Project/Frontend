@@ -27,7 +27,7 @@ import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/hooks";
 
 import { Helmet } from "react-helmet";
-import { FeedbackAPI } from "../../api/feedback";
+import { SystemFeedbackAPI } from "../../api/feedback";
 import { APIDataToFeedbacks } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 const TITLE = "مشکلات فنی";
@@ -50,7 +50,7 @@ const TechnicalIssuesView = () => {
   const [newResponse, setNewResponse] = useState("");
 
   const getData = async () => {
-    const res = await FeedbackAPI.getInstance().getTechnicalFeedbacks();
+    const res = await SystemFeedbackAPI.getInstance().getTechnicalFeedbacks();
     const data = APIDataToFeedbacks(res);
     setRows(data);
   };
@@ -86,7 +86,7 @@ const TechnicalIssuesView = () => {
   const submitResponse = async () => {
     const reply = { system_feedback: rows[rowId]["id"], text: newResponse };
     console.log(reply);
-    const res = await FeedbackAPI.getInstance().submitReply(reply);
+    const res = await SystemFeedbackAPI.getInstance().submitReply(reply);
     if (res.success) {
       showNotification({
         title: "ارسال موفقیت‌آمیز",

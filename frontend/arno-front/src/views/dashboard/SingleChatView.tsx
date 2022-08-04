@@ -12,8 +12,8 @@ import {
   Input,
 } from "@mantine/core";
 import {
-  Cross,
-  Dots
+  Dots,
+  X
 } from "tabler-icons-react";
 
 import { Message} from "../../models";
@@ -49,7 +49,7 @@ const SingleChatView = (props: any) => {
         title: "خطا",
         message: "در ارسال پیام شما خطایی به وجود آمد.",
         color: "red",
-        icon: <Cross size={18} />,
+        icon: <X size={18} />,
       });
     }
   };

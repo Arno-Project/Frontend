@@ -10,6 +10,7 @@ import {
   User,
   UserRole,
   Notification,
+  Metric,
 } from ".";
 import { APIResponse } from "../api/base";
 
@@ -142,3 +143,20 @@ export function APIDataToNotifications(res: APIResponse): Notification[] {
   let data = res.data!['notifications' as keyof object] as Array<Object>;
   return data.map((r) => ObjectToNotification(r));
 }
+
+
+export function ObjectToMetric(data: Object): Metric {
+  let m: Metric = {
+    title: data["title" as keyof object],
+    description: data["description" as keyof object],
+    id: data["id" as keyof object],
+    userType: data["user_type" as keyof object] as UserRole,
+  };
+  return m;
+}
+
+export function APIDataToMetrics(res: APIResponse): Metric[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToMetric(r));
+}
+

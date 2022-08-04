@@ -5,7 +5,7 @@ import { useForm } from "@mantine/hooks";
 
 import { showNotification } from "@mantine/notifications";
 import { Check } from "tabler-icons-react";
-import { FeedbackAPI } from "../../api/feedback";
+import { SystemFeedbackAPI } from "../../api/feedback";
 
 import { Helmet } from "react-helmet";
 import { FeedbackType } from "../../models";
@@ -31,7 +31,7 @@ const UserFeedbackView = () => {
   });
 
   const handleSubmit = async (values: any) => {
-    const res = await FeedbackAPI.getInstance().submitFeedback(values);
+    const res = await SystemFeedbackAPI.getInstance().submitFeedback(values);
     if (res.success) {
       showNotification({
         title: "ثبت موفقیت‌آمیز",

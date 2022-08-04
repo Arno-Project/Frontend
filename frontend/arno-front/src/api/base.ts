@@ -4,35 +4,32 @@ const BASE_URL = "http://localhost:8000/api";
 
 const NETWORK_ERROR_MSG = {
   custom_errors: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید.",
-
 };
-
 
 export enum FieldFilterType {
   Exact,
-  Contains
+  Contains,
 }
 
-export enum FieldFilterName{
+export enum FieldFilterName {
   Role = "role",
 }
 
 export class FieldFilter {
-  name: string
-  value: string
-  type: FieldFilterType
+  name: string;
+  value: string;
+  type: FieldFilterType;
 
-  constructor(name: string, value: string, type: FieldFilterType){
-    this.name = name
-    this.value = value
-    this.type = type
+  constructor(name: string, value: string, type: FieldFilterType) {
+    this.name = name;
+    this.value = value;
+    this.type = type;
   }
 
-  get_pair(): string[]{
-    return [this.name, this.value]
+  get_pair(): string[] {
+    return [this.name, this.value];
   }
 }
-
 
 export type APIRequest = {
   path: string;
@@ -48,7 +45,6 @@ export type APIResponse = {
 };
 
 abstract class BaseAPI {
-
   private base_url: string = BASE_URL;
   private base_path: string;
 
@@ -60,7 +56,7 @@ abstract class BaseAPI {
     try {
       const config = {
         params: {
-          ...r.params
+          ...r.params,
         },
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -94,6 +90,43 @@ abstract class BaseAPI {
     }
   }
 
+  async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
+    try {
+      const config = {
+        params: {
+          ...r.params,
+        },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          ...r.headers,
+        },
+      };
+
+      const url = `${this.base_url}/${this.base_path}/${r.path}`;
+      const res = await axios.delete(url, config);
+
+      const { data } = res;
+      return {
+        success: true,
+        data: data,
+        error: {},
+      };
+    } catch (error: any) {
+      if (error.code === "ERR_NETWORK") {
+        return {
+          success: false,
+          data: null,
+          error: NETWORK_ERROR_MSG,
+        };
+      } else {
+        return {
+          data: null,
+          success: false,
+          error: error.response.data,
+        };
+      }
+    }
+  }
   async sendAuthorizedGetRequest(r: APIRequest): Promise<APIResponse> {
     const token = window.localStorage.getItem("token");
     r.headers = { ...r.headers, Authorization: `Token ${token}` };
@@ -104,7 +137,7 @@ abstract class BaseAPI {
     try {
       const config = {
         params: {
-          ...r.params
+          ...r.params,
         },
         headers: {
           ...r.headers,
@@ -137,28 +170,77 @@ abstract class BaseAPI {
       }
     }
   }
+  async sendPutRequest(r: APIRequest): Promise<APIResponse> {
+    try {
+      const config = {
+        params: {
+          ...r.params,
+        },
+        headers: {
+          ...r.headers,
+        },
+      };
+
+      const url = `${this.base_url}/${this.base_path}/${r.path}`;
+      const res = await axios.put(url, r.body, config);
+
+      const { data } = res;
+      return {
+        success: true,
+        data: data,
+        error: {},
+      };
+    } catch (error: any) {
+      console.warn(error);
+      if (error.code === "ERR_NETWORK") {
+        return {
+          success: false,
+          data: null,
+          error: NETWORK_ERROR_MSG,
+        };
+      } else {
+        return {
+          data: null,
+          success: false,
+          error: error.response.data,
+        };
+      }
+    }
+  }
 
   async sendAuthorizedPostRequest(r: APIRequest): Promise<APIResponse> {
     const token = window.localStorage.getItem("token");
     r.headers = { ...r.headers, Authorization: `Token ${token}` };
     return this.sendPostRequest(r);
   }
+  async sendAuthorizedPutRequest(r: APIRequest): Promise<APIResponse> {
+    const token = window.localStorage.getItem("token");
+    r.headers = { ...r.headers, Authorization: `Token ${token}` };
+    return this.sendPutRequest(r);
+  }
+  async sendAuthorizedDeleteRequest(r: APIRequest): Promise<APIResponse> {
+    const token = window.localStorage.getItem("token");
+    r.headers = { ...r.headers, Authorization: `Token ${token}` };
+    return this.sendDeleteRequest(r);
+  }
 }
 
 abstract class BaseListAPI extends BaseAPI {
-  get_path: string
+  get_path: string;
   // add_path: string
   // edit_path: string
   // remove_path: string
   // get_report_path: string
 
-  constructor(base_path: string, get_path: string = 'all/') {
-    super(base_path)
-    this.get_path = get_path
+  constructor(base_path: string, get_path: string = "all/") {
+    super(base_path);
+    this.get_path = get_path;
   }
 
-  async get(fieldFilters: FieldFilter[]) {    
-    const paramDict = Object.fromEntries(fieldFilters.map(field => field.get_pair()))
+  async get(fieldFilters: FieldFilter[]) {
+    const paramDict = Object.fromEntries(
+      fieldFilters.map((field) => field.get_pair())
+    );
 
     const response = await this.sendAuthorizedGetRequest({
       path: this.get_path,
@@ -169,7 +251,39 @@ abstract class BaseListAPI extends BaseAPI {
 
     return response;
   }
-}
 
+  async add(newItem: any) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: this.get_path,
+      body: newItem,
+      headers: null,
+      params: null,
+    });
+
+    return response;
+  }
+
+  async edit(itemID: number, newItem: any) {
+    const response = await this.sendAuthorizedPutRequest({
+      path: `${this.get_path}/${itemID}/`,
+      body: newItem,
+      headers: null,
+      params: null,
+    });
+
+    return response;
+  }
+
+  async remove(itemID: number) {
+    const response = await this.sendAuthorizedDeleteRequest({
+      path: `${this.get_path}/${itemID}/`,
+      body: null,
+      headers: null,
+      params: null,
+    });
+
+    return response;
+  }
+}
 
 export { BASE_URL, BaseAPI, BaseListAPI };

@@ -111,5 +111,12 @@ type Notification = {
   type: NotificationType
 }
 
+type Metric = {
+  id: number,
+  title: string,
+  description: string,
+  userType: UserRole
+}
+
 export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType};
-export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary, Message, Chat, Notification};
+export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary, Message, Chat, Notification, Metric};
