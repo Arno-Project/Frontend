@@ -33,8 +33,7 @@ const ManageServicesView = () => {
     const res = await CoreAPI.getInstance().cancelRequestByManager(id);
     notifyUser(res, "لغو موفقیت‌آمیز", "خدمت موردنظر با موفقیت لغو شد.")
     if (res.success) {
-      // TODO reload the list
-      getData();
+      await getData();
     }
   };
 

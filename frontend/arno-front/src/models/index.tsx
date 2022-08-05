@@ -77,6 +77,7 @@ type ServiceSummary = {
   specialist: string | null;
   status: string;
   description: string;
+  requested_speciality: Speciality;
 }
 
 export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus};

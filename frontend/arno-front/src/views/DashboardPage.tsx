@@ -8,7 +8,6 @@ import {
   useMantineTheme,
   AppShell,
   Header,
-  Navbar,
 } from "@mantine/core";
 
 import { DashboardNav } from "../components/dashboard/DashboardNav";
@@ -27,9 +26,11 @@ import TechnicalIssuesView from "./dashboard/TechnicalIssuesView";
 import UserFeedbackView from "./dashboard/UserFeedbackView";
 import EditProfileView from "./dashboard/EditProfileView";
 import ManageSpecialitiesView from "./dashboard/ManageSpecialitiesView";
+import RequestDetails from "./dashboard/RequestDetails";
+
+import { Brand } from "../components/dashboard/_brand";
 
 import { Helmet } from "react-helmet";
-import { Brand } from "../components/dashboard/_brand";
 const TITLE = "آرنو | داشبورد";
 
 const DashboardPage = () => {
@@ -90,6 +91,7 @@ const DashboardPage = () => {
             <Route path="/create_request" element={<CreateRequestView />} />
             <Route path="/manage_services" element={<ManageServicesView />} />
             <Route path="/manage_specialities" element={<ManageSpecialitiesView />} />
+            <Route path="/request_details/:requestId" element={<RequestDetails />} />
             <Route path="/profile" element={<EditProfileView />} />
           </Routes>
         </Container>

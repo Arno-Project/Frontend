@@ -44,6 +44,7 @@ export function ObjectToServiceSummary(data: Object): ServiceSummary {
     specialist: !!data["specialist" as keyof object] ? `${data["specialist" as keyof object]["user"]["first_name"]} ${data["specialist" as keyof object]["user"]["last_name"]}` : null,
     status: data["status" as keyof object] as RequestStatus,
     description: data["description" as keyof object],
+    requested_speciality: data["requested_speciality" as keyof object] as Speciality,
   };
   return serviceSummary;
 }
