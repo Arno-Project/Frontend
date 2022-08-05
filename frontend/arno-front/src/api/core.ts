@@ -62,4 +62,16 @@ export class CoreAPI extends BaseListAPI {
     console.info("cancelRequest", response);
     return response;
   }
+
+  async submitLocation(location: any) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "location/",
+      body: location,
+      headers: null,
+      params: null,
+    });
+
+    console.info("submitLocation", response);
+    return response;
+  }
 }
