@@ -72,8 +72,8 @@ enum RequestStatus {
 
 type LocationModel = {
   address: string;
-  lat: number;
-  lng: number;
+  latitude: number;
+  longitude: number;
 }
 
 type ServiceSummary = {

@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { LatLngTuple } from "leaflet";
 
 import { CoreAPI } from "../../api/core";
 import { ServiceSummary } from "../../models";
@@ -19,14 +20,15 @@ import { formatDateString } from "../../dateUtils";
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 
 import { Check, X } from "tabler-icons-react";
+import { showNotification } from "@mantine/notifications";
+
 import { Helmet } from "react-helmet";
-import { LatLngTuple } from "leaflet";
 const TITLE = "جزئیات سفارش";
 
 const RequestDetails = () => {
-  let position = [35.7, 51.3];
   const { requestId } = useParams();
   const [requestDetails, setRequestDetails] = useState<ServiceSummary>();
+  const [position, setPosition] = useState<[number, number]>([35.7, 51.3]);
 
   useEffect(() => {
     getData();
@@ -35,9 +37,16 @@ const RequestDetails = () => {
   const getData = async () => {
     const res = await CoreAPI.getInstance().getRequestDetails(requestId!);
     if (res.success) {
-      setRequestDetails(APIDataToServiceSummary(res)[0]);
-      position = [requestDetails!.location.lat, requestDetails!.location.lng];
+      const data = APIDataToServiceSummary(res)[0];
+      setRequestDetails(data);
+      setPosition([data.location.latitude, data.location.longitude]);
     } else {
+      showNotification({
+        title: "خطا",
+        message: res.error!["error" as keyof object],
+        color: "red",
+        icon: <X size={18} />,
+      });
     }
   };
 
