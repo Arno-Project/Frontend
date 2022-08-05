@@ -105,7 +105,7 @@ export class CoreAPI extends BaseListAPI {
       path: "request/accept/customer/final/",
       body: {
         request_id: requestID,
-        is_accept: is_accept,
+        is_accept: is_accept?"1":"0",
       },
       headers: null,
       params: null,
