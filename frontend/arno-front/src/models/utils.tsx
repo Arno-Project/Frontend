@@ -45,6 +45,7 @@ export function ObjectToServiceSummary(data: Object): ServiceSummary {
     status: data["status" as keyof object] as RequestStatus,
     description: data["description" as keyof object],
     requested_speciality: data["requested_speciality" as keyof object] as Speciality,
+    start_time: data["desired_start_time" as keyof object],
   };
   return serviceSummary;
 }

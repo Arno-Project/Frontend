@@ -75,8 +75,9 @@ type ServiceSummary = {
   id: number;
   customer: string;
   specialist: string | null;
-  status: string;
+  status: RequestStatus;
   description: string;
+  start_time: string;
   requested_speciality: Speciality;
 }
 
