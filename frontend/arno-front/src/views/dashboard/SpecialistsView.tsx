@@ -120,7 +120,7 @@ const SpecialistsView = () => {
         مشاهده متخصصین برحسب امتیاز
       </Title>
 
-     <SpecialistsTable users={users}></SpecialistsTable>
+     <SpecialistsTable users={users} button={null}></SpecialistsTable>
     </>
   );
 };

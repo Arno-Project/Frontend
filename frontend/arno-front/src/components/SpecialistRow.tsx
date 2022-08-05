@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-  Badge,
-  Button,
-  Center,
-  Pagination,
-  Space,
-  Table,
-  TextInput,
-  Title,
-  Tooltip,
-} from "@mantine/core";
+import { Badge, Button, Tooltip } from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
 import { useAppSelector } from "../redux/hooks";
@@ -22,7 +12,14 @@ import { FieldFilter, FieldFilterName, FieldFilterType } from "../api/base";
 import { APIDataToUsers } from "../models/utils";
 import { mantine_colors } from "../assets/consts";
 
-export const SpecialistRow = (props: { user: User; idx: string | number }) => {
+export const SpecialistRow = (props: {
+  user: User;
+  idx: string | number;
+  button: {
+    label: string;
+    action: Function;
+  } | null;
+}) => {
   const user = props.user;
   const idx = props.idx;
   return (
@@ -54,6 +51,18 @@ export const SpecialistRow = (props: { user: User; idx: string | number }) => {
         })}
       </td>
       <td>{user.score}</td>
+      {props.button !== null && (
+        <td>
+          <Button
+            compact
+            onClick={() => {
+              props.button!.action(user.id);
+            }}
+          >
+            {props.button.label}
+          </Button>
+        </td>
+      )}
     </tr>
   );
 };

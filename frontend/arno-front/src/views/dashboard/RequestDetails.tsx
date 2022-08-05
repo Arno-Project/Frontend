@@ -9,6 +9,7 @@ import {
   Group,
   Grid,
   ActionIcon,
+  Button,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -17,8 +18,8 @@ import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
 
 import { CoreAPI } from "../../api/core";
-import { RequestStatus, ServiceSummary } from "../../models";
-import { APIDataToServiceSummary } from "../../models/utils";
+import { RequestStatus, ServiceSummary, User, UserRole } from "../../models";
+import { APIDataToServiceSummary, APIDataToUsers } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 
@@ -28,6 +29,8 @@ import { showNotification } from "@mantine/notifications";
 import { Helmet } from "react-helmet";
 import SpecialistsTable from "../../components/SpecialistsTable";
 import { SpecialistRow } from "../../components/SpecialistRow";
+import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
+import { AccountAPI } from "../../api/accounts";
 const TITLE = "جزئیات سفارش";
 
 const RequestDetails = () => {
@@ -35,9 +38,8 @@ const RequestDetails = () => {
   const [requestDetails, setRequestDetails] = useState<ServiceSummary>();
   const [position, setPosition] = useState<[number, number]>([35.7, 51.3]);
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const [specs, setSpecs] = useState<User[]>([]);
+  const [showSpecialists, setShowSpecialists] = useState(false);
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getRequestDetails(requestId!);
@@ -58,6 +60,32 @@ const RequestDetails = () => {
     }
   };
 
+  const getSpecialists = async () => {
+    if (!requestDetails) {
+      return;
+    }
+    const filter1 = new FieldFilter(
+      FieldFilterName.Role,
+      UserRole.Specialist,
+      FieldFilterType.Exact
+    );
+    const filter2 = new FieldFilter(
+      FieldFilterName.Speciality,
+      `${requestDetails.requested_speciality.id}`,
+      FieldFilterType.Exact
+    );
+    console.log("VVVV", filter1, filter2, requestDetails);
+    let res = await AccountAPI.getInstance().get([filter1, filter2]);
+    if (res.success) {
+      const users = APIDataToUsers(res);
+      setSpecs(users);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   const acceptOrRejectSpecialist = async (is_accept: boolean) => {
     const res = await CoreAPI.getInstance().acceptOrRejectSpecialist(
       requestDetails!.id,
@@ -73,15 +101,37 @@ const RequestDetails = () => {
         icon: <Check size={18} />,
       });
 
-      getData()
+      getData();
     }
   };
+
+
+  const chooseSpecialist = async (id: number) => {
+    console.log("choose", id)
+    // const res = await CoreAPI.getInstance().chooseSpecialist(
+    //   requestDetails!.id,
+    //   is_accept
+    // );
+
+    // if (res.success) {
+    //   const is_accept_string = is_accept ? "پذیرفته" : "رد";
+    //   showNotification({
+    //     title: "عملیات موفقیت‌آمیز",
+    //     message: `متخصص با موفقیت ${is_accept_string} شد.`,
+    //     color: "teal",
+    //     icon: <Check size={18} />,
+    //   });
+
+    //   getData();
+    // }
+  };
+
+
 
   const navigate = useNavigate();
   const sendMessageToSpecialist = async () => {
     console.log("send msg");
     navigate("/dashboard/chats/" + requestDetails!.specialist!.id);
-
   };
 
   let specialistComponent = <></>;
@@ -102,7 +152,7 @@ const RequestDetails = () => {
               <Grid.Col span={9}>
                 <Table>
                   <tbody>
-                    <SpecialistRow user={requestDetails.specialist} idx={""} />
+                    <SpecialistRow user={requestDetails.specialist} idx={""} button={null} />
                   </tbody>
                 </Table>
               </Grid.Col>
@@ -126,6 +176,10 @@ const RequestDetails = () => {
       requestDetails.status === RequestStatus.Pending ||
       requestDetails.status === RequestStatus.WaitForCustomer
     ) {
+      const button = {
+        label: "انتخاب متخصص",
+        action: chooseSpecialist,
+      };
       specialistComponent = (
         <>
           {specialistComponent}
@@ -135,7 +189,20 @@ const RequestDetails = () => {
             label="انتخاب متخصص"
             labelPosition="left"
           />
-          <SpecialistsTable users={[]}></SpecialistsTable>{" "}
+
+          {showSpecialists ? (
+            <SpecialistsTable users={specs} button={button}></SpecialistsTable>
+          ) : (
+            <Button
+              color="blue"
+              onClick={() => {
+                getSpecialists();
+                setShowSpecialists(true);
+              }}
+            >
+              نمایش متخصصان
+            </Button>
+          )}
         </>
       );
       /* TODO get specialists matching speciality */
@@ -157,7 +224,7 @@ const RequestDetails = () => {
               <Grid.Col span={9}>
                 <Table>
                   <tbody>
-                    <SpecialistRow user={requestDetails.specialist} idx={""} />
+                    <SpecialistRow user={requestDetails.specialist} idx={""} button={null}/>
                   </tbody>
                 </Table>
               </Grid.Col>

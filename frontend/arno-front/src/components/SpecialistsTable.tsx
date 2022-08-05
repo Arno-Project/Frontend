@@ -10,6 +10,7 @@ import {
   TextInput,
   Title,
   Group,
+  Grid,
 } from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
@@ -18,9 +19,13 @@ import { User, UserGeneralRole, UserRole } from "../models";
 import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
 import { SpecialistRow } from "./SpecialistRow";
 
-const SpecialistsTable = (props: { users: User[] }) => {
-  const user = useAppSelector((state) => state.auth.user);
-
+const SpecialistsTable = (props: {
+  users: User[];
+  button: {
+    label: string;
+    action: Function;
+  } | null;
+}) => {
   const PAGE_SIZE = 5;
   const [activePage, setPage] = useState(1);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
@@ -29,27 +34,26 @@ const SpecialistsTable = (props: { users: User[] }) => {
     <>
       <div className="search-criteria">
         <Group align="flex-end">
-        <TextInput
-          // value={inputValue}
-          // onChange={(event) => setInputValue(event.currentTarget.value)}
-          icon={<Search size={20} />}
-          label="نام متخصص"
-          placeholder="نام"
-        />
+          <TextInput
+            // value={inputValue}
+            // onChange={(event) => setInputValue(event.currentTarget.value)}
+            icon={<Search size={20} />}
+            label="نام متخصص"
+            placeholder="نام"
+          />
 
-        <SpecialityMultiSelect setter={setSelectedValues} />
-      
-        <Button
-          variant="gradient"
-          gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-          leftIcon={<ListSearch size={20} />}
-          // loading={isSearching}
-          // onClick={() => fetchResults()}
-        >
-          جست‌وجو
-        </Button>
+          <SpecialityMultiSelect setter={setSelectedValues} />
 
-      </Group>
+          <Button
+            variant="gradient"
+            gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+            leftIcon={<ListSearch size={20} />}
+            // loading={isSearching}
+            // onClick={() => fetchResults()}
+          >
+            جست‌وجو
+          </Button>
+        </Group>
       </div>
 
       <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
@@ -64,7 +68,9 @@ const SpecialistsTable = (props: { users: User[] }) => {
         <tbody>
           {props.users.map((user, i) => {
             if (user.is_validated)
-              return <SpecialistRow user={user} idx={i + 1} />;
+              return (
+                <SpecialistRow user={user} idx={i + 1} button={props.button} />
+              );
           })}
         </tbody>
       </Table>
