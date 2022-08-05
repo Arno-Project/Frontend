@@ -22,6 +22,7 @@ import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { APIDataToUsers } from "../../models/utils";
 import { mantine_colors } from "../../assets/consts";
 import SpecialistsTable from "../../components/SpecialistsTable";
+import { SpecialitiesBadges } from "../../models/SpecialityBadges";
 const TITLE = "متخصصان";
 
 const SpecialistsView = () => {
@@ -77,27 +78,7 @@ const SpecialistsView = () => {
                         {user.firstName} {user.lastName}
                       </td>
                       <td>
-                        {user.speciality.map((s) => {
-                          return (
-                            <Tooltip
-                              label={s.description}
-                              color="gray"
-                              transition="skew-down"
-                              transitionDuration={300}
-                              withArrow
-                            >
-                              <Badge
-                                key={s.id}
-                                color={
-                                  mantine_colors[s.id % mantine_colors.length]
-                                }
-                                variant="filled"
-                              >
-                                {s.title}
-                              </Badge>
-                            </Tooltip>
-                          );
-                        })}
+                      <SpecialitiesBadges speciality={user.speciality} />
                       </td>
                       <td>
                         <Paperclip size={24} />

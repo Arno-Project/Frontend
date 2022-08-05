@@ -91,7 +91,6 @@ const RequestDetails = () => {
   }, []);
 
   const acceptOrRejectCustomerRequest = async (is_accept: boolean) => {
-    console.log("acccccc");
     const res = await CoreAPI.getInstance().acceptOrRejectCustomerRequest(
       requestDetails!.id,
       is_accept
@@ -148,6 +147,22 @@ const RequestDetails = () => {
     }
   };
 
+  const selectRequest = async () => {
+    const res = await CoreAPI.getInstance().selectRequestBySpecialist(
+      requestDetails!.id
+    );
+
+    if (res.success) {
+      showNotification({
+        title: "عملیات موفقیت‌آمیز",
+        message: `درخواست با موفقیت پذیرفته شد.`,
+        color: "teal",
+        icon: <Check size={18} />,
+      });
+
+      getData();
+    }
+  };
   const navigate = useNavigate();
   const sendMessageToSpecialist = async () => {
     console.log("send msg");
@@ -190,6 +205,33 @@ const RequestDetails = () => {
                   leftIcon={<X size={22} />}
                 >
                   رد درخواست مشتری
+                </Button>
+              </Group>
+            )}
+          </>
+        );
+      }
+
+      if (requestDetails.status === RequestStatus.Pending) {
+        specialistComponent = (
+          <>
+            {specialistComponent}
+            <Divider
+              size="sm"
+              my="xs"
+              label="پذیرش/رد درخواست"
+              labelPosition="left"
+            />
+            {requestDetails?.specialist && (
+              <Group>
+                <Button
+                  color="blue"
+                  onClick={() => {
+                    selectRequest();
+                  }}
+                  leftIcon={<Check size={20} />}
+                >
+                  قبول درخواست
                 </Button>
               </Group>
             )}

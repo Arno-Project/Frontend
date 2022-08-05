@@ -141,4 +141,19 @@ export class CoreAPI extends BaseListAPI {
 
     return response;
   }
+
+
+  async selectRequestBySpecialist(requestID: number) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "request/accept/specialist/initial/",
+      body: {
+        request_id: requestID,
+      },
+      headers: null,
+      params: null,
+    });
+
+    return response;
+  }
+  
 }

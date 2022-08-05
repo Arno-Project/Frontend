@@ -11,6 +11,7 @@ import { AccountAPI } from "../api/accounts";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../api/base";
 import { APIDataToUsers } from "../models/utils";
 import { mantine_colors } from "../assets/consts";
+import { SpecialitiesBadges } from "../models/SpecialityBadges";
 
 export const SpecialistRow = (props: {
   user: User;
@@ -29,33 +30,14 @@ export const SpecialistRow = (props: {
         {user.firstName} {user.lastName}
       </td>
       <td>
-        {user.speciality.map((s, i) => {
-          return (
-            <Tooltip
-              key={i}
-              label={s.description}
-              color="gray"
-              transition="skew-down"
-              transitionDuration={300}
-              withArrow
-            >
-              <Badge
-                key={s.id}
-                color={mantine_colors[s.id % mantine_colors.length]}
-                variant="filled"
-              >
-                {s.title}
-              </Badge>
-            </Tooltip>
-          );
-        })}
+        <SpecialitiesBadges speciality={user.speciality} />
       </td>
       <td>{user.score}</td>
       {props.button !== null && (
         <td>
           <Button
-          color="orange"
-          variant="outline"
+            color="orange"
+            variant="outline"
             compact
             onClick={() => {
               props.button!.action(user.id);

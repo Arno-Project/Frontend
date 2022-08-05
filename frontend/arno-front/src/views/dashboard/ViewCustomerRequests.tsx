@@ -6,15 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { ExternalLink, X } from "tabler-icons-react";
 
 import { CoreAPI } from "../../api/core";
-import { ServiceSummary } from "../../models";
+import { RequestStatus, ServiceSummary } from "../../models";
 import { APIDataToServiceSummary } from "../../models/utils";
 
 import { Helmet } from "react-helmet";
+import { SpecialitiesBadges } from "../../models/SpecialityBadges";
 const TITLE = "سفارشات مشتریان";
 
 const ViewCustomerRequests = () => {
   const navigate = useNavigate();
-  
+
   const [rows, setRows] = useState<ServiceSummary[]>([]);
 
   const getData = async () => {
@@ -49,24 +50,40 @@ const ViewCustomerRequests = () => {
         <thead>
           <tr>
             <th>ردیف</th>
-            <th>نام مشتری</th>
             <th>توضیحات</th>
+            <th>تخصص مورد نظر</th>
             <th>مشاهده جزئیات</th>
           </tr>
         </thead>
-        {rows.map((row, i) => (
-          <tr key={i}>
-            <td>{i + 1}</td>
-            <td>{!!row.description ? row.description : "-"}</td>
-            <td>
-              <UnstyledButton
-                onClick={() => navigate(`/dashboard/request_details/${row.id}`)}
-              >
-                <ExternalLink color="blue" size={22} />
-              </UnstyledButton>
-            </td>
-          </tr>
-        ))}
+        {rows.map((row, i) => {
+          if (
+            row.status === RequestStatus.Pending 
+          )
+            return (
+              <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{!!row.description ? row.description : "-"}</td>
+                <td>
+                  {!!row.requested_speciality ? (
+                    <SpecialitiesBadges
+                      speciality={[row.requested_speciality]}
+                    />
+                  ) : (
+                    ""
+                  )}
+                </td>
+                <td>
+                  <UnstyledButton
+                    onClick={() =>
+                      navigate(`/dashboard/request_details/${row.id}`)
+                    }
+                  >
+                    <ExternalLink color="blue" size={22} />
+                  </UnstyledButton>
+                </td>
+              </tr>
+            );
+        })}
       </Table>
     </>
   );
