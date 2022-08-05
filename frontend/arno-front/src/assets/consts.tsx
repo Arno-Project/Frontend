@@ -7,19 +7,6 @@ export const RoleDict: any = {
   "CM": "مدیر شرکت",
 };
 
-export const Specialities = [
-  "Software",
-  "Hardware",
-  "Strength",
-]; // TODO fetch from server
-
-export const SpecialitiesId = {
-  "Software": 1,
-  "Hardware": 2,
-  "Strength": 3,
-}; // TODO fetch from server
-
-
 export const AccessRules: any = {
   "/technical_issues": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/specialists": [UserRole.Customer, UserRole.Specialist, UserRole.TechnicalManager, UserRole.CompanyManager],

@@ -1,11 +1,21 @@
+import { Speciality } from "../models";
+import { APIDataToSpecialities } from "../models/utils";
 import { BaseListAPI } from "./base";
 
 export class AccountAPI extends BaseListAPI {
   protected static instance: AccountAPI;
+  private specialities: Speciality[] = [];
 
   private constructor(base_path: string = "account") {
     super(base_path);
   }
+
+  public async fetchSpecialities(): Promise<Speciality[]> {
+    if (this.specialities.length === 0) {
+      await this.getSpecialities();
+    }
+    return this.specialities;
+  } 
 
   public static getInstance(): AccountAPI {
     if (!AccountAPI.instance) {
@@ -48,6 +58,11 @@ export class AccountAPI extends BaseListAPI {
     });
 
     console.info("getSpecialities", response);
+    
+    if (response.success) {
+      this.specialities = APIDataToSpecialities(response);
+    }
+
     return response;
   }
 
