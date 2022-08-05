@@ -31,9 +31,13 @@ import SpecialistsTable from "../../components/SpecialistsTable";
 import { SpecialistRow } from "../../components/SpecialistRow";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { AccountAPI } from "../../api/accounts";
+import { useAppSelector } from "../../redux/hooks";
+
 const TITLE = "جزئیات سفارش";
 
 const RequestDetails = () => {
+  const user = useAppSelector((state) => state.auth.user);
+
   const { requestId } = useParams();
   const [requestDetails, setRequestDetails] = useState<ServiceSummary>();
   const [position, setPosition] = useState<[number, number]>([35.7, 51.3]);
@@ -86,6 +90,26 @@ const RequestDetails = () => {
     getData();
   }, []);
 
+  const acceptOrRejectCustomerRequest = async (is_accept: boolean) => {
+    console.log("acccccc");
+    const res = await CoreAPI.getInstance().acceptOrRejectCustomerRequest(
+      requestDetails!.id,
+      is_accept
+    );
+
+    if (res.success) {
+      const is_accept_string = is_accept ? "پذیرفته" : "رد";
+      showNotification({
+        title: "عملیات موفقیت‌آمیز",
+        message: `درخواست با موفقیت ${is_accept_string} شد.`,
+        color: "teal",
+        icon: <Check size={18} />,
+      });
+
+      getData();
+    }
+  };
+
   const acceptOrRejectSpecialist = async (is_accept: boolean) => {
     const res = await CoreAPI.getInstance().acceptOrRejectSpecialist(
       requestDetails!.id,
@@ -105,9 +129,8 @@ const RequestDetails = () => {
     }
   };
 
-
   const chooseSpecialist = async (id: number) => {
-    console.log("choose", id)
+    console.log("choose", id);
     const res = await CoreAPI.getInstance().chooseSpecialist(
       requestDetails!.id,
       id
@@ -125,8 +148,6 @@ const RequestDetails = () => {
     }
   };
 
-
-
   const navigate = useNavigate();
   const sendMessageToSpecialist = async () => {
     console.log("send msg");
@@ -136,108 +157,165 @@ const RequestDetails = () => {
   let specialistComponent = <></>;
 
   if (requestDetails) {
-    if (requestDetails.status === RequestStatus.WaitForCustomer) {
-      specialistComponent = (
-        <>
-          {specialistComponent}
-          <Divider
-            size="sm"
-            my="xs"
-            label="پذیرش/رد متخصص"
-            labelPosition="left"
-          />
-          {requestDetails?.specialist && (
-            <Grid align={"center"}>
-              <Grid.Col span={9}>
-                <Table>
-                  <tbody>
-                    <SpecialistRow user={requestDetails.specialist} idx={""} button={null} />
-                  </tbody>
-                </Table>
-              </Grid.Col>
-              <Grid.Col span={3}>
-                <Group>
-                  <ActionIcon onClick={() => acceptOrRejectSpecialist(true)}>
-                    <Check color="green" size={22} />
-                  </ActionIcon>
-                  <ActionIcon onClick={() => acceptOrRejectSpecialist(false)}>
-                    <X color="red" size={22} />
-                  </ActionIcon>
-                </Group>
-              </Grid.Col>
-            </Grid>
-          )}
-        </>
-      );
+    if (user!.role === UserRole.Specialist) {
+      if (
+        requestDetails.status === RequestStatus.WaitForSpecialist &&
+        user!.id === requestDetails.specialist?.id
+      ) {
+        specialistComponent = (
+          <>
+            {specialistComponent}
+            <Divider
+              size="sm"
+              my="xs"
+              label="پذیرش/رد درخواست"
+              labelPosition="left"
+            />
+            {requestDetails?.specialist && (
+              <Group>
+                <Button
+                  color="blue"
+                  onClick={() => {
+                    acceptOrRejectCustomerRequest(true);
+                  }}
+                  leftIcon={<Check size={20} />}
+                >
+                  قبول درخواست مشتری
+                </Button>
+                <Button
+                  color="red"
+                  onClick={() => {
+                    acceptOrRejectCustomerRequest(true);
+                  }}
+                  leftIcon={<X size={22} />}
+                >
+                  رد درخواست مشتری
+                </Button>
+              </Group>
+            )}
+          </>
+        );
+      }
     }
 
-    if (
-      requestDetails.status === RequestStatus.Pending ||
-      requestDetails.status === RequestStatus.WaitForCustomer
-    ) {
-      const button = {
-        label: "انتخاب متخصص",
-        action: chooseSpecialist,
-      };
-      specialistComponent = (
-        <>
-          {specialistComponent}
-          <Divider
-            size="sm"
-            my="xs"
-            label="انتخاب متخصص"
-            labelPosition="left"
-          />
+    if (user!.role === UserRole.Customer) {
+      if (requestDetails.status === RequestStatus.WaitForCustomer) {
+        specialistComponent = (
+          <>
+            {specialistComponent}
+            <Divider
+              size="sm"
+              my="xs"
+              label="پذیرش/رد متخصص"
+              labelPosition="left"
+            />
+            {requestDetails?.specialist && (
+              <Grid align={"center"}>
+                <Grid.Col span={9}>
+                  <Table>
+                    <tbody>
+                      <SpecialistRow
+                        user={requestDetails.specialist}
+                        idx={""}
+                        button={null}
+                      />
+                    </tbody>
+                  </Table>
+                </Grid.Col>
+                <Grid.Col span={3}>
+                  <Group>
+                    <ActionIcon onClick={() => acceptOrRejectSpecialist(true)}>
+                      <Check color="green" size={22} />
+                    </ActionIcon>
+                    <ActionIcon onClick={() => acceptOrRejectSpecialist(false)}>
+                      <X color="red" size={22} />
+                    </ActionIcon>
+                  </Group>
+                </Grid.Col>
+              </Grid>
+            )}
+          </>
+        );
+      }
 
-          {showSpecialists ? (
-            <SpecialistsTable users={specs} button={button}></SpecialistsTable>
-          ) : (
-            <Button
-              color="blue"
-              onClick={() => {
-                getSpecialists();
-                setShowSpecialists(true);
-              }}
-            >
-              نمایش متخصصان
-            </Button>
-          )}
-        </>
-      );
-      /* TODO get specialists matching speciality */
-      /* TODO first reject currect*/
-    }
+      if (
+        requestDetails.status === RequestStatus.Pending ||
+        requestDetails.status === RequestStatus.WaitForCustomer
+      ) {
+        const button = {
+          label: "انتخاب متخصص",
+          action: chooseSpecialist,
+        };
+        specialistComponent = (
+          <>
+            {specialistComponent}
+            <Divider
+              size="sm"
+              my="xs"
+              label="انتخاب متخصص"
+              labelPosition="left"
+            />
 
-    if (requestDetails.status === RequestStatus.In_progress || requestDetails.status === RequestStatus.WaitForSpecialist) {
-      specialistComponent = (
-        <>
-          {specialistComponent}
-          <Divider
-            size="sm"
-            my="xs"
-            label="متخصص انتخاب شده"
-            labelPosition="left"
-          />
-          {requestDetails?.specialist && (
-            <Grid align={"center"}>
-              <Grid.Col span={9}>
-                <Table>
-                  <tbody>
-                    <SpecialistRow user={requestDetails.specialist} idx={""} button={null}/>
-                  </tbody>
-                </Table>
-              </Grid.Col>
-              <Grid.Col span={3}>
-                <Group>
-                  <ActionIcon onClick={() => sendMessageToSpecialist()}>
-                    <Message color={"#40bfa3"} size={22} />
-                  </ActionIcon>
-                </Group>
-              </Grid.Col>
-            </Grid>
-          )}
-        </>
-      );
+            {showSpecialists ? (
+              <SpecialistsTable
+                users={specs}
+                button={button}
+              ></SpecialistsTable>
+            ) : (
+              <Button
+                color="blue"
+                onClick={() => {
+                  getSpecialists();
+                  setShowSpecialists(true);
+                }}
+              >
+                نمایش متخصصان
+              </Button>
+            )}
+          </>
+        );
+        /* TODO get specialists matching speciality */
+        /* TODO first reject currect*/
+      }
+
+      if (
+        requestDetails.status === RequestStatus.In_progress ||
+        requestDetails.status === RequestStatus.WaitForSpecialist
+      ) {
+        specialistComponent = (
+          <>
+            {specialistComponent}
+            <Divider
+              size="sm"
+              my="xs"
+              label="متخصص انتخاب شده"
+              labelPosition="left"
+            />
+            {requestDetails?.specialist && (
+              <Grid align={"center"}>
+                <Grid.Col span={9}>
+                  <Table>
+                    <tbody>
+                      <SpecialistRow
+                        user={requestDetails.specialist}
+                        idx={""}
+                        button={null}
+                      />
+                    </tbody>
+                  </Table>
+                </Grid.Col>
+                <Grid.Col span={3}>
+                  <Group>
+                    <ActionIcon onClick={() => sendMessageToSpecialist()}>
+                      <Message color={"#40bfa3"} size={22} />
+                    </ActionIcon>
+                  </Group>
+                </Grid.Col>
+              </Grid>
+            )}
+          </>
+        );
+      }
     }
   }
   return (
