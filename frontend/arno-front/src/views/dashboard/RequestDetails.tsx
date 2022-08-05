@@ -240,19 +240,17 @@ const RequestDetails = () => {
               label="پذیرش/رد درخواست"
               labelPosition="left"
             />
-            {requestDetails?.specialist && (
-              <Group>
-                <Button
-                  color="blue"
-                  onClick={() => {
-                    selectRequest();
-                  }}
-                  leftIcon={<Check size={20} />}
-                >
-                  قبول درخواست
-                </Button>
-              </Group>
-            )}
+            <Group>
+              <Button
+                color="blue"
+                onClick={() => {
+                  selectRequest();
+                }}
+                leftIcon={<Check size={20} />}
+              >
+                قبول درخواست
+              </Button>
+            </Group>
           </>
         );
       }
