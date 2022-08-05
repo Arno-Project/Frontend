@@ -119,7 +119,7 @@ const links: MainLinkProps[] = [
   {
     icon: <ShoppingCart size={16} />,
     color: "lime",
-    label: "مدیریت درخواست‌ها",
+    label: "درخواست‌ها",
     path: "/customer_requests",
   },
   {

@@ -19,7 +19,7 @@ const ViewCustomerRequests = () => {
   const [rows, setRows] = useState<ServiceSummary[]>([]);
 
   const getData = async () => {
-    const res = await CoreAPI.getInstance().getAllRequestsSummary();
+    const res = await CoreAPI.getInstance().getMyRequestsStatus();
     if (res.success) {
       const data = APIDataToServiceSummary(res);
       setRows(data);
