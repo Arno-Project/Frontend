@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 import {
@@ -18,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { AccountAPI } from "../api/accounts";
 import { logout, setUserInfo, setUserNotificationCount } from "../redux/auth";
 
-import { useLocation } from "react-router-dom";
 import { APIDataToNotifications, APIDataToUser } from "../models/utils";
 import { NotificationAPI } from "../api/notifications";
 
