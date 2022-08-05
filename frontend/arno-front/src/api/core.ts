@@ -15,25 +15,26 @@ export class CoreAPI extends BaseListAPI {
     return CoreAPI.instance;
   }
 
-  async getAllRequestsSummary() {
+  async getRequestsSummary(query: any) {
     const response = await this.sendAuthorizedGetRequest({
       path: "request/search/",
       body: null,
       headers: null,
-      params: { q: {} },
+      params: { q: query, timestamp: new Date().getTime() },
     });
+
+    return response;
+  }
+
+  async getAllRequestsSummary() {
+    const response = await this.getRequestsSummary({});
 
     console.info("getMyRequestsStats", response);
     return response;
   }
 
   async getRequestDetails(requestId: string) {
-    const response = await this.sendAuthorizedGetRequest({
-      path: "request/search/",
-      body: null,
-      headers: null,
-      params: { q: { id: requestId } },
-    });
+    const response = await this.getRequestsSummary({ id: requestId });
 
     console.info("getMyRequestsStats", response);
     return response;

@@ -25,8 +25,9 @@ export const AccessRules: any = {
 };
 
 export const RequestStatusBadge: any = {
-  "PEND": { message: "در انتظار تعیین متخصص", color: "yellow" },
-  "WAIT": { message: "در انتظار پذیرش متخصص", color: "violet" },
+  "PEND": { message: "در حال بررسی", color: "yellow" },
+  "WAIS": { message: "در انتظار تعیین متخصص", color: "indigo" },
+  "WAIC": { message: "در انتظار پذیرش متخصص", color: "violet" },
   "PROG": { message: "در حال انجام", color: "cyan" },
   "DONE": { message: "انجام شده", color: "teal" },
   "CNCL": { message: "لغو شده", color: "gray" },
