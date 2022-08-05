@@ -1,7 +1,9 @@
 import { Button, Center, Select, Text, Textarea, Title } from "@mantine/core";
 import { useForm } from "@mantine/hooks";
 
-import { FeedbackAPI } from "../../api/feedback";
+import { showNotification } from "@mantine/notifications";
+import { Check } from "tabler-icons-react";
+import { SystemFeedbackAPI } from "../../api/feedback";
 
 import { Helmet } from "react-helmet";
 import { FeedbackType } from "../../models";
@@ -28,10 +30,9 @@ const UserFeedbackView = () => {
   });
 
   const handleSubmit = async (values: any) => {
-    const res = await FeedbackAPI.getInstance().submitFeedback(values);
+    const res = await SystemFeedbackAPI.getInstance().submitFeedback(values);
     
     notifyUser(res, "ثبت موفقیت‌آمیز", "بازخورد شما با موفقیت ارسال شد.");
-    
     if (res.success) {
       userFeedbackForm.reset();
     }

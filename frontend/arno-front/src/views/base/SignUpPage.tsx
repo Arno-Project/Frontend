@@ -5,6 +5,7 @@ import {
   Notification,
   Radio,
   RadioGroup,
+  Space,
   Title,
 } from "@mantine/core";
 import { useState } from "react";
@@ -152,6 +153,7 @@ const SignUpPage = () => {
         </title>
       </Helmet>
       <Title order={1}>ثبت‌نام / ورود به سامانه</Title>
+      <Space h="lg" />
 
       <div className="transparent-paper">
         {showSuccessNotification && (

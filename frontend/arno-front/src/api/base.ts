@@ -90,7 +90,7 @@ abstract class BaseAPI {
     }
   }
 
-  async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
+    async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
     try {
       const config = {
         headers: {
@@ -101,7 +101,7 @@ abstract class BaseAPI {
       };
 
       const url = `${this.base_url}/${this.base_path}/${r.path}`;
-      const res = await axios.get(url, config);
+      const res = await axios.delete(url, config);
 
       const { data } = res;
       return {
@@ -222,6 +222,39 @@ abstract class BaseListAPI extends BaseAPI {
       body: null,
       headers: null,
       params: paramDict,
+    });
+
+    return response;
+  }
+
+  async add(newItem: any) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: this.get_path,
+      body: newItem,
+      headers: null,
+      params: null,
+    });
+
+    return response;
+  }
+
+  async edit(itemID: number, newItem: any) {
+    const response = await this.sendAuthorizedPutRequest({
+      path: `${this.get_path}${itemID}/`,
+      body: newItem,
+      headers: null,
+      params: null,
+    });
+
+    return response;
+  }
+
+  async remove(itemID: number) {
+    const response = await this.sendAuthorizedDeleteRequest({
+      path: `${this.get_path}${itemID}/`,
+      body: null,
+      headers: null,
+      params: null,
     });
 
     return response;

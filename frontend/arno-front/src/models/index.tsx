@@ -87,5 +87,44 @@ type ServiceSummary = {
   requested_speciality: Speciality;
 }
 
-export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus};
-export type { User , Speciality, Feedback, FeedbackReply, LocationModel, ServiceSummary};
+type Message = {
+  id: number;
+  receiver: User;
+  sender: User;
+  text: string;
+  created_at: string;
+  is_read: boolean;
+}
+
+type Chat = {
+  lastMessage: Message;
+  peer: User;
+}
+
+enum NotificationType {
+  Info = "INF",
+  Error = "ERR",
+  Success = "SUC",
+}
+
+
+type Notification = {
+  id: number,
+  title: string,
+  message: string,
+  link: string,
+  date: string,
+  is_read: boolean,
+  user: User,
+  type: NotificationType
+}
+
+type Metric = {
+  id: number,
+  title: string,
+  description: string,
+  userType: UserRole
+}
+
+export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType};
+export type { User , Speciality, Feedback, FeedbackReply, LocationModel, ServiceSummary, Message, Chat, Notification, Metric};

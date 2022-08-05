@@ -1,18 +1,18 @@
 import { Feedback, FeedbackType } from "../models";
 import { BaseListAPI } from "./base";
 
-export class FeedbackAPI extends BaseListAPI {
-  protected static instance: FeedbackAPI;
+export class SystemFeedbackAPI extends BaseListAPI {
+  protected static instance: SystemFeedbackAPI;
 
   private constructor(base_path: string = "feedback") {
     super(base_path);
   }
 
-  public static getInstance(): FeedbackAPI {
-    if (!FeedbackAPI.instance) {
-      FeedbackAPI.instance = new FeedbackAPI("feedback");
+  public static getInstance(): SystemFeedbackAPI {
+    if (!SystemFeedbackAPI.instance) {
+      SystemFeedbackAPI.instance = new SystemFeedbackAPI("feedback");
     }
-    return FeedbackAPI.instance;
+    return SystemFeedbackAPI.instance;
   }
 
   async getTechnicalFeedbacks() {
@@ -49,5 +49,21 @@ export class FeedbackAPI extends BaseListAPI {
 
     console.info("submitReply", response);
     return response;
+  }
+}
+
+
+export class FeedbackAPI extends BaseListAPI {
+  protected static instance: FeedbackAPI;
+
+  private constructor(base_path: string = "feedback") {
+    super(base_path);
+  }
+
+  public static getInstance(): FeedbackAPI {
+    if (!FeedbackAPI.instance) {
+      FeedbackAPI.instance = new FeedbackAPI("feedback");
+    }
+    return FeedbackAPI.instance;
   }
 }

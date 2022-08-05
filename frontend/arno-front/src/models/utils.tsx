@@ -1,9 +1,26 @@
-import { Feedback, FeedbackStatus, FeedbackType, LocationModel, RequestStatus, ServiceSummary, Speciality, User, UserRole } from ".";
+import {
+  Chat,
+  Feedback,
+  FeedbackStatus,
+  FeedbackType,
+  LocationModel,
+  Message,
+  RequestStatus,
+  ServiceSummary,
+  Speciality,
+  User,
+  UserRole,
+  Notification,
+  Metric,
+} from ".";
+
 import { APIResponse } from "../api/base";
 
 export function ObjectToUser(data: Object): User {
-  console.log("OBJECTOT", data);
-  let userData = data!["user" as keyof object];
+  let userData:any = data!["user" as keyof object];
+  if (!userData)  {
+    userData = data
+  }
   let user: User = {
     id: userData["id"],
     username: userData["username"],
@@ -20,7 +37,6 @@ export function ObjectToUser(data: Object): User {
 }
 
 export function ObjectToFeedback(data: Object): Feedback {
-  console.log("OBJECTOT", data);
   let feedback: Feedback = {
     created_at: data["created_at" as keyof object],
     id: data["id" as keyof object],
@@ -31,17 +47,24 @@ export function ObjectToFeedback(data: Object): Feedback {
     user: ObjectToUser(data["user" as keyof object]),
   };
   if (feedback.reply)
-    feedback.reply!.user = ObjectToUser(data["reply" as keyof object]["user" as keyof object])
-    
+    feedback.reply!.user = ObjectToUser(
+      data["reply" as keyof object]["user" as keyof object]
+    );
+
   return feedback;
 }
 
 export function ObjectToServiceSummary(data: Object): ServiceSummary {
-  console.log("OBJECTOT", data);
   let serviceSummary: ServiceSummary = {
     id: data["id" as keyof object],
-    customer: `${data["customer" as keyof object]["user"]["first_name"]} ${data["customer" as keyof object]["user"]["last_name"]}`,
-    specialist: !!data["specialist" as keyof object] ? `${data["specialist" as keyof object]["user"]["first_name"]} ${data["specialist" as keyof object]["user"]["last_name"]}` : null,
+    customer: `${data["customer" as keyof object]["user"]["first_name"]} ${
+      data["customer" as keyof object]["user"]["last_name"]
+    }`,
+    specialist: !!data["specialist" as keyof object]
+      ? `${data["specialist" as keyof object]["user"]["first_name"]} ${
+          data["specialist" as keyof object]["user"]["last_name"]
+        }`
+      : null,
     status: data["status" as keyof object] as RequestStatus,
     description: data["description" as keyof object],
     requested_speciality: data["requested_speciality" as keyof object] as Speciality,
@@ -90,4 +113,66 @@ export function APIDataToSpecialities(res: APIResponse): Speciality[] {
     };
     return spec;
   });
+}
+
+export function ObjectToMessage(data: Object): Message {
+  let msg: Message = {
+    id: data["id" as keyof object],
+    receiver: ObjectToUser(data["receiver" as keyof object]),
+    sender: ObjectToUser(data["sender" as keyof object]),
+    text: data["text" as keyof object],
+    created_at: data["created_at" as keyof object],
+    is_read: data["is_read" as keyof object],
+  };
+  return msg;
+}
+
+export function APIDataToMessages(res: APIResponse): Message[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToMessage(r));
+}
+
+export function APIDataToChats(res: APIResponse, user: User): Chat[] {
+  let msgs = APIDataToMessages(res);
+  return msgs.map((m) => {
+    return {
+      lastMessage: m,
+      peer: m.receiver.id == user.id ? m.sender : m.receiver,
+    };
+  });
+}
+
+export function ObjectToNotification(data: Object): Notification {
+  let msg: Notification = {
+    title: data["title" as keyof object],
+    message: data["message" as keyof object],
+    link: data["link" as keyof object],
+    date: data["date" as keyof object],
+    is_read: data["is_read" as keyof object],
+    user: ObjectToUser(data["user" as keyof object]),
+    type: data["notification_type" as keyof object],
+    id: data["id" as keyof object],
+  };
+  return msg;
+}
+
+export function APIDataToNotifications(res: APIResponse): Notification[] {
+  let data = res.data!['notifications' as keyof object] as Array<Object>;
+  return data.map((r) => ObjectToNotification(r));
+}
+
+
+export function ObjectToMetric(data: Object): Metric {
+  let m: Metric = {
+    title: data["title" as keyof object],
+    description: data["description" as keyof object],
+    id: data["id" as keyof object],
+    userType: data["user_type" as keyof object] as UserRole,
+  };
+  return m;
+}
+
+export function APIDataToMetrics(res: APIResponse): Metric[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToMetric(r));
 }

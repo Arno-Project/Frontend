@@ -15,14 +15,13 @@ import {
   ReportAnalytics,
   MathFunction,
   Tool,
+  Message,
 } from "tabler-icons-react";
 
 import { UserCard } from "./_user";
 import { MainLinks } from "./_main-links";
-import { Brand } from "./_brand";
 import { useAppSelector } from "../../redux/hooks";
 import { AccessRules } from "../../assets/consts";
-import { useEffect } from "react";
 
 export interface MainLinkProps {
   icon: React.ReactNode;
@@ -115,7 +114,13 @@ const links: MainLinkProps[] = [
     color: "teal",
     label: "مدیریت تخصص‌ها",
     path: "/manage_specialities",
-  }
+  },
+  {
+    icon: <Message size={16} />,
+    color: "red",
+    label: "پیام‌ها",
+    path: "/chats",
+  },
 ];
 
 export function DashboardNav() {
