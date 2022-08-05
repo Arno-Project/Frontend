@@ -1,6 +1,5 @@
 import {
   Badge,
-  Space,
   Table,
   Title,
   Tooltip,
@@ -8,7 +7,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-import { Check, ExternalLink, X } from "tabler-icons-react";
+import { ExternalLink } from "tabler-icons-react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -86,40 +85,6 @@ const CustomerRequestsView = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      <Title order={3} my="md">
-        پذیرش/رد متخصص
-      </Title>
-      <Table striped highlightOnHover>
-        <thead>
-          <tr>
-            <th>نام متخصص</th>
-            <th>نام خدمت</th>
-            <th>تخصص(ها)</th>
-            <th>تأیید/رد</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>امیرمهدی نامجو</td>
-            <td>نصب ویندوز</td>
-            <td>
-              <Badge color="indigo" variant="filled">
-                نرم‌افزار
-              </Badge>
-              <Badge color="cyan" variant="filled">
-                سخت‌افزار
-              </Badge>
-            </td>
-            <td>
-              <div style={{ display: "flex" }}>
-                <Check color="green" size={22} />
-                <Space w="lg" />
-                <X color="red" size={22} />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
       <Title order={3} my="md">
         وضعیت سفارش‌ها
       </Title>

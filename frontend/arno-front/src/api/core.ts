@@ -20,7 +20,19 @@ export class CoreAPI extends BaseListAPI {
       path: "request/search/",
       body: null,
       headers: null,
-      params: {q:{}},
+      params: { q: {} },
+    });
+
+    console.info("getMyRequestsStats", response);
+    return response;
+  }
+
+  async getRequestDetails(requestId: string) {
+    const response = await this.sendAuthorizedGetRequest({
+      path: "request/search/",
+      body: null,
+      headers: null,
+      params: { q: { id: requestId } },
     });
 
     console.info("getMyRequestsStats", response);
