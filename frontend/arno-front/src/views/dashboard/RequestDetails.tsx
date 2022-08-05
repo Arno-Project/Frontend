@@ -11,7 +11,7 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
@@ -58,16 +58,30 @@ const RequestDetails = () => {
     }
   };
 
-  const acceptSpecialist = async () => {
-    console.log("acc");
+  const acceptOrRejectSpecialist = async (is_accept: boolean) => {
+    const res = await CoreAPI.getInstance().acceptOrRejectSpecialist(
+      requestDetails!.id,
+      is_accept
+    );
+
+    if (res.success) {
+      const is_accept_string = is_accept ? "پذیرفته" : "رد";
+      showNotification({
+        title: "عملیات موفقیت‌آمیز",
+        message: `متخصص با موفقیت ${is_accept_string} شد.`,
+        color: "teal",
+        icon: <Check size={18} />,
+      });
+
+      getData()
+    }
   };
 
-  const rejectSpecialist = async () => {
-    console.log("rej");
-  };
-
+  const navigate = useNavigate();
   const sendMessageToSpecialist = async () => {
     console.log("send msg");
+    navigate("/dashboard/chats/" + requestDetails!.specialist!.id);
+
   };
 
   let specialistComponent = <></>;
@@ -94,10 +108,10 @@ const RequestDetails = () => {
               </Grid.Col>
               <Grid.Col span={3}>
                 <Group>
-                  <ActionIcon onClick={() => acceptSpecialist()}>
-                    <Check color={"#40bfa3"} size={22} />
+                  <ActionIcon onClick={() => acceptOrRejectSpecialist(true)}>
+                    <Check color="green" size={22} />
                   </ActionIcon>
-                  <ActionIcon onClick={() => rejectSpecialist()}>
+                  <ActionIcon onClick={() => acceptOrRejectSpecialist(false)}>
                     <X color="red" size={22} />
                   </ActionIcon>
                 </Group>
