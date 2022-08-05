@@ -108,22 +108,21 @@ const RequestDetails = () => {
 
   const chooseSpecialist = async (id: number) => {
     console.log("choose", id)
-    // const res = await CoreAPI.getInstance().chooseSpecialist(
-    //   requestDetails!.id,
-    //   is_accept
-    // );
+    const res = await CoreAPI.getInstance().chooseSpecialist(
+      requestDetails!.id,
+      id
+    );
 
-    // if (res.success) {
-    //   const is_accept_string = is_accept ? "پذیرفته" : "رد";
-    //   showNotification({
-    //     title: "عملیات موفقیت‌آمیز",
-    //     message: `متخصص با موفقیت ${is_accept_string} شد.`,
-    //     color: "teal",
-    //     icon: <Check size={18} />,
-    //   });
+    if (res.success) {
+      showNotification({
+        title: "عملیات موفقیت‌آمیز",
+        message: `متخصص با موفقیت انتخاب شد.`,
+        color: "teal",
+        icon: <Check size={18} />,
+      });
 
-    //   getData();
-    // }
+      getData();
+    }
   };
 
 
@@ -209,7 +208,7 @@ const RequestDetails = () => {
       /* TODO first reject currect*/
     }
 
-    if (requestDetails.status === RequestStatus.In_progress) {
+    if (requestDetails.status === RequestStatus.In_progress || requestDetails.status === RequestStatus.WaitForSpecialist) {
       specialistComponent = (
         <>
           {specialistComponent}

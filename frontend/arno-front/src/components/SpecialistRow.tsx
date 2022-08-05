@@ -54,6 +54,8 @@ export const SpecialistRow = (props: {
       {props.button !== null && (
         <td>
           <Button
+          color="orange"
+          variant="outline"
             compact
             onClick={() => {
               props.button!.action(user.id);

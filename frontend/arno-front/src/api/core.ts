@@ -111,7 +111,19 @@ export class CoreAPI extends BaseListAPI {
       params: null,
     });
 
-    console.info("submitLocation", response);
+    return response;
+  }
+  async chooseSpecialist(requestID: number, specialistUserID: number) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "request/select/specialist/",
+      body: {
+        request_id: requestID,
+        specialist_id: specialistUserID
+      },
+      headers: null,
+      params: null,
+    });
+
     return response;
   }
 }
