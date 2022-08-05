@@ -1,4 +1,5 @@
-import { Route, Routes } from "react-router-dom";
+import { useState } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import {
   ColorScheme,
@@ -7,12 +8,12 @@ import {
   useMantineTheme,
   AppShell,
   Header,
-  Navbar,
   LoadingOverlay,
 } from "@mantine/core";
+import { useInterval } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { AccountAPI } from "../api/accounts";
 import { logout, setUserInfo, setUserNotificationCount } from "../redux/auth";
@@ -36,18 +37,20 @@ import SpecialistsView from "./dashboard/SpecialistsView";
 import TechnicalIssuesView from "./dashboard/TechnicalIssuesView";
 import UserFeedbackView from "./dashboard/UserFeedbackView";
 import EditProfileView from "./dashboard/EditProfileView";
+import ManageSpecialitiesView from "./dashboard/ManageSpecialitiesView";
+import RequestDetails from "./dashboard/RequestDetails";
 import ChatsView from "./dashboard/ChatsView";
 import SingleChatView from "./dashboard/SingleChatView";
+import NotificationsView from "./dashboard/NotificationsView";
+
+import { Brand } from "../components/dashboard/_brand";
 
 import { Helmet } from "react-helmet";
-import { Brand } from "../components/dashboard/_brand";
-import { useAppSelector } from "../redux/hooks";
-import NotificationsView from "./dashboard/NotificationsView";
-import { useInterval } from "@mantine/hooks";
 const TITLE = "آرنو | داشبورد";
 
 const DashboardPage = () => {
   const theme = useMantineTheme();
+
   const [loading, setLoading] = useState(true);
 
   const dispatch = useAppDispatch();
@@ -109,11 +112,14 @@ const DashboardPage = () => {
     return interval.stop;
   }, []);
 
-
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
+  const inDashboardMainPage = () => {
+    return location.pathname === "/dashboard";
+  };
+  
   let component = <></>;
   if (!loading && token) {
     component = (
@@ -141,7 +147,9 @@ const DashboardPage = () => {
             },
           })}
         >
-          <Container className="dashboard-container">
+          <Container
+            className={inDashboardMainPage() ? "" : "dashboard-container"}
+          >
             <Routes>
               <Route
                 path="/technical_issues"
@@ -166,6 +174,8 @@ const DashboardPage = () => {
               <Route path="/chats/:peerID" element={<SingleChatView />} />
               <Route path="/chats" element={<ChatsView />} />
               <Route path="/notifications" element={<NotificationsView />} />
+              <Route path="/manage_specialities" element={<ManageSpecialitiesView />} />
+              <Route path="/request_details/:requestId" element={<RequestDetails />} />
             </Routes>
           </Container>
         </AppShell>

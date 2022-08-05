@@ -1,14 +1,44 @@
 import { MultiSelect } from "@mantine/core";
-import { UserSearch } from "tabler-icons-react";
-import { Specialities } from "../assets/consts";
+import { showNotification } from "@mantine/notifications";
+import { useEffect, useState } from "react";
+import { UserSearch, X } from "tabler-icons-react";
 
+import { AccountAPI } from "../api/accounts";
+import { Speciality } from "../models";
+import { APIDataToSpecialities } from "../models/utils";
 
-export default function SpecialityMultiSelect({ setter, required, error }: any) {
+export default function SpecialityMultiSelect({
+  setter,
+  required,
+  error,
+}: any) {
+  const [specialities, setSpecialities] = useState<Speciality[]>([]);
+
+  const getSpecialities = async () => {
+    const res = await AccountAPI.getInstance().getSpecialities();
+    
+    if (res.success) {
+      const data = APIDataToSpecialities(res);
+      setSpecialities(data);
+    } else {
+      showNotification({
+        title: "خطا",
+        message: "دریافت تخصص‌ها از سرور با خطا مواجه شد",
+        color: "red",
+        icon: <X size={18} />,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getSpecialities();
+  }, []);
+
   return (
     <MultiSelect
       onChange={setter}
       className="font-reminder"
-      data={Specialities}
+      data={specialities.map((s) => s.title)}
       icon={<UserSearch size={20} />}
       label="انتخاب تخصص(ها)"
       placeholder="تخصص‌های مورد نظر"

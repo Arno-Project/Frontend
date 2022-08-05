@@ -14,6 +14,7 @@ import {
   Bucket,
   ReportAnalytics,
   MathFunction,
+  Tool,
   Message,
 } from "tabler-icons-react";
 
@@ -107,6 +108,12 @@ const links: MainLinkProps[] = [
     color: "blue",
     label: "مدیریت خدمات",
     path: "/manage_services",
+  },
+  {
+    icon: <Tool size={16} />,
+    color: "teal",
+    label: "مدیریت تخصص‌ها",
+    path: "/manage_specialities",
   },
   {
     icon: <Message size={16} />,

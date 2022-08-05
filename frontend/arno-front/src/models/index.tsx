@@ -44,7 +44,6 @@ enum FeedbackStatus {
   Replied = "R",
 }
 
-
 type FeedbackReply = {
   created_at: string;
   id: number;
@@ -71,12 +70,21 @@ enum RequestStatus {
   Rejected = "REJC",
 }
 
+type LocationModel = {
+  address: string;
+  latitude: number;
+  longitude: number;
+}
+
 type ServiceSummary = {
   id: number;
   customer: string;
   specialist: string | null;
-  status: string;
+  location: LocationModel;
+  status: RequestStatus;
   description: string;
+  start_time: string;
+  requested_speciality: Speciality;
 }
 
 type Message = {
@@ -119,4 +127,4 @@ type Metric = {
 }
 
 export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType};
-export type { User , Speciality, Feedback, FeedbackReply, ServiceSummary, Message, Chat, Notification, Metric};
+export type { User , Speciality, Feedback, FeedbackReply, LocationModel, ServiceSummary, Message, Chat, Notification, Metric};

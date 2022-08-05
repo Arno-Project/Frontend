@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 
-import { Badge, Button, Center, Pagination, Space, Table, TextInput, Title } from "@mantine/core";
+import {
+  Badge,
+  Button,
+  Center,
+  Pagination,
+  Space,
+  Table,
+  TextInput,
+  Title,
+  Tooltip,
+} from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
@@ -23,15 +33,19 @@ const SpecialistsView = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const getData = async () => {
-    const filter = new FieldFilter(FieldFilterName.Role, UserRole.Specialist, FieldFilterType.Exact)
+    const filter = new FieldFilter(
+      FieldFilterName.Role,
+      UserRole.Specialist,
+      FieldFilterType.Exact
+    );
     let res = await AccountAPI.getInstance().get([filter]);
-    const users = APIDataToUsers(res)
-    setUsers(users)
+    const users = APIDataToUsers(res);
+    setUsers(users);
   };
-  
+
   useEffect(() => {
-    getData()
-  }, [])
+    getData();
+  }, []);
 
   return (
     <>
@@ -57,36 +71,50 @@ const SpecialistsView = () => {
               </tr>
             </thead>
             <tbody>
-            {users.map((user, i) => {
-            if (!user.is_validated)
-            return (
-
-              <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.firstName} {user.lastName}</td>
-              <td>
-                {user.speciality.map(s => {
+              {users.map((user, i) => {
+                if (!user.is_validated)
                   return (
-                  <Badge key ={s.id} color={mantine_colors[s.id % mantine_colors.length]} variant="filled">
-                  {s.title}
-                </Badge>
-                  )
-                })}
-              </td>  
-                <td>
-                  <Paperclip size={24} />
-                </td>
-              <td>
-              <div style={{ display: "flex" }}>
-                    <Check color="green" size={22} />
-                    <Space w="lg" />
-                    <X color="red" size={22} />
-                  </div>
-                  </td>
-            </tr>
-            )
-          })}
-             
+                    <tr key={user.id}>
+                      <td>{user.id}</td>
+                      <td>
+                        {user.firstName} {user.lastName}
+                      </td>
+                      <td>
+                        {user.speciality.map((s) => {
+                          return (
+                            <Tooltip
+                              label={s.description}
+                              color="gray"
+                              transition="skew-down"
+                              transitionDuration={300}
+                              withArrow
+                            >
+                              <Badge
+                                key={s.id}
+                                color={
+                                  mantine_colors[s.id % mantine_colors.length]
+                                }
+                                variant="filled"
+                              >
+                                {s.title}
+                              </Badge>
+                            </Tooltip>
+                          );
+                        })}
+                      </td>
+                      <td>
+                        <Paperclip size={24} />
+                      </td>
+                      <td>
+                        <div style={{ display: "flex" }}>
+                          <Check color="green" size={22} />
+                          <Space w="lg" />
+                          <X color="red" size={22} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+              })}
             </tbody>
           </Table>
         </>
@@ -97,28 +125,28 @@ const SpecialistsView = () => {
 
       {user?.role === UserRole.Customer && (
         <>
-        <div className="search-criteria">
-        <TextInput
-          // value={inputValue}
-          // onChange={(event) => setInputValue(event.currentTarget.value)}
-          icon={<Search size={20} />}
-          label="نام متخصص"
-          placeholder="نام"
-        />
+          <div className="search-criteria">
+            <TextInput
+              // value={inputValue}
+              // onChange={(event) => setInputValue(event.currentTarget.value)}
+              icon={<Search size={20} />}
+              label="نام متخصص"
+              placeholder="نام"
+            />
 
-        <SpecialityMultiSelect setter={setSelectedValues} />
-      </div>
-      <Center>
-        <Button
-          variant="gradient"
-          gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-          leftIcon={<ListSearch size={20} />}
-          // loading={isSearching}
-          // onClick={() => fetchResults()}
-        >
-          جست‌وجو
-        </Button>
-      </Center>
+            <SpecialityMultiSelect setter={setSelectedValues} />
+          </div>
+          <Center>
+            <Button
+              variant="gradient"
+              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+              leftIcon={<ListSearch size={20} />}
+              // loading={isSearching}
+              // onClick={() => fetchResults()}
+            >
+              جست‌وجو
+            </Button>
+          </Center>
         </>
       )}
 
@@ -134,23 +162,30 @@ const SpecialistsView = () => {
         <tbody>
           {users.map((user, i) => {
             if (user.is_validated)
-            return (
-              <tr key={user.id}>
-              <td>{i+1}</td>
-              <td>{user.firstName} {user.lastName}</td>
-              <td>
-                {user.speciality.map(s => {
-                  return (
-                  <Badge key ={s.id} color={mantine_colors[s.id % mantine_colors.length]} variant="filled">
-                  {s.title}
-                </Badge>
-                  )
-                })}
-                
-              </td>
-              <td>{user.score}</td>
-            </tr>
-            )
+              return (
+                <tr key={user.id}>
+                  <td>{i + 1}</td>
+                  <td>
+                    {user.firstName} {user.lastName}
+                  </td>
+                  <td>
+                    {user.speciality.map((s) => {
+                      return (
+                        <Tooltip label={s.description} color="gray" transition="skew-down" transitionDuration={300} withArrow>
+                          <Badge
+                            key={s.id}
+                            color={mantine_colors[s.id % mantine_colors.length]}
+                            variant="filled"
+                          >
+                            {s.title}
+                          </Badge>
+                        </Tooltip>
+                      );
+                    })}
+                  </td>
+                  <td>{user.score}</td>
+                </tr>
+              );
           })}
         </tbody>
       </Table>

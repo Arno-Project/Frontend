@@ -15,13 +15,26 @@ export class CoreAPI extends BaseListAPI {
     return CoreAPI.instance;
   }
 
-  async getAllRequestsSummary() {
+  async getRequestsSummary(query: any) {
     const response = await this.sendAuthorizedGetRequest({
       path: "request/search/",
       body: null,
       headers: null,
-      params: {q:{}},
+      params: { q: query, timestamp: new Date().getTime() },
     });
+
+    return response;
+  }
+
+  async getAllRequestsSummary() {
+    const response = await this.getRequestsSummary({});
+
+    console.info("getMyRequestsStats", response);
+    return response;
+  }
+
+  async getRequestDetails(requestId: string) {
+    const response = await this.getRequestsSummary({ id: requestId });
 
     console.info("getMyRequestsStats", response);
     return response;
@@ -51,6 +64,18 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
+  async cancelRequest(request_id: number) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "request/cancel/",
+      body: { request_id },
+      headers: null,
+      params: null,
+    });
+
+    console.info("cancelRequest", response);
+    return response;
+  }
+
   async cancelRequestByManager(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/cancel/force/",
@@ -59,7 +84,19 @@ export class CoreAPI extends BaseListAPI {
       params: null,
     });
 
-    console.info("cancelRequest", response);
+    console.info("cancelRequestByManager", response);
+    return response;
+  }
+
+  async submitLocation(location: any) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "location/",
+      body: location,
+      headers: null,
+      params: null,
+    });
+
+    console.info("submitLocation", response);
     return response;
   }
 }

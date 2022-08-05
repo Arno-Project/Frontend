@@ -3,6 +3,7 @@ import {
   Feedback,
   FeedbackStatus,
   FeedbackType,
+  LocationModel,
   Message,
   RequestStatus,
   ServiceSummary,
@@ -12,6 +13,7 @@ import {
   Notification,
   Metric,
 } from ".";
+
 import { APIResponse } from "../api/base";
 
 export function ObjectToUser(data: Object): User {
@@ -65,6 +67,9 @@ export function ObjectToServiceSummary(data: Object): ServiceSummary {
       : null,
     status: data["status" as keyof object] as RequestStatus,
     description: data["description" as keyof object],
+    requested_speciality: data["requested_speciality" as keyof object] as Speciality,
+    start_time: data["desired_start_time" as keyof object],
+    location: data["location" as keyof object] as LocationModel,
   };
   return serviceSummary;
 }
@@ -96,6 +101,18 @@ export function APIDataToServiceSummary(res: APIResponse): ServiceSummary[] {
 export function APIDataToRequestsSummary(res: APIResponse): ServiceSummary[] {
   let data = res.data!["requests" as keyof object] as Array<Object>;
   return data.map((r) => ObjectToServiceSummary(r));
+}
+
+export function APIDataToSpecialities(res: APIResponse): Speciality[] {
+  let data = res.data!["specialities" as keyof object] as Array<Object>;
+  return data.map((r: any) => {
+    let spec : Speciality = {
+      id: r["id" as keyof Object],
+      title: r["title" as keyof Object],
+      description: r["description" as keyof Object]
+    };
+    return spec;
+  });
 }
 
 export function ObjectToMessage(data: Object): Message {
@@ -159,4 +176,3 @@ export function APIDataToMetrics(res: APIResponse): Metric[] {
   let data = res.data as Array<Object>;
   return data.map((r) => ObjectToMetric(r));
 }
-
