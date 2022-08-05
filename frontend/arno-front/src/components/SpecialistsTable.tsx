@@ -9,19 +9,14 @@ import {
   Table,
   TextInput,
   Title,
-  Tooltip,
+  Group,
 } from "@mantine/core";
 import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
 
 import { useAppSelector } from "../redux/hooks";
 import { User, UserGeneralRole, UserRole } from "../models";
 import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
-
-import { AccountAPI } from "../api/accounts";
-import { FieldFilter, FieldFilterName, FieldFilterType } from "../api/base";
-import { APIDataToUsers } from "../models/utils";
-import { mantine_colors } from "../assets/consts";
-const TITLE = "متخصصان";
+import { SpecialistRow } from "./SpecialistRow";
 
 const SpecialistsTable = (props: { users: User[] }) => {
   const user = useAppSelector((state) => state.auth.user);
@@ -33,6 +28,7 @@ const SpecialistsTable = (props: { users: User[] }) => {
   return (
     <>
       <div className="search-criteria">
+        <Group align="flex-end">
         <TextInput
           // value={inputValue}
           // onChange={(event) => setInputValue(event.currentTarget.value)}
@@ -42,8 +38,7 @@ const SpecialistsTable = (props: { users: User[] }) => {
         />
 
         <SpecialityMultiSelect setter={setSelectedValues} />
-      </div>
-      <Center>
+      
         <Button
           variant="gradient"
           gradient={{ from: "cyan", to: "indigo", deg: 105 }}
@@ -53,7 +48,9 @@ const SpecialistsTable = (props: { users: User[] }) => {
         >
           جست‌وجو
         </Button>
-      </Center>
+
+      </Group>
+      </div>
 
       <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
         <thead>
@@ -67,36 +64,7 @@ const SpecialistsTable = (props: { users: User[] }) => {
         <tbody>
           {props.users.map((user, i) => {
             if (user.is_validated)
-              return (
-                <tr key={user.id}>
-                  <td>{i + 1}</td>
-                  <td>
-                    {user.firstName} {user.lastName}
-                  </td>
-                  <td>
-                    {user.speciality.map((s) => {
-                      return (
-                        <Tooltip
-                          label={s.description}
-                          color="gray"
-                          transition="skew-down"
-                          transitionDuration={300}
-                          withArrow
-                        >
-                          <Badge
-                            key={s.id}
-                            color={mantine_colors[s.id % mantine_colors.length]}
-                            variant="filled"
-                          >
-                            {s.title}
-                          </Badge>
-                        </Tooltip>
-                      );
-                    })}
-                  </td>
-                  <td>{user.score}</td>
-                </tr>
-              );
+              return <SpecialistRow user={user} idx={i + 1} />;
           })}
         </tbody>
       </Table>

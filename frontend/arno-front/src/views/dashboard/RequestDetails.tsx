@@ -6,6 +6,9 @@ import {
   Space,
   Table,
   Tooltip,
+  Group,
+  Grid,
+  ActionIcon,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -14,16 +17,17 @@ import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
 
 import { CoreAPI } from "../../api/core";
-import { ServiceSummary } from "../../models";
+import { RequestStatus, ServiceSummary } from "../../models";
 import { APIDataToServiceSummary } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 
-import { Check, X } from "tabler-icons-react";
+import { Check, X, Message } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 
 import { Helmet } from "react-helmet";
 import SpecialistsTable from "../../components/SpecialistsTable";
+import { SpecialistRow } from "../../components/SpecialistRow";
 const TITLE = "جزئیات سفارش";
 
 const RequestDetails = () => {
@@ -39,8 +43,8 @@ const RequestDetails = () => {
     const res = await CoreAPI.getInstance().getRequestDetails(requestId!);
     if (res.success) {
       const data = APIDataToServiceSummary(res)[0];
-      console.log(data)
-      
+      console.log(data);
+
       setRequestDetails(data);
       if (data.location)
         setPosition([data.location.latitude, data.location.longitude]);
@@ -54,6 +58,108 @@ const RequestDetails = () => {
     }
   };
 
+  const acceptSpecialist = async () => {
+    console.log("acc");
+  };
+
+  const rejectSpecialist = async () => {
+    console.log("rej");
+  };
+
+  const sendMessageToSpecialist = async () => {
+    console.log("send msg");
+  };
+
+  let specialistComponent = <></>;
+
+  if (requestDetails) {
+    if (requestDetails.status === RequestStatus.WaitForCustomer) {
+      specialistComponent = (
+        <>
+          {specialistComponent}
+          <Divider
+            size="sm"
+            my="xs"
+            label="پذیرش/رد متخصص"
+            labelPosition="left"
+          />
+          {requestDetails?.specialist && (
+            <Grid align={"center"}>
+              <Grid.Col span={9}>
+                <Table>
+                  <tbody>
+                    <SpecialistRow user={requestDetails.specialist} idx={""} />
+                  </tbody>
+                </Table>
+              </Grid.Col>
+              <Grid.Col span={3}>
+                <Group>
+                  <ActionIcon onClick={() => acceptSpecialist()}>
+                    <Check color={"#40bfa3"} size={22} />
+                  </ActionIcon>
+                  <ActionIcon onClick={() => rejectSpecialist()}>
+                    <X color="red" size={22} />
+                  </ActionIcon>
+                </Group>
+              </Grid.Col>
+            </Grid>
+          )}
+        </>
+      );
+    }
+
+    if (
+      requestDetails.status === RequestStatus.Pending ||
+      requestDetails.status === RequestStatus.WaitForCustomer
+    ) {
+      specialistComponent = (
+        <>
+          {specialistComponent}
+          <Divider
+            size="sm"
+            my="xs"
+            label="انتخاب متخصص"
+            labelPosition="left"
+          />
+          <SpecialistsTable users={[]}></SpecialistsTable>{" "}
+        </>
+      );
+      /* TODO get specialists matching speciality */
+      /* TODO first reject currect*/
+    }
+
+    if (requestDetails.status === RequestStatus.In_progress) {
+      specialistComponent = (
+        <>
+          {specialistComponent}
+          <Divider
+            size="sm"
+            my="xs"
+            label="متخصص انتخاب شده"
+            labelPosition="left"
+          />
+          {requestDetails?.specialist && (
+            <Grid align={"center"}>
+              <Grid.Col span={9}>
+                <Table>
+                  <tbody>
+                    <SpecialistRow user={requestDetails.specialist} idx={""} />
+                  </tbody>
+                </Table>
+              </Grid.Col>
+              <Grid.Col span={3}>
+                <Group>
+                  <ActionIcon onClick={() => sendMessageToSpecialist()}>
+                    <Message color={"#40bfa3"} size={22} />
+                  </ActionIcon>
+                </Group>
+              </Grid.Col>
+            </Grid>
+          )}
+        </>
+      );
+    }
+  }
   return (
     <>
       <Helmet>
@@ -142,48 +248,7 @@ const RequestDetails = () => {
           </MapContainer>
         </>
       )}
-      <Divider size="sm" my="xs" label="انتخاب متخصص" labelPosition="left" />
-      <SpecialistsTable users={[]}></SpecialistsTable>
-      <Divider size="sm" my="xs" label="پذیرش/رد متخصص" labelPosition="left" />
-
-      {requestDetails?.specialist && (
-        <tr key={requestDetails.specialist.id}>
-          <td>{requestDetails.specialist.id}</td>
-          <td>
-            {requestDetails.specialistName}
-          </td>
-          <td>
-            {requestDetails.specialist.speciality.map((s) => {
-              return (
-                <Tooltip
-                  label={s.description}
-                  color="gray"
-                  transition="skew-down"
-                  transitionDuration={300}
-                  withArrow
-                >
-                  <Badge
-                    key={s.id}
-                    color={mantine_colors[s.id % mantine_colors.length]}
-                    variant="filled"
-                  >
-                    {s.title}
-                  </Badge>
-                </Tooltip>
-              );
-            })}
-          </td>
-          <td>
-          </td>
-          <td>
-            <div style={{ display: "flex" }}>
-              <Check color="green" size={22} />
-              <Space w="lg" />
-              <X color="red" size={22} />
-            </div>
-          </td>
-        </tr>
-      )}
+      {specialistComponent}
     </>
   );
 };
