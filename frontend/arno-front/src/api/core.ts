@@ -64,6 +64,18 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
+  async cancelRequest(request_id: number) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "request/cancel/",
+      body: { request_id },
+      headers: null,
+      params: null,
+    });
+
+    console.info("cancelRequest", response);
+    return response;
+  }
+
   async cancelRequestByManager(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/cancel/force/",
@@ -72,7 +84,7 @@ export class CoreAPI extends BaseListAPI {
       params: null,
     });
 
-    console.info("cancelRequest", response);
+    console.info("cancelRequestByManager", response);
     return response;
   }
 

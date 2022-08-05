@@ -7,16 +7,17 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-import { ExternalLink } from "tabler-icons-react";
+import { ExternalLink, X } from "tabler-icons-react";
 
 import { useNavigate } from "react-router-dom";
 
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
-import { ServiceSummary } from "../../models";
+import { RequestStatus, ServiceSummary } from "../../models";
 import { CoreAPI } from "../../api/core";
 import { APIDataToRequestsSummary } from "../../models/utils";
 
 import { Helmet } from "react-helmet";
+import { notifyUser } from "../utils";
 const TITLE = "سفارش‌های من";
 
 const CustomerRequestsView = () => {
@@ -35,6 +36,14 @@ const CustomerRequestsView = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const cancelRequest = async (requestId: number) => {
+    const res = await CoreAPI.getInstance().cancelRequest(requestId);
+    notifyUser(res, "لغو موفقیت‌آمیز", "سفارش موردنظر با موفقیت لغو شد.");
+    if (res.success) {
+      await getData();
+    }
+  };
 
   const renderRows = () => {
     const body: any[] = rows.map((obj: ServiceSummary, i) => (
@@ -74,6 +83,13 @@ const CustomerRequestsView = () => {
             <ExternalLink color="blue" size={22} />
           </UnstyledButton>
         </td>
+        <td>
+          {![RequestStatus.In_progress, RequestStatus.Done, RequestStatus.Cancelled].includes(obj.status) && (
+            <UnstyledButton onClick={() => cancelRequest(obj.id)}>
+              <X color="red" size={22} />
+            </UnstyledButton>
+          )}
+        </td>
       </tr>
     ));
     return <tbody>{body}</tbody>;
@@ -96,6 +112,7 @@ const CustomerRequestsView = () => {
             <th>نام متخصص</th>
             <th>وضعیت</th>
             <th>مشاهده جزئیات</th>
+            <th>لغو درخواست</th>
           </tr>
         </thead>
         {renderRows()}
