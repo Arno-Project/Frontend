@@ -99,4 +99,19 @@ export class CoreAPI extends BaseListAPI {
     console.info("submitLocation", response);
     return response;
   }
+
+  async acceptOrRejectSpecialist(requestID: number, is_accept: boolean) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "request/accept/customer/final/",
+      body: {
+        request_id: requestID,
+        is_accept: is_accept,
+      },
+      headers: null,
+      params: null,
+    });
+
+    console.info("submitLocation", response);
+    return response;
+  }
 }

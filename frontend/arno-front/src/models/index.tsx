@@ -63,7 +63,8 @@ type Feedback = {
 
 enum RequestStatus {
   Pending = "PEND",
-  Wait = "WAIT",
+  WaitForCustomer = "WAIS",
+  WaitForSpecialist = "WAIC",
   In_progress = "PROG",
   Done = "DONE",
   Cancelled = "CNCL",
@@ -78,8 +79,10 @@ type LocationModel = {
 
 type ServiceSummary = {
   id: number;
-  customer: string;
-  specialist: string | null;
+  customer: User;
+  specialist: User | null;
+  customerName: String;
+  specialistName: String | null;
   location: LocationModel;
   status: RequestStatus;
   description: string;

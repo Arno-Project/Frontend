@@ -17,9 +17,9 @@ import {
 import { APIResponse } from "../api/base";
 
 export function ObjectToUser(data: Object): User {
-  let userData:any = data!["user" as keyof object];
-  if (!userData)  {
-    userData = data
+  let userData: any = data!["user" as keyof object];
+  if (!userData) {
+    userData = data;
   }
   let user: User = {
     id: userData["id"],
@@ -34,6 +34,13 @@ export function ObjectToUser(data: Object): User {
     is_validated: data["is_validated" as keyof object],
   };
   return user;
+}
+
+export function ObjectToUserOrNull(data: Object): User | null {
+  if (!data) {
+    return null;
+  }
+  return ObjectToUser(data);
 }
 
 export function ObjectToFeedback(data: Object): Feedback {
@@ -57,17 +64,21 @@ export function ObjectToFeedback(data: Object): Feedback {
 export function ObjectToServiceSummary(data: Object): ServiceSummary {
   let serviceSummary: ServiceSummary = {
     id: data["id" as keyof object],
-    customer: `${data["customer" as keyof object]["user"]["first_name"]} ${
+    customer: ObjectToUser(data["customer" as keyof object]),
+    specialist: ObjectToUserOrNull(data["specialist" as keyof object]),
+    customerName: `${data["customer" as keyof object]["user"]["first_name"]} ${
       data["customer" as keyof object]["user"]["last_name"]
     }`,
-    specialist: !!data["specialist" as keyof object]
+    specialistName: !!data["specialist" as keyof object]
       ? `${data["specialist" as keyof object]["user"]["first_name"]} ${
           data["specialist" as keyof object]["user"]["last_name"]
         }`
       : null,
     status: data["status" as keyof object] as RequestStatus,
     description: data["description" as keyof object],
-    requested_speciality: data["requested_speciality" as keyof object] as Speciality,
+    requested_speciality: data[
+      "requested_speciality" as keyof object
+    ] as Speciality,
     start_time: data["desired_start_time" as keyof object],
     location: data["location" as keyof object] as LocationModel,
   };
@@ -106,10 +117,10 @@ export function APIDataToRequestsSummary(res: APIResponse): ServiceSummary[] {
 export function APIDataToSpecialities(res: APIResponse): Speciality[] {
   let data = res.data!["specialities" as keyof object] as Array<Object>;
   return data.map((r: any) => {
-    let spec : Speciality = {
+    let spec: Speciality = {
       id: r["id" as keyof Object],
       title: r["title" as keyof Object],
-      description: r["description" as keyof Object]
+      description: r["description" as keyof Object],
     };
     return spec;
   });
@@ -157,10 +168,9 @@ export function ObjectToNotification(data: Object): Notification {
 }
 
 export function APIDataToNotifications(res: APIResponse): Notification[] {
-  let data = res.data!['notifications' as keyof object] as Array<Object>;
+  let data = res.data!["notifications" as keyof object] as Array<Object>;
   return data.map((r) => ObjectToNotification(r));
 }
-
 
 export function ObjectToMetric(data: Object): Metric {
   let m: Metric = {
