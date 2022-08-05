@@ -15,6 +15,7 @@ import {
 } from "../../models/utils";
 
 import { SpecialitiesBadges } from "../../models/SpecialityBadges";
+import { RequestStatusBadge } from "../../assets/consts";
 
 const TITLE = "خدمات متخصص";
 
@@ -35,8 +36,9 @@ const SpecialistServicesView = () => {
     console.log(res);
     if (res.success) {
       const data = APIDataToRequestsSummary(res);
+      console.log("DDDD", data);
       setRows(data);
-      
+      console.log(rows);
     } else {
       showNotification({
         title: "خطا",
@@ -50,6 +52,8 @@ const SpecialistServicesView = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  console.log(rows);
 
   return (
     <>
@@ -66,37 +70,44 @@ const SpecialistServicesView = () => {
         <thead>
           <tr>
             <th>ردیف</th>
-            <th>توضیحات</th>
-            <th>تخصص مورد نظر</th>
+            <th>نام مشتری</th>
+            <th>تخصص</th>
+            <th>وضعیت</th>
+
             <th>مشاهده جزئیات</th>
           </tr>
         </thead>
         {rows.map((row, i) => {
-          if (row.status === RequestStatus.Pending)
-            return (
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{!!row.description ? row.description : "-"}</td>
-                <td>
-                  {!!row.requested_speciality ? (
-                    <SpecialitiesBadges
-                      speciality={[row.requested_speciality]}
-                    />
-                  ) : (
-                    ""
-                  )}
-                </td>
-                <td>
-                  <UnstyledButton
-                    onClick={() =>
-                      navigate(`/dashboard/request_details/${row.id}`)
-                    }
-                  >
-                    <ExternalLink color="blue" size={22} />
-                  </UnstyledButton>
-                </td>
-              </tr>
-            );
+          return (
+            <tr key={i}>
+              <td>{i + 1}</td>
+              <td>{!!row.customerName ? row.customerName : "-"}</td>
+              <td>
+                {!!row.requested_speciality ? (
+                  <SpecialitiesBadges speciality={[row.requested_speciality]} />
+                ) : (
+                  ""
+                )}
+              </td>
+              <td>
+                <Badge
+                  color={RequestStatusBadge[row.status].color}
+                  variant="filled"
+                >
+                  {RequestStatusBadge[row.status].message}
+                </Badge>
+              </td>
+              <td>
+                <UnstyledButton
+                  onClick={() =>
+                    navigate(`/dashboard/request_details/${row.id}`)
+                  }
+                >
+                  <ExternalLink color="blue" size={22} />
+                </UnstyledButton>
+              </td>
+            </tr>
+          );
         })}
       </Table>
     </>
