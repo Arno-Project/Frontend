@@ -39,7 +39,8 @@ const RequestDetails = () => {
     if (res.success) {
       const data = APIDataToServiceSummary(res)[0];
       setRequestDetails(data);
-      setPosition([data.location.latitude, data.location.longitude]);
+      if (data.location)
+        setPosition([data.location.latitude, data.location.longitude]);
     } else {
       showNotification({
         title: "خطا",
@@ -122,7 +123,7 @@ const RequestDetails = () => {
             </Text>
             <Space w="lg" />
 
-            <Text component="span">{requestDetails.location.address}</Text>
+            <Text component="span">{requestDetails.location?.address}</Text>
           </div>
           <MapContainer
             style={{ height: "40vh", width: "40%", borderRadius: "10px" }}

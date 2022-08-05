@@ -64,7 +64,7 @@ const links: MainLinkProps[] = [
   {
     icon: <Bucket size={16} />,
     color: "teal",
-    label: "خدمات دریافت شده",
+    label: "سفارش‌ها",
     path: "/requests",
   },
   {
