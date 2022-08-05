@@ -163,6 +163,24 @@ const RequestDetails = () => {
       getData();
     }
   };
+
+  const endRequest = async () => {
+    console.log("end");
+    return;
+    const res = await CoreAPI.getInstance().endRequest(requestDetails!.id);
+
+    if (res.success) {
+      showNotification({
+        title: "عملیات موفقیت‌آمیز",
+        message: `درخواست با موفقیت به اتمام رسید.`,
+        color: "teal",
+        icon: <Check size={18} />,
+      });
+
+      getData();
+    }
+  };
+
   const navigate = useNavigate();
   const sendMessageToSpecialist = async () => {
     console.log("send msg");
@@ -232,6 +250,36 @@ const RequestDetails = () => {
                   leftIcon={<Check size={20} />}
                 >
                   قبول درخواست
+                </Button>
+              </Group>
+            )}
+          </>
+        );
+      }
+
+      if (
+        requestDetails.status === RequestStatus.In_progress &&
+        user!.id === requestDetails.specialist?.id
+      ) {
+        specialistComponent = (
+          <>
+            {specialistComponent}
+            <Divider
+              size="sm"
+              my="xs"
+              label="وضعیت درخواست"
+              labelPosition="left"
+            />
+            {requestDetails?.specialist && (
+              <Group>
+                <Button
+                  color="green"
+                  onClick={() => {
+                    endRequest();
+                  }}
+                  leftIcon={<Check size={20} />}
+                >
+                  اتمام درخواست
                 </Button>
               </Group>
             )}
