@@ -90,9 +90,9 @@ export class AccountAPI extends BaseListAPI {
     return response;
   }
 
-  async removeSpeciality(specialityId: number) {
-    const response = await this.sendAuthorizedDeleteRequest({
-      path: "speciality/add/",
+  async removeSpeciality(specialityId: number) { // TODO: fix DELETE with body 
+    const response = await this.sendAuthorizedPostRequest({
+      path: "speciality/delete/",
       body: { speciality_id: specialityId },
       headers: null,
       params: null,
@@ -111,6 +111,18 @@ export class AccountAPI extends BaseListAPI {
     });
 
     console.info("confirmSpecialist", response);
+    return response;
+  }
+
+  async getSpecialistById(id: number) {
+    const response = await this.sendAuthorizedGetRequest({
+      path: "all/",
+      body: null,
+      headers: null,
+      params: {id},
+    });
+
+    console.info("getSpecialistById", response);
     return response;
   }
 }

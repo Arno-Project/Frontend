@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { useForm } from "@mantine/hooks";
 import {
-  Notification,
   TextInput,
   PasswordInput,
   Group,
@@ -13,16 +12,17 @@ import {
   Title,
   Modal,
 } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
+
+import { Lock, Mail, Phone, X, Edit, Id } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
 
-import { Lock, Mail, Phone, Check, X, Edit, Id } from "tabler-icons-react";
-
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
-
 import { UserRole } from "../../models";
 import { notifyUser } from "../utils";
 import { AccountAPI } from "../../api/accounts";
+import { APIDataToUsers } from "../../models/utils";
 
 import { Helmet } from "react-helmet";
 const TITLE = "اطلاعات کاربری";
@@ -50,7 +50,7 @@ const EditProfileView = () => {
       username: user?.username,
       email: user?.email,
       phone: user?.phone,
-      isSpecialistActive: true,
+      is_active: true,
     },
 
     validationRules: {
@@ -86,6 +86,10 @@ const EditProfileView = () => {
 
   const submitEditProfileForm = async (values: any) => {
     const res = await AccountAPI.getInstance().editMyProfile(values);
+    if (user?.role === UserRole.Specialist) {
+      await syncSpecialities();
+    }
+
     notifyUser(
       res,
       "ویرایش موفقیت‌آمیز",
@@ -93,7 +97,33 @@ const EditProfileView = () => {
     );
     if (res.success) {
       // TODO find a better way
-      window.location.reload();
+      // window.location.reload();
+    }
+  };
+
+  const syncSpecialities = async () => {
+    const res = await AccountAPI.getInstance().getSpecialistById(user!.id);
+    if (!res.success) {
+      showNotification({
+        title: "خطا",
+        message: "دریافت تخصص‌ها از سرور با خطا مواجه شد",
+        color: "red",
+        icon: <X size={18} />,
+      });
+      return;
+    }
+    const allSpecialities = await AccountAPI.getInstance().fetchSpecialities();
+    const mySpec = APIDataToUsers(res)[0].speciality.map((s) => s.id);
+    const selectedSpec = selectedSpecialities.map(
+      (s) => allSpecialities.filter((sp) => sp.title === s)[0].id
+    );
+    for (let specialityId of allSpecialities.map((s) => s.id)) {
+      if (mySpec.includes(specialityId) && !selectedSpec.includes(specialityId)) {
+        await AccountAPI.getInstance().removeSpeciality(specialityId);
+      }
+      if (selectedSpec.includes(specialityId) && !mySpec.includes(specialityId)) {
+        await AccountAPI.getInstance().addSpeciality(specialityId);
+      }
     }
   };
 
@@ -164,7 +194,7 @@ const EditProfileView = () => {
           <Checkbox
             mt="xl"
             label="فعال بودن متخصص"
-            {...editProfileForm.getInputProps("isSpecialistActive", {
+            {...editProfileForm.getInputProps("is_active", {
               type: "checkbox",
             })}
           />
