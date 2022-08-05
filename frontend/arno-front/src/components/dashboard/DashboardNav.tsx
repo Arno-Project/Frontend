@@ -14,11 +14,13 @@ import {
   Bucket,
   ReportAnalytics,
   MathFunction,
+  Tool,
+  Message,
+  ShoppingCart,
 } from "tabler-icons-react";
 
 import { UserCard } from "./_user";
 import { MainLinks } from "./_main-links";
-import { Brand } from "./_brand";
 import { useAppSelector } from "../../redux/hooks";
 import { AccessRules } from "../../assets/consts";
 
@@ -63,7 +65,7 @@ const links: MainLinkProps[] = [
   {
     icon: <Bucket size={16} />,
     color: "teal",
-    label: "خدمات دریافت شده",
+    label: "سفارش‌ها",
     path: "/requests",
   },
   {
@@ -107,6 +109,24 @@ const links: MainLinkProps[] = [
     color: "blue",
     label: "مدیریت خدمات",
     path: "/manage_services",
+  },
+  {
+    icon: <Tool size={16} />,
+    color: "teal",
+    label: "مدیریت تخصص‌ها",
+    path: "/manage_specialities",
+  },
+  {
+    icon: <ShoppingCart size={16} />,
+    color: "lime",
+    label: "درخواست‌ها",
+    path: "/customer_requests",
+  },
+  {
+    icon: <Message size={16} />,
+    color: "red",
+    label: "پیام‌ها",
+    path: "/chats",
   },
 ];
 

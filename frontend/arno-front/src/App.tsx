@@ -9,59 +9,14 @@ import BasePage from "./views/BasePage";
 import DashboardPage from "./views/DashboardPage";
 import { Route, Routes } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { User, UserRole } from "./models";
-import { useNavigate } from "react-router-dom";
-import { AccountAPI } from "./api/accounts";
-import { logout, setUserInfo } from "./redux/auth";
-
-import { useLocation } from "react-router-dom";
-import { APIDataToUser } from "./models/utils";
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
   const [rtl, setRtl] = useState(true);
 
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const getData = async () => {
-    let res = await AccountAPI.getInstance().getMyAccount();
-    let data = res.data;
-
-    if (res.success && data !== null) {
-      let user = APIDataToUser(res);
-
-      dispatch(setUserInfo(user));
-
-      if (location.pathname === "/register") {
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 500);
-      }
-    } else {
-      dispatch(logout());
-      if (location.pathname !== "/register")
-        setTimeout(() => {
-          navigate("/register");
-        }, 500);
-    }
-    setLoading(false);
-  };
-
-  const user = useAppSelector((state) => state.auth.user);
-  const token = useAppSelector((state) => state.auth.token);
-
-  useEffect(() => {
-    if (token && user === null) {
-      getData()
-    }
-  }, [])
-
-  let component = <></>;
-  if (!loading) {
-    component = (
+  return (
+    <>
+  
       <MantineProvider
         // withGlobalStyles
         withNormalizeCSS
@@ -89,13 +44,7 @@ export default function App() {
           </div>
         </NotificationsProvider>
       </MantineProvider>
-    );
-  }
 
-  return (
-    <>
-      <LoadingOverlay visible={loading} />
-      {component}
     </>
   );
 }

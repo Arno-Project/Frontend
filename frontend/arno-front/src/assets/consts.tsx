@@ -7,19 +7,6 @@ export const RoleDict: any = {
   "CM": "مدیر شرکت",
 };
 
-export const Specialities = [
-  "Software",
-  "Hardware",
-  "Strength",
-]; // TODO fetch from server
-
-export const SpecialitiesId = {
-  "Software": 1,
-  "Hardware": 2,
-  "Strength": 3,
-}; // TODO fetch from server
-
-
 export const AccessRules: any = {
   "/technical_issues": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/specialists": [UserRole.Customer, UserRole.Specialist, UserRole.TechnicalManager, UserRole.CompanyManager],
@@ -34,11 +21,15 @@ export const AccessRules: any = {
   "/request_service": [UserRole.Customer],
   "/create_request": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/manage_services": [UserRole.TechnicalManager, UserRole.CompanyManager],
+  "/manage_specialities": [UserRole.CompanyManager],
+  "/customer_requests": [UserRole.Specialist],
+  "/chats": [UserRole.Customer, UserRole.Specialist],
 };
 
 export const RequestStatusBadge: any = {
-  "PEND": { message: "در انتظار تعیین متخصص", color: "yellow" },
-  "WAIT": { message: "در انتظار پذیرش متخصص", color: "violet" },
+  "PEND": { message: "در حال بررسی", color: "yellow" },
+  "WAIS": { message: "در انتظار تایید کاربر", color: "indigo" },
+  "WAIC": { message: "در انتظار پذیرش متخصص", color: "violet" },
   "PROG": { message: "در حال انجام", color: "cyan" },
   "DONE": { message: "انجام شده", color: "teal" },
   "CNCL": { message: "لغو شده", color: "gray" },

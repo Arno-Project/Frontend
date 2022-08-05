@@ -17,7 +17,6 @@ export class AuthAPI extends BaseAPI {
   }
 
   async login(username:string, password:string) {
-    console.log(username, password)
     const renamed_params = {
       username: username,
       password:password

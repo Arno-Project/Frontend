@@ -1,21 +1,27 @@
-import { Group, ActionIcon, Box, Text } from "@mantine/core";
+import { Group, ActionIcon, Box, Text, Indicator, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { Logout } from "tabler-icons-react";
+import { Logout, Bell } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout } from "../../redux/auth";
 import { AuthAPI } from "../../api/auth";
 
 export function Brand() {
   let navigate = useNavigate();
-
   const dispatch = useAppDispatch();
+
+  const notificationCount = useAppSelector((state) => state.auth.notificationCount);
 
   const doLogout = async () => {
     await AuthAPI.getInstance().logout();
     dispatch(logout());
     navigate("/");
   };
+
+  const navigateToNotifs = () => {
+    navigate("/dashboard/notifications"); 
+  };
+
 
   return (
     <Box
@@ -39,9 +45,20 @@ export function Brand() {
         >
           داشبورد
         </Text>
-        <ActionIcon variant="default" onClick={() => doLogout()} size={30}>
-          <Logout size={16} />
-        </ActionIcon>
+        <Group>
+          <Indicator disabled={notificationCount === 0} color="red">
+            <ActionIcon
+              variant="default"
+              onClick={() => navigateToNotifs()}
+              size={30}
+            >
+              <Bell size={16} />
+            </ActionIcon>
+          </Indicator>
+          <ActionIcon variant="default" onClick={() => doLogout()} size={30}>
+            <Logout size={16} />
+          </ActionIcon>
+        </Group>
       </Group>
     </Box>
   );
