@@ -40,6 +40,7 @@ import RequestDetails from "./dashboard/RequestDetails";
 import ChatsView from "./dashboard/ChatsView";
 import SingleChatView from "./dashboard/SingleChatView";
 import NotificationsView from "./dashboard/NotificationsView";
+import ViewCustomerRequests from "./dashboard/ViewCustomerRequests";
 
 import { Brand } from "../components/dashboard/_brand";
 
@@ -174,6 +175,7 @@ const DashboardPage = () => {
               <Route path="/notifications" element={<NotificationsView />} />
               <Route path="/manage_specialities" element={<ManageSpecialitiesView />} />
               <Route path="/request_details/:requestId" element={<RequestDetails />} />
+              <Route path="/customer_requests" element={<ViewCustomerRequests />} />
             </Routes>
           </Container>
         </AppShell>

@@ -16,6 +16,7 @@ import {
   MathFunction,
   Tool,
   Message,
+  ShoppingCart,
 } from "tabler-icons-react";
 
 import { UserCard } from "./_user";
@@ -114,6 +115,12 @@ const links: MainLinkProps[] = [
     color: "teal",
     label: "مدیریت تخصص‌ها",
     path: "/manage_specialities",
+  },
+  {
+    icon: <ShoppingCart size={16} />,
+    color: "lime",
+    label: "مدیریت درخواست‌ها",
+    path: "/customer_requests",
   },
   {
     icon: <Message size={16} />,
