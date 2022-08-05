@@ -23,28 +23,12 @@ import { APIDataToUsers } from "../models/utils";
 import { mantine_colors } from "../assets/consts";
 const TITLE = "متخصصان";
 
-const SpecialistsTable = () => {
+const SpecialistsTable = (props: { users: User[] }) => {
   const user = useAppSelector((state) => state.auth.user);
 
   const PAGE_SIZE = 5;
   const [activePage, setPage] = useState(1);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-
-  const getData = async () => {
-    const filter = new FieldFilter(
-      FieldFilterName.Role,
-      UserRole.Specialist,
-      FieldFilterType.Exact
-    );
-    let res = await AccountAPI.getInstance().get([filter]);
-    const users = APIDataToUsers(res);
-    setUsers(users);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <>
@@ -81,7 +65,7 @@ const SpecialistsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, i) => {
+          {props.users.map((user, i) => {
             if (user.is_validated)
               return (
                 <tr key={user.id}>

@@ -87,8 +87,8 @@ const ManageServicesView = () => {
     const body: any[] = cancelableRows.map((obj: ServiceSummary, i) => (
       <tr key={i}>
         <td>{i + 1}</td>
-        <td>{obj.customer}</td>
-        <td>{!!obj.specialist ? obj.specialist : "-"}</td>
+        <td>{obj.customerName}</td>
+        <td>{!!obj.specialistName?obj.specialistName: "-"}</td>
         <td>
           <Badge color={RequestStatusBadge[obj.status].color} variant="filled">
             {RequestStatusBadge[obj.status].message}
@@ -160,7 +160,7 @@ const ManageServicesView = () => {
           {pendingRows.map((row, i) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <td>{row.customer}</td>
+              <td>{row.customerName}</td>
               <td>
                 <Tooltip
                   label={row.requested_speciality.description}

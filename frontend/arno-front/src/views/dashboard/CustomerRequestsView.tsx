@@ -70,7 +70,7 @@ const CustomerRequestsView = () => {
             </Badge>
           </Tooltip>
         </td>
-        <td>{!!obj.specialist ? obj.specialist : "-"}</td>
+        <td>{!!obj.specialist ? obj.specialistName : "-"}</td>
         <td>
           <Badge color={RequestStatusBadge[obj.status].color} variant="filled">
             {RequestStatusBadge[obj.status].message}

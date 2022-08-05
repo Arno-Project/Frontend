@@ -23,6 +23,7 @@ import { Check, X } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 
 import { Helmet } from "react-helmet";
+import SpecialistsTable from "../../components/SpecialistsTable";
 const TITLE = "جزئیات سفارش";
 
 const RequestDetails = () => {
@@ -38,6 +39,8 @@ const RequestDetails = () => {
     const res = await CoreAPI.getInstance().getRequestDetails(requestId!);
     if (res.success) {
       const data = APIDataToServiceSummary(res)[0];
+      console.log(data)
+      
       setRequestDetails(data);
       if (data.location)
         setPosition([data.location.latitude, data.location.longitude]);
@@ -135,46 +138,52 @@ const RequestDetails = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker
-              position={position as LatLngTuple}
-            ></Marker>
+            <Marker position={position as LatLngTuple}></Marker>
           </MapContainer>
         </>
       )}
-      <Divider size="sm" my="xs" label="متخصص" labelPosition="left" />
-      <Title order={4}>ارسال سفارش به متخصص</Title>
-      <Title order={4}>پذیرش/رد متخصص</Title>
-      <Table striped highlightOnHover>
-        <thead>
-          <tr>
-            <th>نام متخصص</th>
-            <th>نام خدمت</th>
-            <th>تخصص(ها)</th>
-            <th>تأیید/رد</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>امیرمهدی نامجو</td>
-            <td>نصب ویندوز</td>
-            <td>
-              <Badge color="indigo" variant="filled">
-                نرم‌افزار
-              </Badge>
-              <Badge color="cyan" variant="filled">
-                سخت‌افزار
-              </Badge>
-            </td>
-            <td>
-              <div style={{ display: "flex" }}>
-                <Check color="green" size={22} />
-                <Space w="lg" />
-                <X color="red" size={22} />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+      <Divider size="sm" my="xs" label="انتخاب متخصص" labelPosition="left" />
+      <SpecialistsTable users={[]}></SpecialistsTable>
+      <Divider size="sm" my="xs" label="پذیرش/رد متخصص" labelPosition="left" />
+
+      {requestDetails?.specialist && (
+        <tr key={requestDetails.specialist.id}>
+          <td>{requestDetails.specialist.id}</td>
+          <td>
+            {requestDetails.specialistName}
+          </td>
+          <td>
+            {requestDetails.specialist.speciality.map((s) => {
+              return (
+                <Tooltip
+                  label={s.description}
+                  color="gray"
+                  transition="skew-down"
+                  transitionDuration={300}
+                  withArrow
+                >
+                  <Badge
+                    key={s.id}
+                    color={mantine_colors[s.id % mantine_colors.length]}
+                    variant="filled"
+                  >
+                    {s.title}
+                  </Badge>
+                </Tooltip>
+              );
+            })}
+          </td>
+          <td>
+          </td>
+          <td>
+            <div style={{ display: "flex" }}>
+              <Check color="green" size={22} />
+              <Space w="lg" />
+              <X color="red" size={22} />
+            </div>
+          </td>
+        </tr>
+      )}
     </>
   );
 };
