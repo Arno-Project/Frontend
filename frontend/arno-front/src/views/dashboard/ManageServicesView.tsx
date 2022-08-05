@@ -8,12 +8,13 @@ import {
   Center,
   Table,
   Title,
+  Tooltip,
   UnstyledButton,
 } from "@mantine/core";
 import { ExternalLink, ListSearch, X } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 
-import { RequestStatusBadge } from "../../assets/consts";
+import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 import { CoreAPI } from "../../api/core";
 import { RequestStatus, ServiceSummary } from "../../models";
 import { notifyUser } from "../utils";
@@ -161,12 +162,25 @@ const ManageServicesView = () => {
               <td>{i + 1}</td>
               <td>{row.customer}</td>
               <td>
-                <Badge
-                  color={RequestStatusBadge[row.status].color}
-                  variant="filled"
+                <Tooltip
+                  label={row.requested_speciality.description}
+                  color="gray"
+                  transition="skew-down"
+                  transitionDuration={300}
+                  withArrow
                 >
-                  {RequestStatusBadge[row.status].message}
-                </Badge>
+                  <Badge
+                    key={row.requested_speciality.id}
+                    color={
+                      mantine_colors[
+                        row.requested_speciality.id % mantine_colors.length
+                      ]
+                    }
+                    variant="filled"
+                  >
+                    {row.requested_speciality.title}
+                  </Badge>
+                </Tooltip>
               </td>
               <td>
                 <UnstyledButton

@@ -10,17 +10,21 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
+
 import { CoreAPI } from "../../api/core";
 import { ServiceSummary } from "../../models";
 import { APIDataToServiceSummary } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
-
-import { Helmet } from "react-helmet";
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
+
 import { Check, X } from "tabler-icons-react";
+import { Helmet } from "react-helmet";
+import { LatLngTuple } from "leaflet";
 const TITLE = "جزئیات سفارش";
 
 const RequestDetails = () => {
+  let position = [35.7, 51.3];
   const { requestId } = useParams();
   const [requestDetails, setRequestDetails] = useState<ServiceSummary>();
 
@@ -32,6 +36,7 @@ const RequestDetails = () => {
     const res = await CoreAPI.getInstance().getRequestDetails(requestId!);
     if (res.success) {
       setRequestDetails(APIDataToServiceSummary(res)[0]);
+      position = [requestDetails!.location.lat, requestDetails!.location.lng];
     } else {
     }
   };
@@ -102,6 +107,28 @@ const RequestDetails = () => {
 
             <Text component="span">{requestDetails.description}</Text>
           </div>
+          <div style={{ display: "flex" }}>
+            <Text weight={500} component="span">
+              آدرس:
+            </Text>
+            <Space w="lg" />
+
+            <Text component="span">{requestDetails.location.address}</Text>
+          </div>
+          <MapContainer
+            style={{ height: "40vh", width: "40%", borderRadius: "10px" }}
+            center={position as LatLngTuple}
+            zoom={15}
+            scrollWheelZoom={true}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker
+              position={position as LatLngTuple}
+            ></Marker>
+          </MapContainer>
         </>
       )}
       <Divider size="sm" my="xs" label="متخصص" labelPosition="left" />

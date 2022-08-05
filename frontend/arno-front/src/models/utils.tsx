@@ -1,4 +1,4 @@
-import { Feedback, FeedbackStatus, FeedbackType, RequestStatus, ServiceSummary, Speciality, User, UserRole } from ".";
+import { Feedback, FeedbackStatus, FeedbackType, LocationModel, RequestStatus, ServiceSummary, Speciality, User, UserRole } from ".";
 import { APIResponse } from "../api/base";
 
 export function ObjectToUser(data: Object): User {
@@ -46,6 +46,7 @@ export function ObjectToServiceSummary(data: Object): ServiceSummary {
     description: data["description" as keyof object],
     requested_speciality: data["requested_speciality" as keyof object] as Speciality,
     start_time: data["desired_start_time" as keyof object],
+    location: data["location" as keyof object] as LocationModel,
   };
   return serviceSummary;
 }
