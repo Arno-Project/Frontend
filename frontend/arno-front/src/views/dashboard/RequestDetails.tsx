@@ -182,9 +182,9 @@ const RequestDetails = () => {
   };
 
   const navigate = useNavigate();
-  const sendMessageToSpecialist = async () => {
+  const sendMessage = async (id: number) => {
     console.log("send msg");
-    navigate("/dashboard/chats/" + requestDetails!.specialist!.id);
+    navigate("/dashboard/chats/" + id);
   };
 
   let specialistComponent = <></>;
@@ -255,6 +255,10 @@ const RequestDetails = () => {
         );
       }
 
+
+ 
+
+
       if (
         requestDetails.status === RequestStatus.In_progress &&
         user!.id === requestDetails.specialist?.id
@@ -284,6 +288,30 @@ const RequestDetails = () => {
           </>
         );
       }
+
+      specialistComponent = (
+        <>
+          {specialistComponent}
+          <Divider
+            size="sm"
+            my="xs"
+            label="ارتباط با مشتری"
+            labelPosition="left"
+          />
+          <Group>
+            <Button
+              color="yellow"
+              onClick={() => {
+                sendMessage(requestDetails.customer.id);
+              }}
+              leftIcon={<Message size={20} />}
+            >
+              ارسال پیام به مشتری
+            </Button>
+          </Group>
+        </>
+      );
+    
     }
 
     if (user!.role === UserRole.Customer) {
@@ -394,7 +422,7 @@ const RequestDetails = () => {
                 </Grid.Col>
                 <Grid.Col span={3}>
                   <Group>
-                    <ActionIcon onClick={() => sendMessageToSpecialist()}>
+                    <ActionIcon onClick={() => sendMessage(requestDetails!.specialist!.id)}>
                       <Message color={"#40bfa3"} size={22} />
                     </ActionIcon>
                   </Group>
