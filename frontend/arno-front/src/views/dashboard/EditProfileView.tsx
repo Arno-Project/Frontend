@@ -53,13 +53,20 @@ const EditProfileView = () => {
       email: user?.email,
       phone: user?.phone,
       is_active: true,
+      documents: null,
     },
 
     validate: {
-      first_name: (value: string) => value!.trim().length >= 2 ? null: "نام به‌درستی ثبت نشده است",
-      last_name: (value: string) => value!.trim().length >= 2 ? null: "نام به‌درستی ثبت نشده است",
-      email: (value: string) => /^\S+@\S+$/.test(value!) ? null :  "ایمیل به‌درستی وارد نشده است.",
-      phone: (value: string) => /^(\+|0)\d{10}$/.test(value!) ? null :  "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
+      first_name: (value: string) =>
+        value!.trim().length >= 2 ? null : "نام به‌درستی ثبت نشده است",
+      last_name: (value: string) =>
+        value!.trim().length >= 2 ? null : "نام به‌درستی ثبت نشده است",
+      email: (value: string) =>
+        /^\S+@\S+$/.test(value!) ? null : "ایمیل به‌درستی وارد نشده است.",
+      phone: (value: string) =>
+        /^(\+|0)\d{10}$/.test(value!)
+          ? null
+          : "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
     },
   });
 
@@ -72,11 +79,14 @@ const EditProfileView = () => {
 
     validate: {
       password: PasswordValidator.validatePassword,
-      confirm_password: (val, values: any) => val === values.password ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
+      confirm_password: (val, values: any) =>
+        val === values.password ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
     },
   });
 
   const submitEditProfileForm = async (values: any) => {
+    console.log(values);
+    
     const res = await AccountAPI.getInstance().editMyProfile(values);
     if (user?.role === UserRole.Specialist) {
       await syncSpecialities();
@@ -110,10 +120,16 @@ const EditProfileView = () => {
       (s) => allSpecialities.filter((sp) => sp.title === s)[0].id
     );
     for (let specialityId of allSpecialities.map((s) => s.id)) {
-      if (mySpec.includes(specialityId) && !selectedSpec.includes(specialityId)) {
+      if (
+        mySpec.includes(specialityId) &&
+        !selectedSpec.includes(specialityId)
+      ) {
         await AccountAPI.getInstance().removeSpeciality(specialityId);
       }
-      if (selectedSpec.includes(specialityId) && !mySpec.includes(specialityId)) {
+      if (
+        selectedSpec.includes(specialityId) &&
+        !mySpec.includes(specialityId)
+      ) {
         await AccountAPI.getInstance().addSpeciality(specialityId);
       }
     }
@@ -125,7 +141,7 @@ const EditProfileView = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      <form onSubmit={editProfileForm.onSubmit(submitEditProfileForm)}>
+      <form encType="multipart/form-data" onSubmit={editProfileForm.onSubmit(submitEditProfileForm)}>
         <LoadingOverlay visible={loading} />
         <Group grow>
           <TextInput
@@ -172,15 +188,14 @@ const EditProfileView = () => {
           {...editProfileForm.getInputProps("phone")}
         />
 
-        <FileInput label="Your resume" placeholder="Your resume" icon={<FileUpload size={14} />} />
         {user?.role === UserRole.Specialist && (
-          <div style={{ marginTop: "16px" }}>
-            <SpecialityMultiSelect
-              setter={onSpecialitySelectChange}
-              required={true}
-              error={specialityError}
-            />
-          </div>
+          <FileInput
+            mt="sm"
+            label="آپلود مدارک"
+            placeholder="انتخاب مدارک اعتبارسنجی"
+            icon={ <FileUpload size={20} /> }
+            {...editProfileForm.getInputProps("documents")}
+          />
         )}
 
         {user?.role === UserRole.Specialist && (
