@@ -71,7 +71,7 @@ const EditProfileView = () => {
     },
 
     validate: {
-      password: (value: string) => PasswordValidator.validatePassword(value),
+      password: PasswordValidator.validatePassword,
       confirm_password: (val, values: any) => val === values.password ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
     },
   });

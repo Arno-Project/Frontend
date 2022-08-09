@@ -70,9 +70,9 @@ const SignUpPage = () => {
       // firstName: (value) => formType === "login" || value.trim().length >= 2,
       // lastName: (value) => formType === "login" || value.trim().length >= 2,
       // email: (value) => /^\S+@\S+$/.test(value),
-      password: (value: string) => PasswordValidator.validatePassword(value),
+      password: PasswordValidator.validatePassword,
       phone: (value: string) => /^(\+|0)\d{10}$/.test(value) ? null : "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
-      confirmPassword: (val: string, values: any) => formType === "login" || val === values.password ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
+      confirmPassword: (val: string, values: any) => (formType === "login" || val === values.password) ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
       termsOfService: (value: boolean) => value === true ? null : "لطفا با مقررات سایت موافقت کنید",
     },
   });

@@ -4,8 +4,8 @@ const StrongPassword = true;
 export class PasswordValidator {
     static validatePassword(input:string): string | null {
         if (StrongPassword) {
-            return null;
+            return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(input) ? null : IncorrectPasswordMessage;
         }
-        return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(input) ? null : IncorrectPasswordMessage;
+        return null;
     }
 };
