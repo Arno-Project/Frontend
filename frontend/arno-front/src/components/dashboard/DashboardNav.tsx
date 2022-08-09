@@ -74,12 +74,12 @@ const links: MainLinkProps[] = [
     label: "سیاست‌گذاری خدمت‌دهی",
     path: "/service_policy",
   },
-  {
-    icon: <BuildingStore size={16} />,
-    color: "grape",
-    label: "مشاهده خدمات",
-    path: "/services",
-  },
+  // {
+  //   icon: <BuildingStore size={16} />,
+  //   color: "grape",
+  //   label: "مشاهده خدمات",
+  //   path: "/services",
+  // },
   {
     icon: <ClipboardText size={16} />,
     color: "blue",

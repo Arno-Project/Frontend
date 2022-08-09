@@ -1,29 +1,20 @@
 import { useEffect, useState } from "react";
 
-import {
-  Badge,
-  Button,
-  Center,
-  Pagination,
-  Space,
-  Table,
-  TextInput,
-  Title,
-  Tooltip,
-} from "@mantine/core";
-import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
+import { Space, Table, Title } from "@mantine/core";
+import { X, Check, Paperclip } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
-import { User, UserGeneralRole, UserRole } from "../../models";
+import { User, UserRole } from "../../models";
 
 import { Helmet } from "react-helmet";
 import { AccountAPI } from "../../api/accounts";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { APIDataToUsers } from "../../models/utils";
-import { mantine_colors } from "../../assets/consts";
 import SpecialistsTable from "../../components/SpecialistsTable";
 import { SpecialitiesBadges } from "../../models/SpecialityBadges";
 const TITLE = "متخصصان";
+
+const PAGE_SIZE = 4;
 
 const SpecialistsView = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -78,7 +69,7 @@ const SpecialistsView = () => {
                         {user.firstName} {user.lastName}
                       </td>
                       <td>
-                      <SpecialitiesBadges speciality={user.speciality} />
+                        <SpecialitiesBadges speciality={user.speciality} />
                       </td>
                       <td>
                         <Paperclip size={24} />
@@ -101,7 +92,7 @@ const SpecialistsView = () => {
         مشاهده متخصصین برحسب امتیاز
       </Title>
 
-     <SpecialistsTable users={users} button={null}></SpecialistsTable>
+      <SpecialistsTable users={users} button={null}></SpecialistsTable>
     </>
   );
 };

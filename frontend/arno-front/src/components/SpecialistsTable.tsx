@@ -14,6 +14,8 @@ import { User } from "../models";
 import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
 import { SpecialistRow } from "./SpecialistRow";
 
+const PAGE_SIZE = 5;
+
 const SpecialistsTable = (props: {
   users: User[];
   button: {
@@ -21,9 +23,13 @@ const SpecialistsTable = (props: {
     action: Function;
   } | null;
 }) => {
-  const PAGE_SIZE = 5;
   const [activePage, setPage] = useState(1);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
+  const rows = props.users.slice(
+    PAGE_SIZE * (activePage - 1),
+    PAGE_SIZE * activePage
+  );
 
   return (
     <>
@@ -61,7 +67,7 @@ const SpecialistsTable = (props: {
           </tr>
         </thead>
         <tbody>
-          {props.users.map((user, i) => {
+          {rows.map((user, i) => {
             if (user.is_validated)
               return (
                 <SpecialistRow user={user} idx={i + 1} button={props.button} />
@@ -72,7 +78,7 @@ const SpecialistsTable = (props: {
       <Center mt="sm">
         <Pagination
           mt="sm"
-          total={3} // {Math.ceil(data.length / PAGE_SIZE)}
+          total={Math.ceil(props.users.length / PAGE_SIZE)}
           color="cyan"
           radius="md"
           withEdges

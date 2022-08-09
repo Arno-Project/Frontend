@@ -15,8 +15,8 @@ export const SpecialistRow = (props: {
 }) => {
   const user = props.user;
   const idx = props.idx;
-  return ( // To Saba: key={user.id} -> key={idx} :?
-    <tr key={idx}>
+  return (
+    <tr key={user.id}>
       <td>{idx}</td>
       <td>
         {user.firstName} {user.lastName}

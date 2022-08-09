@@ -218,7 +218,7 @@ const RequestDetails = () => {
                 <Button
                   color="red"
                   onClick={() => {
-                    acceptOrRejectCustomerRequest(true);
+                    acceptOrRejectCustomerRequest(false);
                   }}
                   leftIcon={<X size={22} />}
                 >

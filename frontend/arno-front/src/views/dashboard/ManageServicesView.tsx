@@ -95,7 +95,7 @@ const ManageServicesView = () => {
           </Badge>
         </td>
         <td>
-          {obj.status !== RequestStatus.Cancelled && (
+          {![RequestStatus.Cancelled, RequestStatus.Done].includes(obj.status) && (
             <UnstyledButton onClick={() => cancelService(obj.id)}>
               <X color="red" size={22} />
             </UnstyledButton>
