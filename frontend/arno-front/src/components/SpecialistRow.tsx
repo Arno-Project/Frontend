@@ -1,16 +1,8 @@
-import { useEffect, useState } from "react";
 
-import { Badge, Button, Tooltip } from "@mantine/core";
-import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
+import { Button } from "@mantine/core";
 
-import { useAppSelector } from "../redux/hooks";
-import { User, UserGeneralRole, UserRole } from "../models";
-import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
+import { User } from "../models";
 
-import { AccountAPI } from "../api/accounts";
-import { FieldFilter, FieldFilterName, FieldFilterType } from "../api/base";
-import { APIDataToUsers } from "../models/utils";
-import { mantine_colors } from "../assets/consts";
 import { SpecialitiesBadges } from "../models/SpecialityBadges";
 
 export const SpecialistRow = (props: {
@@ -23,8 +15,8 @@ export const SpecialistRow = (props: {
 }) => {
   const user = props.user;
   const idx = props.idx;
-  return (
-    <tr key={user.id}>
+  return ( // To Saba: key={user.id} -> key={idx} :?
+    <tr key={idx}>
       <td>{idx}</td>
       <td>
         {user.firstName} {user.lastName}

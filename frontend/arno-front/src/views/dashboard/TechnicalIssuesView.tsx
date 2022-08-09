@@ -21,7 +21,7 @@ import { useAppSelector } from "../../redux/hooks";
 
 import { Feedback, UserRole } from "../../models";
 
-import { useForm } from "@mantine/hooks";
+import { useForm } from '@mantine/form';
 
 import { Helmet } from "react-helmet";
 import { SystemFeedbackAPI } from "../../api/feedback";
@@ -66,12 +66,8 @@ const TechnicalIssuesView = () => {
       techResponse: "placeholder",
     },
 
-    validationRules: {
-      techResponse: (value) => value.trim().length >= 2,
-    },
-
-    errorMessages: {
-      techResponse: "این بخش نمی‌تواند خالی باشد",
+    validate: {
+      techResponse: (value) => value.trim().length >= 2 ? null : "این بخش نمی‌تواند خالی باشد",
     },
   });
 
@@ -153,9 +149,9 @@ const TechnicalIssuesView = () => {
           <>
           
             <Text weight={700}>ارسال شده توسط:</Text>
-             <Text>{rows[rowId].user.username}</Text>
-             <Text weight={700}>تاریخ:</Text>
-             <Text>{formatDateString(rows[rowId].created_at)}</Text>
+            <Text>{rows[rowId].user.username}</Text>
+            <Text weight={700}>تاریخ:</Text>
+            <Text>{formatDateString(rows[rowId].created_at)}</Text>
             <Text weight={700}>متن مشکل:</Text>
             <Text>{rows[rowId].text}</Text>
             <Text weight={700}> پاسخ:</Text>

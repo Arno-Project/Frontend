@@ -11,7 +11,7 @@ import {
   Textarea,
   Title,
 } from "@mantine/core";
-import { useForm } from "@mantine/hooks";
+import { useForm } from '@mantine/form';
 import { DatePicker } from "@mantine/dates";
 import { Map2, MapPin, Send, UserSearch, X } from "tabler-icons-react";
 
@@ -53,14 +53,9 @@ const RequestServiceView = () => {
       desired_start_time: new Date(),
       description: "",
     },
-    validationRules: {
-      requested_speciality: (value) => value.length > 0,
-      description: (value) => value.trim().length > 0,
-    },
-    errorMessages: {
-      requested_speciality: "این بخش نمی‌تواند خالی باشد",
-      desired_start_time: "زمان نمی‌تواند خالی باشد.",
-      description: "این بخش نمی‌تواند خالی باشد",
+    validate: {
+      requested_speciality: (value) => value.length > 0 ? null : "این بخش نمی‌تواند خالی باشد",
+      description: (value) => value.trim().length > 0 ? null : "این بخش نمی‌تواند خالی باشد",
     },
   });
 
@@ -68,11 +63,8 @@ const RequestServiceView = () => {
     initialValues: {
       address: "",
     },
-    validationRules: {
-      address: (value) => value.trim().length > 5,
-    },
-    errorMessages: {
-      address: "لطفا آدرس بلندتری وارد کنید",
+    validate: {
+      address: (value) => value.trim().length > 5 ? null : "لطفا آدرس بلندتری وارد کنید",
     },
   });
 

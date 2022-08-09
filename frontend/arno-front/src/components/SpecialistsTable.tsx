@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
-  Badge,
   Button,
   Center,
   Pagination,
-  Space,
   Table,
   TextInput,
-  Title,
   Group,
-  Grid,
 } from "@mantine/core";
-import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
+import { ListSearch, Search } from "tabler-icons-react";
 
-import { useAppSelector } from "../redux/hooks";
-import { User, UserGeneralRole, UserRole } from "../models";
+import { User } from "../models";
 import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
 import { SpecialistRow } from "./SpecialistRow";
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useForm } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 import {
   TextInput,
   PasswordInput,
@@ -11,10 +11,11 @@ import {
   Center,
   Title,
   Modal,
+  FileInput,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 
-import { Lock, Mail, Phone, X, Edit, Id } from "tabler-icons-react";
+import { Lock, Mail, Phone, X, Edit, Id, FileUpload } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
 
@@ -23,6 +24,7 @@ import { UserRole } from "../../models";
 import { notifyUser } from "../utils";
 import { AccountAPI } from "../../api/accounts";
 import { APIDataToUsers } from "../../models/utils";
+import { PasswordValidator } from "../../assets/PasswordValidator";
 
 import { Helmet } from "react-helmet";
 const TITLE = "اطلاعات کاربری";
@@ -53,16 +55,11 @@ const EditProfileView = () => {
       is_active: true,
     },
 
-    validationRules: {
-      first_name: (value) => value!.trim().length >= 2,
-      last_name: (value) => value!.trim().length >= 2,
-      email: (value) => /^\S+@\S+$/.test(value!),
-      phone: (value) => /^(\+|0)\d{10}$/.test(value!),
-    },
-
-    errorMessages: {
-      email: "ایمیل به‌درستی وارد نشده است.",
-      phone: "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
+    validate: {
+      first_name: (value: string) => value!.trim().length >= 2 ? null: "نام به‌درستی ثبت نشده است",
+      last_name: (value: string) => value!.trim().length >= 2 ? null: "نام به‌درستی ثبت نشده است",
+      email: (value: string) => /^\S+@\S+$/.test(value!) ? null :  "ایمیل به‌درستی وارد نشده است.",
+      phone: (value: string) => /^(\+|0)\d{10}$/.test(value!) ? null :  "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
     },
   });
 
@@ -73,14 +70,9 @@ const EditProfileView = () => {
       confirm_password: "",
     },
 
-    validationRules: {
-      confirm_password: (val, values: any) => val === values.password,
-    },
-
-    errorMessages: {
-      // password:
-      //   "Password should contain 1 number, 1 letter and at least 6 characters",
-      confirm_password: "تکرار رمز مطابق رمز وارد شده نیست.",
+    validate: {
+      password: (value: string) => PasswordValidator.validatePassword(value),
+      confirm_password: (val, values: any) => val === values.password ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
     },
   });
 
@@ -179,6 +171,17 @@ const EditProfileView = () => {
           icon={<Phone />}
           {...editProfileForm.getInputProps("phone")}
         />
+
+        <FileInput label="Your resume" placeholder="Your resume" icon={<FileUpload size={14} />} />
+        {user?.role === UserRole.Specialist && (
+          <div style={{ marginTop: "16px" }}>
+            <SpecialityMultiSelect
+              setter={onSpecialitySelectChange}
+              required={true}
+              error={specialityError}
+            />
+          </div>
+        )}
 
         {user?.role === UserRole.Specialist && (
           <div style={{ marginTop: "16px" }}>

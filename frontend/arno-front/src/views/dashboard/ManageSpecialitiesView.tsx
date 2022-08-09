@@ -1,6 +1,6 @@
 import { Button, Center, TextInput, Table, Textarea, Title, Pagination } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useForm } from "@mantine/hooks";
+import { useForm } from '@mantine/form';
 
 import { useState, useEffect } from "react";
 
@@ -44,14 +44,9 @@ const ManageSpecialitiesView = () => {
       description: "",
     },
 
-    validationRules: {
-      title: (value) => value.trim().length > 2,
-      description: (value) => value.trim().length >= 2,
-    },
-
-    errorMessages: {
-      title: "این بخش نمی‌تواند خالی (یا خیلی کوتاه) باشد",
-      description: "این بخش نمی‌تواند خالی (یا خیلی کوتاه) باشد",
+    validate: {
+      title: (value) => value.trim().length > 2 ? null : "این بخش نمی‌تواند خالی (یا خیلی کوتاه) باشد",
+      description: (value) => value.trim().length >= 2 ? null : "این بخش نمی‌تواند خالی (یا خیلی کوتاه) باشد",
     },
   });
 

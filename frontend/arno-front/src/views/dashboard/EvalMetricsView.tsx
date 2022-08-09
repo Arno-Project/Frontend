@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   Table,
   Title,
-  Avatar,
   Space,
   Group,
   ActionIcon,
@@ -12,33 +11,21 @@ import {
   Textarea,
   Input,
   Radio,
-  RadioGroup,
 } from "@mantine/core";
 import {
   X,
   Check,
-  ListSearch,
-  Search,
-  Paperclip,
-  BellRinging,
-  Checks,
   Edit,
-  Send,
 } from "tabler-icons-react";
 
-import { useAppSelector } from "../../redux/hooks";
-import { Chat, Metric, UserRole } from "../../models";
+import { Metric, UserRole } from "../../models";
 
 import { Helmet } from "react-helmet";
-import { APIDataToChats, APIDataToMetrics } from "../../models/utils";
-import { formatDateString } from "../../dateUtils";
-import { useNavigate } from "react-router-dom";
-import { ChatsAPI } from "../../api/chats";
-import { FeedbackAPI, SystemFeedbackAPI } from "../../api/feedback";
+import { APIDataToMetrics } from "../../models/utils";
 import { MetricsAPI } from "../../api/metrics";
 import { RoleDict } from "../../assets/consts";
 import { showNotification } from "@mantine/notifications";
-import { useForm } from "@mantine/hooks";
+import { useForm } from '@mantine/form';
 
 const TITLE = "معیارهای ارزیابی";
 
@@ -238,7 +225,7 @@ const EvalMetricsView = () => {
             required
             {...editMetricForm.getInputProps("description")}
           />
-          <RadioGroup
+          <Radio.Group
             mb="sm"
             label="کاربر مربوطه"
             description="مشخص کنید معیار در نظرسنجی کدام کاربر مورد استفاده قرار گیرد."
@@ -249,7 +236,7 @@ const EvalMetricsView = () => {
           >
             <Radio value={UserRole.Customer} label="مشتری" />
             <Radio value={UserRole.Specialist} label="متخصص" />
-          </RadioGroup>
+          </Radio.Group>
           <Group position="right">
             <Button mt="md" color="blue" type="submit">
               ثبت

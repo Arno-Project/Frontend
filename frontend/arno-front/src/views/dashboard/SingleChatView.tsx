@@ -11,20 +11,18 @@ import {
   Grid,
   Input,
 } from "@mantine/core";
-import {
-  Dots,
-  X
-} from "tabler-icons-react";
+import { X } from "tabler-icons-react";
 
 import { Message} from "../../models";
 
 import { Helmet } from "react-helmet";
-import { APIDataToMessages, APIDataToUsers } from "../../models/utils";
+import { APIDataToMessages } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChatsAPI } from "../../api/chats";
-import { useForm, useInterval } from "@mantine/hooks";
+import { useInterval } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
+import { useForm } from "@mantine/form";
 
 const TITLE = "پیام‌ها";
 
@@ -73,8 +71,8 @@ const SingleChatView = (props: any) => {
       text: "",
     },
 
-    validationRules: {
-      text: (value) => Boolean(value),
+    validate: {
+      text: (value) => Boolean(value) ? null : "پیام نامعتبر",
     },
   });
 

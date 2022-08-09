@@ -445,7 +445,7 @@ const RequestDetails = () => {
       {!!requestDetails && (
         <>
           <div style={{ display: "flex" }}>
-            <Text weight={500} component="span">
+            <Text weight={500} span>
               تخصص مورد نیاز:
             </Text>
             <Space w="lg" />
@@ -471,17 +471,17 @@ const RequestDetails = () => {
             </Tooltip>
           </div>
           <div style={{ display: "flex" }}>
-            <Text weight={500} component="span">
+            <Text weight={500} span>
               تاریخ شروع:
             </Text>
             <Space w="lg" />
-            <Text component="span">
+            <Text span>
               {formatDateString(requestDetails.start_time)}
             </Text>
             {/* {!!requestDetails && new Date(Date.parse(requestDetails?.start_time)).toLocaleString('fa-IR')}; */}
           </div>
           <div style={{ display: "flex" }}>
-            <Text weight={500} component="span">
+            <Text weight={500} span>
               وضعیت:
             </Text>
             <Space w="lg" />
@@ -493,20 +493,20 @@ const RequestDetails = () => {
             </Badge>
           </div>
           <div style={{ display: "flex" }}>
-            <Text weight={500} component="span">
+            <Text weight={500} span>
               توضیحات:
             </Text>
             <Space w="lg" />
 
-            <Text component="span">{requestDetails.description}</Text>
+            <Text span>{requestDetails.description}</Text>
           </div>
           <div style={{ display: "flex" }}>
-            <Text weight={500} component="span">
+            <Text weight={500} span>
               آدرس:
             </Text>
             <Space w="lg" />
 
-            <Text component="span">{requestDetails.location?.address}</Text>
+            <Text span>{requestDetails.location?.address}</Text>
           </div>
           <MapContainer
             style={{ height: "40vh", width: "40%", borderRadius: "10px" }}

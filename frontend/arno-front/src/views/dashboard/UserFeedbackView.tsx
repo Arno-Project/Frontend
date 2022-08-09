@@ -1,8 +1,6 @@
 import { Button, Center, Select, Text, Textarea, Title } from "@mantine/core";
-import { useForm } from "@mantine/hooks";
+import { useForm } from '@mantine/form';
 
-import { showNotification } from "@mantine/notifications";
-import { Check } from "tabler-icons-react";
 import { SystemFeedbackAPI } from "../../api/feedback";
 
 import { Helmet } from "react-helmet";
@@ -18,14 +16,9 @@ const UserFeedbackView = () => {
       text: "",
     },
 
-    validationRules: {
-      type: (value) => value.trim().length === 1,
-      text: (value) => value.trim().length >= 2,
-    },
-
-    errorMessages: {
-      type: "این بخش نمی‌تواند خالی باشد",
-      text: "این بخش نمی‌تواند خالی باشد",
+    validate: {
+      type: (value) => value.trim().length === 1 ? null : "این بخش نمی‌تواند خالی باشد",
+      text: (value) => value.trim().length >= 2 ? null : "این بخش نمی‌تواند خالی باشد",
     },
   });
 
