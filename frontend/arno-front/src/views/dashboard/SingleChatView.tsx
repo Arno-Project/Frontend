@@ -124,7 +124,7 @@ const SingleChatView = (props: any) => {
               : "شما";
           return (
             <div key={i}>
-              <Group align={"center"}>
+              <Group dir={msg.sender.id !== peerId ? "rtl" : "ltr"} align={"center"}>
                 <Avatar
                   radius="xl"
                   color={msg.sender.id == peerId ? "blue" : "pink"}
