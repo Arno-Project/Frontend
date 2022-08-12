@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8000/api";
+const BASE_HOST = process.env.BASE_HOST || "http://localhost:8000"
+const BASE_URL = `${BASE_HOST}/api`;
 
 const NETWORK_ERROR_MSG = {
   error: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید.",
