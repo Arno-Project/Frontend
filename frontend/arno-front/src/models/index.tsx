@@ -16,6 +16,8 @@ type Speciality = {
   id: number;
   title: string;
   description: string;
+  parent: Speciality | null;
+  children: Speciality[];
 }
 
 type User = {

@@ -122,6 +122,8 @@ export function APIDataToSpecialities(res: APIResponse): Speciality[] {
       id: r["id" as keyof Object],
       title: r["title" as keyof Object],
       description: r["description" as keyof Object],
+      parent: r["parent" as keyof object],
+      children: r["children" as keyof object] as Speciality[]
     };
     return spec;
   });
