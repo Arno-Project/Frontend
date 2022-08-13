@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { AccountAPI } from "../api/accounts";
-import { logout, setUserInfo, setUserNotificationCount } from "../redux/auth";
+import { logout, setNeedUpdate, setUserInfo, setUserNotificationCount } from "../redux/auth";
 
 import { APIDataToNotifications, APIDataToUser } from "../models/utils";
 import { NotificationAPI } from "../api/notifications";
@@ -101,15 +101,13 @@ const DashboardPage = () => {
     }
   };
 
+  const needUpdate = useAppSelector((state) => state.auth.needUpdate);
   const token = useAppSelector((state) => state.auth.token);
 
-  const interval = useInterval(() => getData(token), 60000);
-
-  useEffect(() => {
+  if (needUpdate) {
+    setNeedUpdate(false);
     getData(token);
-    interval.start();
-    return interval.stop;
-  }, []);
+  }
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>

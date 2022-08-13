@@ -3,6 +3,7 @@ import { User } from "../models";
 import type { RootState } from "./store";
 
 interface AuthState {
+  needUpdate: boolean
   isLoggedIn: boolean;
   user: User | null;
   token: string | null;
@@ -10,6 +11,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
+  needUpdate: true,
   isLoggedIn: false,
   user: null,
   token: window.localStorage.getItem("token"),
@@ -38,10 +40,13 @@ export const authSlice = createSlice({
     },
     setUserNotificationCount: (state, action: PayloadAction<number>) => {
       state.notificationCount = action.payload
+    },
+    setNeedUpdate: (state, action: PayloadAction<boolean>) => {
+      state.needUpdate = action.payload
     }
   },
 });
 
-export const { login, logout, setUserInfo, setUserNotificationCount } = authSlice.actions;
+export const { login, logout, setUserInfo, setUserNotificationCount, setNeedUpdate } = authSlice.actions;
 
 export default authSlice.reducer;
