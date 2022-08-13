@@ -35,7 +35,7 @@ import { useAppSelector } from "../../redux/hooks";
 
 const TITLE = "جزئیات سفارش";
 
-const RequestDetails = () => {
+const RequestDetailsView = () => {
   const user = useAppSelector((state) => state.auth.user);
 
   const { requestId } = useParams();
@@ -166,8 +166,7 @@ const RequestDetails = () => {
 
   const endRequest = async () => {
     console.log("end");
-    return;
-    const res = await CoreAPI.getInstance().endRequest(requestDetails!.id);
+    const res = await CoreAPI.getInstance().finishRequest(requestDetails!.id);
 
     if (res.success) {
       showNotification({
@@ -527,4 +526,4 @@ const RequestDetails = () => {
   );
 };
 
-export default RequestDetails;
+export default RequestDetailsView;

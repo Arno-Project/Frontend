@@ -219,8 +219,6 @@ abstract class BaseListAPI extends BaseAPI {
       fieldFilters.map((field) => field.get_pair())
     );
 
-    console.log("paramdict", paramDict)
-
     const response = await this.sendAuthorizedGetRequest({
       path: this.get_path,
       body: null,
