@@ -20,7 +20,7 @@ import { SystemLog, LogLevel } from "../../models";
 
 import { DateRangePicker } from "@mantine/dates";
 import { CSVLink } from "react-csv";
-import { ObjectSerilizer } from "../../assets/ObjectSerializer";
+import { ObjectSerializer } from "../../assets/ObjectSerializer";
 import { APIDataToLogs } from "../../models/utils";
 
 import { Helmet } from "react-helmet";
@@ -136,7 +136,7 @@ const ReportsView = () => {
           {fetchSuccess && data.length > 0 && (
             <CSVLink
               filename={`System Logs Report ${new Date().toDateString()}.csv`}
-              data={ObjectSerilizer.serializeData(data)}
+              data={ObjectSerializer.serializeData(data)}
               target="_blank"
             >
               <Button

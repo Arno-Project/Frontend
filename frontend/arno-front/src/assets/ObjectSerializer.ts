@@ -1,8 +1,8 @@
-export class ObjectSerilizer {
+export class ObjectSerializer {
   public static serializeData(data: object[]): Array<string[]> {
     let result: Array<string[]> = [Object.keys(data[0])];
     for (const elem of data) {
-      result.push(Object.values(elem).map(ObjectSerilizer.serializeElement));
+      result.push(Object.values(elem).map(ObjectSerializer.serializeElement));
     }
     return result;
   }
