@@ -309,25 +309,6 @@ const RequestDetailsView = () => {
         </>
       );
     }
-    if (requestDetails.status === RequestStatus.Done) {
-      specialistComponent = (
-        <>
-          {specialistComponent}
-          <Divider size="sm" my="xs" label="بازخورد" labelPosition="left" />
-          <Group>
-            <Button
-              color="pink"
-              onClick={() => {
-                setIsFeedbackModalOpen(true);
-              }}
-              leftIcon={<Pencil size={20} />}
-            >
-              ثبت بازخورد
-            </Button>
-          </Group>
-        </>
-      );
-    }
 
     if (user!.role === UserRole.Customer) {
       if (requestDetails.status === RequestStatus.WaitForCustomer) {
@@ -451,6 +432,26 @@ const RequestDetailsView = () => {
           </>
         );
       }
+    }
+
+    if (requestDetails.status === RequestStatus.Done) {
+      specialistComponent = (
+        <>
+          {specialistComponent}
+          <Divider size="sm" my="xs" label="بازخورد" labelPosition="left" />
+          <Group>
+            <Button
+              color="pink"
+              onClick={() => {
+                setIsFeedbackModalOpen(true);
+              }}
+              leftIcon={<Pencil size={20} />}
+            >
+              ثبت بازخورد
+            </Button>
+          </Group>
+        </>
+      );
     }
   }
   return (
