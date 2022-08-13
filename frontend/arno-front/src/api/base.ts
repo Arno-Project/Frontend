@@ -14,7 +14,8 @@ export enum FieldFilterType {
 
 export enum FieldFilterName {
   Role = "role",
-  Speciality = "speciality"
+  Speciality = "speciality",
+  RequestID = "request_id",
 }
 
 export class FieldFilter {
