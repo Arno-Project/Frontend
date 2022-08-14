@@ -12,6 +12,7 @@ import {
   UserRole,
   Notification,
   Metric,
+  SystemLog,
 } from ".";
 
 import { APIResponse } from "../api/base";
@@ -121,6 +122,8 @@ export function APIDataToSpecialities(res: APIResponse): Speciality[] {
       id: r["id" as keyof Object],
       title: r["title" as keyof Object],
       description: r["description" as keyof Object],
+      parent: r["parent" as keyof object],
+      children: r["children" as keyof object] as Speciality[]
     };
     return spec;
   });
@@ -185,4 +188,18 @@ export function ObjectToMetric(data: Object): Metric {
 export function APIDataToMetrics(res: APIResponse): Metric[] {
   let data = res.data as Array<Object>;
   return data.map((r) => ObjectToMetric(r));
+}
+
+export function APIDataToLogs(res: APIResponse): SystemLog[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => {
+    const log: SystemLog = {
+      id: r["id" as keyof object],
+      level: r["level" as keyof object],
+      source: r["source" as keyof object],
+      message: r["message" as keyof object],
+      created_at: r["created_at" as keyof object],
+    };
+    return log;
+  });
 }

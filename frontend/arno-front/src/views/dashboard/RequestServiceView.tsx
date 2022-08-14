@@ -127,7 +127,13 @@ const RequestServiceView = () => {
         <div style={{ marginTop: "16px" }}>
           <Select
             className="font-reminder"
-            data={specialities.map((s) => s.title)}
+            data={specialities
+              .filter((s) => s.parent !== null)
+              .map((s) => ({
+                label: s.title,
+                value: s.title,
+                group: s.parent?.title,
+              }))}
             icon={<UserSearch size={20} />}
             label="انتخاب تخصص"
             placeholder="تخصص مورد نیاز"

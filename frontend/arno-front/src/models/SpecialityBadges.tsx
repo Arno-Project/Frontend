@@ -1,7 +1,7 @@
 
-import { Badge, Button, Tooltip } from "@mantine/core";
+import { Badge, Tooltip } from "@mantine/core";
 
-import { Speciality, User, UserGeneralRole, UserRole } from "../models";
+import { Speciality } from "../models";
 
 import { mantine_colors } from "../assets/consts";
 

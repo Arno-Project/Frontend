@@ -16,6 +16,8 @@ type Speciality = {
   id: number;
   title: string;
   description: string;
+  parent: Speciality | null;
+  children: Speciality[];
 }
 
 type User = {
@@ -129,5 +131,21 @@ type Metric = {
   userType: UserRole
 }
 
-export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType};
-export type { User , Speciality, Feedback, FeedbackReply, LocationModel, ServiceSummary, Message, Chat, Notification, Metric};
+enum LogLevel {
+  Debug = "D",
+  Info = "I",
+  Warning = "W",
+  Error = "E",
+  Critical = "C",
+}
+
+type SystemLog = {
+  id: number,
+  level: LogLevel,
+  source: string,
+  message: string,
+  created_at: Date,
+}
+
+export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType, LogLevel};
+export type { User , Speciality, Feedback, FeedbackReply, LocationModel, ServiceSummary, Message, Chat, Notification, Metric, SystemLog};

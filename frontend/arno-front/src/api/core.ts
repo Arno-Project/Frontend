@@ -105,7 +105,7 @@ export class CoreAPI extends BaseListAPI {
       path: "request/accept/customer/final/",
       body: {
         request_id: requestID,
-        is_accept: is_accept?"1":"0",
+        is_accept: is_accept ? "1" : "0",
       },
       headers: null,
       params: null,
@@ -118,7 +118,7 @@ export class CoreAPI extends BaseListAPI {
       path: "request/select/specialist/",
       body: {
         request_id: requestID,
-        specialist_id: specialistUserID
+        specialist_id: specialistUserID,
       },
       headers: null,
       params: null,
@@ -126,14 +126,13 @@ export class CoreAPI extends BaseListAPI {
 
     return response;
   }
-
 
   async acceptOrRejectCustomerRequest(requestID: number, is_accept: boolean) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/accept/specialist/final/",
       body: {
         request_id: requestID,
-        is_accept: is_accept?"1":"0",
+        is_accept: is_accept ? "1" : "0",
       },
       headers: null,
       params: null,
@@ -141,7 +140,6 @@ export class CoreAPI extends BaseListAPI {
 
     return response;
   }
-
 
   async selectRequestBySpecialist(requestID: number) {
     const response = await this.sendAuthorizedPostRequest({
@@ -165,6 +163,18 @@ export class CoreAPI extends BaseListAPI {
     });
 
     console.info("finishRequest", response);
+    return response;
+  }
+  
+  async getRequestPopularityReport(query: any) {
+    const response = await this.sendAuthorizedGetRequest({
+      path: "request/popularity/",
+      body: null,
+      headers: null,
+      params: { q: query },
+    });
+
+    console.info("getRequestPopularityReport", response);
     return response;
   }
 }

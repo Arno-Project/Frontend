@@ -27,7 +27,7 @@ import { SystemFeedbackAPI } from "../../api/feedback";
 import { APIDataToFeedbacks } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 import { notifyUser } from "../utils";
-import { ObjectSerilizer } from "../../assets/ObjectSerializer";
+import { ObjectSerializer } from "../../assets/ObjectSerializer";
 
 import { CSVLink } from "react-csv";
 
@@ -126,7 +126,7 @@ const TechnicalIssuesView = () => {
         {!!rows && rows.length > 0 && (
           <CSVLink
             filename={`TechnicalIssues ${new Date().toDateString()}.csv`}
-            data={ObjectSerilizer.serializeData(rows)}
+            data={ObjectSerializer.serializeData(rows)}
             target="_blank"
           >
             <Button
