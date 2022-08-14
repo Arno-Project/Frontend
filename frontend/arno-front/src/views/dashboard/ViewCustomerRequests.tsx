@@ -20,7 +20,7 @@ const ViewCustomerRequests = () => {
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getAllRequestsSummary();
-    console.log(res)
+  
     if (res.success) {
       const data = APIDataToServiceSummary(res);
       setRows(data);
@@ -57,33 +57,29 @@ const ViewCustomerRequests = () => {
           </tr>
         </thead>
         {rows.map((row, i) => {
-          if (
-            row.status === RequestStatus.Pending 
-          )
-            return (
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{!!row.description ? row.description : "-"}</td>
-                <td>
-                  {!!row.requested_speciality ? (
-                    <SpecialitiesBadges
-                      speciality={[row.requested_speciality]}
-                    />
-                  ) : (
-                    ""
-                  )}
-                </td>
-                <td>
-                  <UnstyledButton
-                    onClick={() =>
-                      navigate(`/dashboard/request_details/${row.id}`)
-                    }
-                  >
-                    <ExternalLink color="blue" size={22} />
-                  </UnstyledButton>
-                </td>
-              </tr>
-            );
+          if (row.status !== RequestStatus.Pending) return <></>;
+          return (
+            <tr key={i}>
+              <td>{i + 1}</td>
+              <td>{!!row.description ? row.description : "-"}</td>
+              <td>
+                {!!row.requested_speciality ? (
+                  <SpecialitiesBadges speciality={[row.requested_speciality]} />
+                ) : (
+                  ""
+                )}
+              </td>
+              <td>
+                <UnstyledButton
+                  onClick={() =>
+                    navigate(`/dashboard/request_details/${row.id}`)
+                  }
+                >
+                  <ExternalLink color="blue" size={22} />
+                </UnstyledButton>
+              </td>
+            </tr>
+          );
         })}
       </Table>
     </>

@@ -75,7 +75,7 @@ export class CoreAPI extends BaseListAPI {
     console.info("cancelRequest", response);
     return response;
   }
-
+  
   async cancelRequestByManager(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/cancel/force/",
@@ -154,19 +154,18 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
-  async endRequest(requestID: number) {
+  async finishRequest(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
-      path: "request/accept/specialist/initial/",
-      body: {
-        request_id: requestID,
-      },
+      path: "request/finish/",
+      body: { request_id },
       headers: null,
       params: null,
     });
 
+    console.info("finishRequest", response);
     return response;
   }
-
+  
   async getRequestPopularityReport(query: any) {
     const response = await this.sendAuthorizedGetRequest({
       path: "request/popularity/",

@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { AccountAPI } from "../api/accounts";
-import { logout, setUserInfo, setUserNotificationCount } from "../redux/auth";
+import { logout, setNeedUpdate, setUserInfo, setUserNotificationCount } from "../redux/auth";
 
 import { APIDataToNotifications, APIDataToUser } from "../models/utils";
 import { NotificationAPI } from "../api/notifications";
@@ -36,7 +36,7 @@ import TechnicalIssuesView from "./dashboard/TechnicalIssuesView";
 import UserFeedbackView from "./dashboard/UserFeedbackView";
 import EditProfileView from "./dashboard/EditProfileView";
 import ManageSpecialitiesView from "./dashboard/ManageSpecialitiesView";
-import RequestDetails from "./dashboard/RequestDetails";
+import RequestDetailsView from "./dashboard/RequestDetailsView";
 import ChatsView from "./dashboard/ChatsView";
 import SingleChatView from "./dashboard/SingleChatView";
 import NotificationsView from "./dashboard/NotificationsView";
@@ -101,15 +101,13 @@ const DashboardPage = () => {
     }
   };
 
+  const needUpdate = useAppSelector((state) => state.auth.needUpdate);
   const token = useAppSelector((state) => state.auth.token);
 
-  const interval = useInterval(() => getData(token), 60000);
-
-  useEffect(() => {
+  if (needUpdate) {
+    setNeedUpdate(false);
     getData(token);
-    interval.start();
-    return interval.stop;
-  }, []);
+  }
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
@@ -174,7 +172,7 @@ const DashboardPage = () => {
               <Route path="/chats" element={<ChatsView />} />
               <Route path="/notifications" element={<NotificationsView />} />
               <Route path="/manage_specialities" element={<ManageSpecialitiesView />} />
-              <Route path="/request_details/:requestId" element={<RequestDetails />} />
+              <Route path="/request_details/:requestId" element={<RequestDetailsView />} />
               <Route path="/customer_requests" element={<ViewCustomerRequests />} />
             </Routes>
           </Container>

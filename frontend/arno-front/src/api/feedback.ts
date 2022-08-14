@@ -56,13 +56,13 @@ export class SystemFeedbackAPI extends BaseListAPI {
 export class FeedbackAPI extends BaseListAPI {
   protected static instance: FeedbackAPI;
 
-  private constructor(base_path: string = "feedback") {
-    super(base_path);
+  private constructor(base_path: string = "feedback/request") {
+    super(base_path, "");
   }
 
   public static getInstance(): FeedbackAPI {
     if (!FeedbackAPI.instance) {
-      FeedbackAPI.instance = new FeedbackAPI("feedback");
+      FeedbackAPI.instance = new FeedbackAPI("feedback/request");
     }
     return FeedbackAPI.instance;
   }

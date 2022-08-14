@@ -23,7 +23,7 @@ import { APIDataToServiceSummary, APIDataToUsers } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 
-import { Check, X, Message } from "tabler-icons-react";
+import { Check, X, Message, Pencil } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 
 import { Helmet } from "react-helmet";
@@ -32,16 +32,18 @@ import { SpecialistRow } from "../../components/SpecialistRow";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { AccountAPI } from "../../api/accounts";
 import { useAppSelector } from "../../redux/hooks";
+import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 
 const TITLE = "جزئیات سفارش";
 
-const RequestDetails = () => {
+const RequestDetailsView = () => {
   const user = useAppSelector((state) => state.auth.user);
 
   const { requestId } = useParams();
   const [requestDetails, setRequestDetails] = useState<ServiceSummary>();
   const [position, setPosition] = useState<[number, number]>([35.7, 51.3]);
 
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [specs, setSpecs] = useState<User[]>([]);
   const [showSpecialists, setShowSpecialists] = useState(false);
 
@@ -166,8 +168,7 @@ const RequestDetails = () => {
 
   const endRequest = async () => {
     console.log("end");
-    return;
-    const res = await CoreAPI.getInstance().endRequest(requestDetails!.id);
+    const res = await CoreAPI.getInstance().finishRequest(requestDetails!.id);
 
     if (res.success) {
       showNotification({
@@ -255,10 +256,6 @@ const RequestDetails = () => {
         );
       }
 
-
- 
-
-
       if (
         requestDetails.status === RequestStatus.In_progress &&
         user!.id === requestDetails.specialist?.id
@@ -311,7 +308,6 @@ const RequestDetails = () => {
           </Group>
         </>
       );
-    
     }
 
     if (user!.role === UserRole.Customer) {
@@ -422,7 +418,11 @@ const RequestDetails = () => {
                 </Grid.Col>
                 <Grid.Col span={3}>
                   <Group>
-                    <ActionIcon onClick={() => sendMessage(requestDetails!.specialist!.id)}>
+                    <ActionIcon
+                      onClick={() =>
+                        sendMessage(requestDetails!.specialist!.id)
+                      }
+                    >
                       <Message color={"#40bfa3"} size={22} />
                     </ActionIcon>
                   </Group>
@@ -432,6 +432,26 @@ const RequestDetails = () => {
           </>
         );
       }
+    }
+
+    if (requestDetails.status === RequestStatus.Done) {
+      specialistComponent = (
+        <>
+          {specialistComponent}
+          <Divider size="sm" my="xs" label="بازخورد" labelPosition="left" />
+          <Group>
+            <Button
+              color="pink"
+              onClick={() => {
+                setIsFeedbackModalOpen(true);
+              }}
+              leftIcon={<Pencil size={20} />}
+            >
+              ثبت بازخورد
+            </Button>
+          </Group>
+        </>
+      );
     }
   }
   return (
@@ -475,9 +495,7 @@ const RequestDetails = () => {
               تاریخ شروع:
             </Text>
             <Space w="lg" />
-            <Text span>
-              {formatDateString(requestDetails.start_time)}
-            </Text>
+            <Text span>{formatDateString(requestDetails.start_time)}</Text>
             {/* {!!requestDetails && new Date(Date.parse(requestDetails?.start_time)).toLocaleString('fa-IR')}; */}
           </div>
           <div style={{ display: "flex" }}>
@@ -523,8 +541,14 @@ const RequestDetails = () => {
         </>
       )}
       {specialistComponent}
+      <RequestFeedbackModal
+        role={user!.role}
+        isOpen={isFeedbackModalOpen}
+        changeIsOpen={setIsFeedbackModalOpen}
+        requestID={requestId!}
+      />
     </>
   );
 };
 
-export default RequestDetails;
+export default RequestDetailsView;

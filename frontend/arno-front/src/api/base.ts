@@ -14,7 +14,8 @@ export enum FieldFilterType {
 
 export enum FieldFilterName {
   Role = "role",
-  Speciality = "speciality"
+  Speciality = "speciality",
+  RequestID = "request_id",
 }
 
 export class FieldFilter {
@@ -218,8 +219,6 @@ abstract class BaseListAPI extends BaseAPI {
     const paramDict = Object.fromEntries(
       fieldFilters.map((field) => field.get_pair())
     );
-
-    console.log("paramdict", paramDict)
 
     const response = await this.sendAuthorizedGetRequest({
       path: this.get_path,
