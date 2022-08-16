@@ -50,7 +50,7 @@ export class AccountAPI extends BaseListAPI {
   }
 
   async getSpecialities() {
-    const response = await this.sendAuthorizedGetRequest({
+    const response = await this.sendGetRequest({
       path: "speciality/",
       body: null,
       headers: null,
