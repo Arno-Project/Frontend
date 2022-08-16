@@ -105,6 +105,12 @@ const links: MainLinkProps[] = [
     path: "/create_request",
   },
   {
+    icon: <Users size={16} />,
+    color: "orange",
+    label: "مدیریت کاربران",
+    path: "/manage_users",
+  },
+  {
     icon: <EyeCheck size={16} />,
     color: "blue",
     label: "مدیریت خدمات",

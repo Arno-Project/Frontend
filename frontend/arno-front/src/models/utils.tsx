@@ -32,7 +32,9 @@ export function ObjectToUser(data: Object): User {
     phone: userData["phone"],
     score: data["score" as keyof object],
     speciality: data["speciality" as keyof object] as Array<Speciality>,
-    is_validated: data["is_validated" as keyof object],
+    isValidated: data["is_validated" as keyof object],
+    dateJoined: userData["date_joined" as keyof object],
+    lastLogin: userData["last_login" as keyof object],
   };
   return user;
 }

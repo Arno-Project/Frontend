@@ -68,7 +68,7 @@ const SpecialistsTable = (props: {
         </thead>
         <tbody>
           {rows.map((user, i) => {
-            if (user.is_validated)
+            if (user.isValidated)
               return (
                 <SpecialistRow user={user} idx={i + 1} button={props.button} />
               );

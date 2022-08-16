@@ -7,6 +7,14 @@ export const RoleDict: any = {
   "CM": "مدیر شرکت",
 };
 
+export const RoleDictColor: any = {
+  "C": "orange",
+  "S": "green",
+  "TM": "pink",
+  "CM": "red",
+};
+
+
 export const AccessRules: any = {
   "/technical_issues": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/specialists": [UserRole.Customer, UserRole.Specialist, UserRole.TechnicalManager, UserRole.CompanyManager],
@@ -22,6 +30,7 @@ export const AccessRules: any = {
   "/create_request": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/manage_services": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/manage_specialities": [UserRole.CompanyManager],
+  "/manage_users": [UserRole.CompanyManager, UserRole.TechnicalManager],
   "/customer_requests": [UserRole.Specialist],
   "/chats": [UserRole.Customer, UserRole.Specialist],
 };

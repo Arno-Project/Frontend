@@ -61,7 +61,7 @@ const SpecialistsView = () => {
             </thead>
             <tbody>
               {users.map((user, i) => {
-                if (!user.is_validated)
+                if (!user.isValidated)
                   return (
                     <tr key={user.id}>
                       <td>{user.id}</td>

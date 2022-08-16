@@ -18,7 +18,7 @@ type Speciality = {
   description: string;
   parent: Speciality | null;
   children: Speciality[];
-}
+};
 
 type User = {
   id: number;
@@ -30,7 +30,9 @@ type User = {
   phone: string;
   score: number;
   speciality: Array<Speciality>;
-  is_validated: boolean;
+  isValidated: boolean;
+  dateJoined: string;
+  lastLogin: string;
 };
 
 enum FeedbackType {
@@ -51,7 +53,7 @@ type FeedbackReply = {
   id: number;
   text: string;
   user: User;
-}
+};
 
 type Feedback = {
   created_at: string;
@@ -61,7 +63,7 @@ type Feedback = {
   text: string;
   type: string;
   user: User;
-}
+};
 
 enum RequestStatus {
   Pending = "PEND",
@@ -77,7 +79,7 @@ type LocationModel = {
   address: string;
   latitude: number;
   longitude: number;
-}
+};
 
 type ServiceSummary = {
   id: number;
@@ -90,7 +92,7 @@ type ServiceSummary = {
   description: string;
   start_time: string;
   requested_speciality: Speciality;
-}
+};
 
 type Message = {
   id: number;
@@ -99,12 +101,12 @@ type Message = {
   text: string;
   created_at: string;
   is_read: boolean;
-}
+};
 
 type Chat = {
   lastMessage: Message;
   peer: User;
-}
+};
 
 enum NotificationType {
   Info = "INF",
@@ -112,24 +114,23 @@ enum NotificationType {
   Success = "SUC",
 }
 
-
 type Notification = {
-  id: number,
-  title: string,
-  message: string,
-  link: string,
-  date: string,
-  is_read: boolean,
-  user: User,
-  type: NotificationType
-}
+  id: number;
+  title: string;
+  message: string;
+  link: string;
+  date: string;
+  is_read: boolean;
+  user: User;
+  type: NotificationType;
+};
 
 type Metric = {
-  id: number,
-  title: string,
-  description: string,
-  userType: UserRole
-}
+  id: number;
+  title: string;
+  description: string;
+  userType: UserRole;
+};
 
 enum LogLevel {
   Debug = "D",
@@ -140,12 +141,32 @@ enum LogLevel {
 }
 
 type SystemLog = {
-  id: number,
-  level: LogLevel,
-  source: string,
-  message: string,
-  created_at: Date,
-}
+  id: number;
+  level: LogLevel;
+  source: string;
+  message: string;
+  created_at: Date;
+};
 
-export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType, LogLevel};
-export type { User , Speciality, Feedback, FeedbackReply, LocationModel, ServiceSummary, Message, Chat, Notification, Metric, SystemLog};
+export {
+  UserRole,
+  UserGeneralRole,
+  FeedbackType,
+  FeedbackStatus,
+  RequestStatus,
+  NotificationType,
+  LogLevel,
+};
+export type {
+  User,
+  Speciality,
+  Feedback,
+  FeedbackReply,
+  LocationModel,
+  ServiceSummary,
+  Message,
+  Chat,
+  Notification,
+  Metric,
+  SystemLog,
+};

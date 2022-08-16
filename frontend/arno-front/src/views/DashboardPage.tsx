@@ -45,6 +45,7 @@ import ViewCustomerRequests from "./dashboard/ViewCustomerRequests";
 import { Brand } from "../components/dashboard/_brand";
 
 import { Helmet } from "react-helmet";
+import ManageUsersView from "./dashboard/ManageUsersView";
 const TITLE = "آرنو | داشبورد";
 
 const DashboardPage = () => {
@@ -174,6 +175,7 @@ const DashboardPage = () => {
               <Route path="/manage_specialities" element={<ManageSpecialitiesView />} />
               <Route path="/request_details/:requestId" element={<RequestDetailsView />} />
               <Route path="/customer_requests" element={<ViewCustomerRequests />} />
+              <Route path="/manage_users" element={<ManageUsersView />} />
             </Routes>
           </Container>
         </AppShell>
