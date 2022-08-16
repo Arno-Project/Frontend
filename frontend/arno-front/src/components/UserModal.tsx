@@ -38,6 +38,7 @@ const UserModal = (props: {
   user: User;
   isOpen: boolean;
   changeIsOpen: Function;
+  validateSpecialist: Function | null;
 }) => {
   useEffect(() => {
     getData();
@@ -95,13 +96,7 @@ const UserModal = (props: {
                   </Group>
                 </>
               )}
-            <Space h="md" />
-            <Group>
-              <Text size="md" color="dimmed">
-                ایمیل:
-              </Text>
-              <Text>{props.user.email}</Text>
-            </Group>
+
             <Space h="md" />
             <Group>
               <Text size="md" color="dimmed">
@@ -109,7 +104,13 @@ const UserModal = (props: {
               </Text>
               <Text>{props.user.phone}</Text>
             </Group>
-
+            <Space h="md" />
+            <Group>
+              <Text size="md" color="dimmed">
+                ایمیل:
+              </Text>
+              <Text>{props.user.email}</Text>
+            </Group>
             {props.user.role === UserRole.Specialist && (
               <>
                 <Space h="md" />
@@ -148,7 +149,11 @@ const UserModal = (props: {
               <Text size="md" color="dimmed">
                 آخرین ورود:
               </Text>
-              <Text>{formatDateString(props.user.lastLogin)}</Text>
+              <Text>
+                {props.user.lastLogin
+                  ? formatDateString(props.user.lastLogin)
+                  : "-"}
+              </Text>
             </Group>
             {props.user.role === UserRole.Customer && (
               <Button
@@ -170,6 +175,9 @@ const UserModal = (props: {
                   fullWidth
                   mt="md"
                   radius="md"
+                  onClick={() => {
+                    props.validateSpecialist!(props.user);
+                  }}
                 >
                   تایید متخصص
                 </Button>

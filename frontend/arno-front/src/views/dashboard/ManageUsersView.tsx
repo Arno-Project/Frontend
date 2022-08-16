@@ -77,7 +77,7 @@ const ManageUsersView = () => {
 
   const [users, setUsers] = useState<User[]>([]);
 
-  const getAllSpecialities = async () => {
+  const getData = async () => {
     // const filter = new FieldFilter(
     //   FieldFilterName.Role,
     //   UserRole.Specialist,
@@ -112,7 +112,7 @@ const ManageUsersView = () => {
   };
 
   useEffect(() => {
-    getAllSpecialities();
+    getData();
   }, []);
 
   const newSpecialityForm = useForm({
@@ -134,14 +134,12 @@ const ManageUsersView = () => {
     },
   });
 
-  const handleSubmit = async (values: any) => {
-    const res = await AccountAPI.getInstance().defineNewSpeciality(values);
-
-    notifyUser(res, "ایجاد موفقیت‌آمیز", "تخصص مورد نظر با موفقیت ایجاد شد.");
+  const validateSpecialist = async (user: User) => {
+    const res = await AccountAPI.getInstance().confirmSpecialist(user.id);
 
     if (res.success) {
-      newSpecialityForm.reset();
-      getAllSpecialities();
+      notifyUser(res, "عملیات موفقیت‌آمیز", "متخصص با موفقیت تایید شد.");
+      getData();
     }
   };
 
@@ -196,7 +194,6 @@ const ManageUsersView = () => {
                 <th>نام</th>
                 <th>نقش</th>
                 <th>شماره تماس</th>
-                <th>ایمیل</th>
                 <th>جزئیات</th>
               </tr>
             </thead>
@@ -210,7 +207,6 @@ const ManageUsersView = () => {
                   </td>
                   <td>{RoleDict[user.role]}</td>
                   <td>{user.phone}</td>
-                  <td>{user.email}</td>
                   <td>
                     <UnstyledButton
                       onClick={() => {
@@ -246,7 +242,8 @@ const ManageUsersView = () => {
                 <th>نام متخصص</th>
                 <th>تخصص(ها)</th>
                 <th>مدارک اعتبارسنجی</th>
-                <th>تأیید/رد</th>
+                <th>جزئیات</th>
+                <th>تأیید</th>
               </tr>
             </thead>
             <tbody>
@@ -265,10 +262,25 @@ const ManageUsersView = () => {
                         <Paperclip size={24} />
                       </td>
                       <td>
+                        <UnstyledButton
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setIsUserModalOpen(true);
+                          }}
+                        >
+                          <ExternalLink color="blue" size={22} />
+                        </UnstyledButton>
+                      </td>
+
+                      <td>
                         <div style={{ display: "flex" }}>
-                          <Check color="green" size={22} />
-                          <Space w="lg" />
-                          <X color="red" size={22} />
+                          <UnstyledButton
+                            onClick={() => {
+                              validateSpecialist(user);
+                            }}
+                          >
+                            <Check color="green" size={22} />
+                          </UnstyledButton>
                         </div>
                       </td>
                     </tr>
@@ -359,6 +371,7 @@ const ManageUsersView = () => {
         user={selectedUser!}
         isOpen={isUserModalOpen}
         changeIsOpen={setIsUserModalOpen}
+        validateSpecialist={validateSpecialist}
       />
     </>
   );
