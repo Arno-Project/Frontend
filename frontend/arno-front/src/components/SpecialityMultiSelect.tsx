@@ -42,11 +42,11 @@ export default function SpecialityMultiSelect({
         .filter((s) => s.parent !== null)
         .map((s) => ({
           label: s.title,
-          value: s.title,
+          value: s.id,
           group: s.parent?.title,
         }))}
       icon={<UserSearch size={20} />}
-      label="انتخاب تخصص(ها)"
+      label="انتخاب تخصص‌ها"
       placeholder="تخصص‌های مورد نظر"
       required={required}
       error={error}

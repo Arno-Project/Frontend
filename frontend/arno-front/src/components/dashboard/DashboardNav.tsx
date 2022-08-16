@@ -33,8 +33,26 @@ export interface MainLinkProps {
 
 const links: MainLinkProps[] = [
   {
-    icon: <AlertCircle size={16} />,
+    icon: <Users size={16} />,
+    color: "orange",
+    label: "مدیریت کاربران",
+    path: "/manage_users",
+  },
+  {
+    icon: <EyeCheck size={16} />,
     color: "blue",
+    label: "مدیریت خدمات",
+    path: "/manage_services",
+  },
+  {
+    icon: <Tool size={16} />,
+    color: "teal",
+    label: "مدیریت تخصص‌ها",
+    path: "/manage_specialities",
+  },
+  {
+    icon: <AlertCircle size={16} />,
+    color: "yellow",
     label: "مشکلات فنی",
     path: "/technical_issues",
   },
@@ -103,24 +121,6 @@ const links: MainLinkProps[] = [
     color: "grape",
     label: "ایجاد خدمت برای مشتری",
     path: "/create_request",
-  },
-  {
-    icon: <Users size={16} />,
-    color: "orange",
-    label: "مدیریت کاربران",
-    path: "/manage_users",
-  },
-  {
-    icon: <EyeCheck size={16} />,
-    color: "blue",
-    label: "مدیریت خدمات",
-    path: "/manage_services",
-  },
-  {
-    icon: <Tool size={16} />,
-    color: "teal",
-    label: "مدیریت تخصص‌ها",
-    path: "/manage_specialities",
   },
   {
     icon: <ShoppingCart size={16} />,

@@ -10,7 +10,9 @@ import {
   Grid,
   Select,
   Space,
+  MultiSelect,
   Switch,
+  Group,
   UnstyledButton,
 } from "@mantine/core";
 
@@ -46,9 +48,11 @@ import { DateRangePicker } from "@mantine/dates";
 import { useAppSelector } from "../../redux/hooks";
 import UserModal from "../../components/UserModal";
 import { RoleDict } from "../../assets/consts";
+import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
+import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 
 const TITLE = "مدیریت کاربران";
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 10;
 
 interface Popularity {
   speciality: Speciality;
@@ -77,13 +81,8 @@ const ManageUsersView = () => {
 
   const [users, setUsers] = useState<User[]>([]);
 
-  const getData = async () => {
-    // const filter = new FieldFilter(
-    //   FieldFilterName.Role,
-    //   UserRole.Specialist,
-    //   FieldFilterType.Exact
-    // );
-    const res = await AccountAPI.getInstance().get([]);
+  const getData = async (filters: FieldFilter[]) => {
+    const res = await AccountAPI.getInstance().get(filters);
     if (res.success) {
       console.log("R", res);
       const users = APIDataToUsers(res);
@@ -112,35 +111,62 @@ const ManageUsersView = () => {
   };
 
   useEffect(() => {
-    getData();
+    getData([]);
   }, []);
-
-  const newSpecialityForm = useForm({
-    initialValues: {
-      title: "",
-      parent: "",
-      description: "",
-    },
-
-    validate: {
-      title: (value) =>
-        value.trim().length > 2
-          ? null
-          : "این بخش نمی‌تواند خالی (یا خیلی کوتاه) باشد",
-      description: (value) =>
-        value.trim().length >= 2
-          ? null
-          : "این بخش نمی‌تواند خالی (یا خیلی کوتاه) باشد",
-    },
-  });
 
   const validateSpecialist = async (user: User) => {
     const res = await AccountAPI.getInstance().confirmSpecialist(user.id);
 
     if (res.success) {
       notifyUser(res, "عملیات موفقیت‌آمیز", "متخصص با موفقیت تایید شد.");
-      getData();
+      getData([]);
     }
+  };
+
+  const onSpecialitySelectChange = (values: any[]) => {
+    setSelectedSpecialities(values);
+  };
+  const [selectedSpecialities, setSelectedSpecialities] = useState<string[]>(
+    []
+  );
+
+  const searchForm = useForm({
+    initialValues: {
+      name: "",
+      phone: "",
+      username: "",
+      email: "",
+      specialities: [],
+      roles: [],
+    },
+
+    validate: {},
+  });
+
+  const submitForm = (v: any) => {
+    console.log(v);
+    console.log(selectedSpecialities);
+    let filters = [];
+    for (const [key, value] of Object.entries(v)) {
+      if (value && (key !== "roles" || key.length > 0)) {
+        const filter = new FieldFilter(
+          key as FieldFilterName,
+          value as string,
+          FieldFilterType.Exact
+        );
+        filters.push(filter);
+      }
+    }
+    if (selectedSpecialities.length > 0) {
+      const filter = new FieldFilter(
+        FieldFilterName.Specialities,
+        selectedSpecialities.join(","),
+        FieldFilterType.Exact
+      );
+      filters.push(filter);
+    }
+    console.log(filters);
+    getData(filters);
   };
 
   const applyFilters = (specArr: Speciality[]): Speciality[] => {
@@ -156,7 +182,7 @@ const ManageUsersView = () => {
   };
 
   const filteredRows = applyFilters(specialities);
-  const rows = filteredRows.slice(
+  const rows = users.slice(
     PAGE_SIZE * (activePage - 1),
     PAGE_SIZE * activePage
   );
@@ -186,10 +212,66 @@ const ManageUsersView = () => {
         </Tabs.List>
 
         <Tabs.Panel value="manage" pt="xs">
+          <div className="search-criteria">
+            <Group align="flex-end">
+              <form onSubmit={searchForm.onSubmit(submitForm)}>
+                <TextInput
+                  icon={<Search size={20} />}
+                  label="نام"
+                  placeholder="نام"
+                  {...searchForm.getInputProps("name")}
+                />
+                <TextInput
+                  icon={<Search size={20} />}
+                  label="شماره تماس"
+                  placeholder="شماره تماس"
+                  {...searchForm.getInputProps("phone")}
+                />
+                <TextInput
+                  icon={<Search size={20} />}
+                  label="ایمیل"
+                  placeholder="ایمیل"
+                  {...searchForm.getInputProps("email")}
+                />
+                <TextInput
+                  icon={<Search size={20} />}
+                  label="نام کاربری"
+                  placeholder="نام کاربری"
+                  {...searchForm.getInputProps("username")}
+                />
+                <div style={{ marginTop: "16px" }}>
+                  <SpecialityMultiSelect
+                    setter={onSpecialitySelectChange}
+                    required={false}
+                    error=""
+                  />
+                </div>
+                <MultiSelect
+                  label="نقش"
+                  placeholder="همه"
+                  clearable
+                  data={Object.values(UserRole).map((r) => ({
+                    value: r,
+                    label: RoleDict[r],
+                  }))}
+                  {...searchForm.getInputProps("roles")}
+                />
+
+                <Button
+                  type="submit"
+                  variant="gradient"
+                  gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+                  leftIcon={<ListSearch size={20} />}
+                >
+                  جست‌وجو
+                </Button>
+              </form>
+            </Group>
+          </div>
+
           <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
             <thead>
               <tr>
-                <th>ردیف</th>
                 <th>نام کاربری</th>
                 <th>نام</th>
                 <th>نقش</th>
@@ -198,9 +280,8 @@ const ManageUsersView = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((user: User, idx: number) => (
+              {rows.map((user: User, idx: number) => (
                 <tr key={user.id}>
-                  <td>{idx + 1}</td>
                   <td>{user.username}</td>
                   <td>
                     {user.firstName} {user.lastName}
@@ -238,7 +319,6 @@ const ManageUsersView = () => {
           <Table striped highlightOnHover>
             <thead>
               <tr>
-                <th>ردیف</th>
                 <th>نام متخصص</th>
                 <th>تخصص(ها)</th>
                 <th>مدارک اعتبارسنجی</th>
@@ -251,7 +331,6 @@ const ManageUsersView = () => {
                 if (user.role === UserRole.Specialist && !user.isValidated)
                   return (
                     <tr key={user.id}>
-                      <td>{idx}</td>
                       <td>
                         {user.firstName} {user.lastName}
                       </td>

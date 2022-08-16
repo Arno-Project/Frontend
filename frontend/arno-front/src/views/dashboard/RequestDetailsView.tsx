@@ -80,7 +80,6 @@ const RequestDetailsView = () => {
       `${requestDetails.requested_speciality.id}`,
       FieldFilterType.Exact
     );
-    console.log("VVVV", filter1, filter2, requestDetails);
     let res = await AccountAPI.getInstance().get([filter1, filter2]);
     if (res.success) {
       const users = APIDataToUsers(res);

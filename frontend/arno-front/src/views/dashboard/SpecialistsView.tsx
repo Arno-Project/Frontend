@@ -42,52 +42,7 @@ const SpecialistsView = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      {[UserRole.CompanyManager, UserRole.TechnicalManager].includes(
-        user!.role
-      ) && (
-        <>
-          <Title order={3} my="md">
-            تأیید متخصصین
-          </Title>
-          <Table striped highlightOnHover>
-            <thead>
-              <tr>
-                <th>ردیف</th>
-                <th>نام متخصص</th>
-                <th>تخصص(ها)</th>
-                <th>مدارک اعتبارسنجی</th>
-                <th>تأیید/رد</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user, i) => {
-                if (!user.isValidated)
-                  return (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>
-                        {user.firstName} {user.lastName}
-                      </td>
-                      <td>
-                        <SpecialitiesBadges speciality={user.speciality} />
-                      </td>
-                      <td>
-                        <Paperclip size={24} />
-                      </td>
-                      <td>
-                        <div style={{ display: "flex" }}>
-                          <Check color="green" size={22} />
-                          <Space w="lg" />
-                          <X color="red" size={22} />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-              })}
-            </tbody>
-          </Table>
-        </>
-      )}
+
       <Title order={3} my="md">
         مشاهده متخصصین برحسب امتیاز
       </Title>

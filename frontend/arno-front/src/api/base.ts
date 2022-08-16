@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_HOST = process.env.BASE_HOST || "http://localhost:8000"
+const BASE_HOST = process.env.BASE_HOST || "http://localhost:8000";
 const BASE_URL = `${BASE_HOST}/api`;
 
 const NETWORK_ERROR_MSG = {
@@ -16,21 +16,27 @@ export enum FieldFilterName {
   Role = "role",
   Speciality = "speciality",
   RequestID = "request_id",
+  Name = "name",
+  Phone = "phone",
+  Email = "email",
+  Roles = "roles",
+  Specialities = "specialities",
 }
 
 export class FieldFilter {
   name: string;
-  value: string;
+  value: string | string[];
   type: FieldFilterType;
 
-  constructor(name: string, value: string, type: FieldFilterType) {
+  constructor(name: string, value: string | string[], type: FieldFilterType) {
     this.name = name;
     this.value = value;
     this.type = type;
   }
 
   get_pair(): string[] {
-    return [this.name, this.value];
+    if (typeof this.value === "string") return [this.name, this.value];
+    else return [this.name, this.value.join(",")];
   }
 }
 
@@ -93,7 +99,7 @@ abstract class BaseAPI {
     }
   }
 
-    async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
+  async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
     try {
       const config = {
         headers: {
@@ -219,6 +225,8 @@ abstract class BaseListAPI extends BaseAPI {
     const paramDict = Object.fromEntries(
       fieldFilters.map((field) => field.get_pair())
     );
+
+    console.log("param dict", paramDict)
 
     const response = await this.sendAuthorizedGetRequest({
       path: this.get_path,

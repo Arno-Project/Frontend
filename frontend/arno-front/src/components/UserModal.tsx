@@ -40,16 +40,16 @@ const UserModal = (props: {
   changeIsOpen: Function;
   validateSpecialist: Function | null;
 }) => {
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
-  const getData = async () => {
-    let res = await CoreAPI.getInstance().get([]); //TODO
-    console.log(res);
-    if (res.success) {
-    }
-  };
+  // const getData = async () => {
+  //   let res = await CoreAPI.getInstance().get([]); //TODO
+  //   console.log(res);
+  //   if (res.success) {
+  //   }
+  // };
 
   return (
     <>

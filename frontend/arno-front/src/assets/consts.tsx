@@ -17,7 +17,7 @@ export const RoleDictColor: any = {
 
 export const AccessRules: any = {
   "/technical_issues": [UserRole.TechnicalManager, UserRole.CompanyManager],
-  "/specialists": [UserRole.Customer, UserRole.Specialist, UserRole.TechnicalManager, UserRole.CompanyManager],
+  "/specialists": [UserRole.Customer, UserRole.Specialist],
   "/suggestion_complaint": [UserRole.Customer, UserRole.Specialist],
   "/evaluation_metrics": [UserRole.CompanyManager],
   "/report": [UserRole.TechnicalManager, UserRole.CompanyManager],
