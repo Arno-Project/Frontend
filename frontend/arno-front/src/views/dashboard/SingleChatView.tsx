@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import {
   Button,
@@ -10,10 +10,16 @@ import {
   Group,
   Grid,
   Input,
+  Affix,
+  Transition,
+  ScrollArea,
 } from "@mantine/core";
-import { X } from "tabler-icons-react";
+import { IconArrowUp } from "@tabler/icons";
 
-import { Message} from "../../models";
+import { X } from "tabler-icons-react";
+import { useWindowScroll } from "@mantine/hooks";
+
+import { Message } from "../../models";
 
 import { Helmet } from "react-helmet";
 import { APIDataToMessages } from "../../models/utils";
@@ -23,11 +29,19 @@ import { ChatsAPI } from "../../api/chats";
 import { useInterval } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
+import { useWindowDimensions } from "../utils";
 
 const TITLE = "پیام‌ها";
 
 const SingleChatView = (props: any) => {
   const [chats, setChats] = useState<Message[]>([]);
+  const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
+  const { height, width } = useWindowDimensions();
+
+  const viewport = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () =>
+    viewport!.current!.scrollTo({ top: 0, behavior: "smooth" });
 
   const params = useParams();
   const peerId = Number(params.peerID);
@@ -72,7 +86,7 @@ const SingleChatView = (props: any) => {
     },
 
     validate: {
-      text: (value) => Boolean(value) ? null : "پیام نامعتبر",
+      text: (value) => (Boolean(value) ? null : "پیام نامعتبر"),
     },
   });
 
@@ -81,6 +95,7 @@ const SingleChatView = (props: any) => {
     form.reset();
     await new Promise((r) => setTimeout(r, 1000));
     getData();
+    scrollToTop();
   };
 
   return (
@@ -117,31 +132,58 @@ const SingleChatView = (props: any) => {
         </form>
 
         <Space h="lg" />
-        {chats.map((msg, i) => {
-          let name =
-            msg.sender.id == peerId
-              ? msg.sender.firstName + " " + msg.sender.lastName
-              : "شما";
-          return (
-            <div key={i}>
-              <Group dir={msg.sender.id !== peerId ? "rtl" : "ltr"} align={"center"}>
-                <Avatar
-                  radius="xl"
-                  color={msg.sender.id == peerId ? "blue" : "pink"}
-                />
-                <Paper shadow="sm" radius="md" p="md" withBorder>
-                  <Group position="apart">
-                    <Text>{msg.text}</Text>
+        <ScrollArea
+          onScrollPositionChange={onScrollPositionChange}
+          style={{ height: height - 250 }}
+          type="auto"
+          viewportRef={viewport}
+        >
+          {chats.map((msg, i) => {
+            let name =
+              msg.sender.id == peerId
+                ? msg.sender.firstName + " " + msg.sender.lastName
+                : "شما";
+            return (
+              <div key={i}>
+                <Group
+                  dir={msg.sender.id !== peerId ? "rtl" : "ltr"}
+                  align={"center"}
+                >
+                  <Avatar
+                    radius="xl"
+                    color={msg.sender.id == peerId ? "blue" : "pink"}
+                  />
+                  <Paper shadow="sm" radius="md" p="md" withBorder>
+                    <Group position="apart">
+                      <Text>{msg.text}</Text>
 
-                    <Text color="dimmed">
-                      {name + " در " + formatDateString(msg.created_at)}
-                    </Text>
-                  </Group>
-                </Paper>
-              </Group>
-            </div>
-          );
-        })}
+                      <Text color="dimmed" size="sm">
+                        {name + " در " + formatDateString(msg.created_at)}
+                      </Text>
+                    </Group>
+                  </Paper>
+                </Group>
+                <Space h="sm" />
+              </div>
+            );
+          })}
+          <Affix position={{ bottom: 34, right: 45 }}>
+            <Transition transition="fade" mounted={scrollPosition.y > 0}>
+              {(transitionStyles: any) => (
+                <Button
+                  size="xs"
+                  compact
+                  leftIcon={<IconArrowUp size={16} />}
+                  style={transitionStyles}
+                  onClick={scrollToTop}
+                  variant="default"
+                >
+                  بازگشت به بالا
+                </Button>
+              )}
+            </Transition>
+          </Affix>
+        </ScrollArea>
       </>
     </>
   );
