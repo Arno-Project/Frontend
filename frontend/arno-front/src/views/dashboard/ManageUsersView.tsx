@@ -53,6 +53,7 @@ import UserModal from "../../components/UserModal";
 import { RoleDict } from "../../assets/consts";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
+import NewManagerForm from "../../components/NewManagerForm";
 
 const TITLE = "مدیریت کاربران";
 const PAGE_SIZE = 10;
@@ -195,11 +196,11 @@ const ManageUsersView = () => {
           <Tabs.Tab value="manage" icon={<Eye size={14} />} color="teal">
             مشاهده و جست‌وجو
           </Tabs.Tab>
-          <Tabs.Tab value="create" icon={<Checklist size={14} />} color="cyan">
+          <Tabs.Tab value="create" icon={<Checklist size={14} />} color="yellow">
             متخصصین در انتظار تایید
           </Tabs.Tab>
-          <Tabs.Tab value="reputation" icon={<Heart size={14} />} color="pink">
-            تخصص‌های پرتقاضا
+          <Tabs.Tab value="reputation" icon={<Plus size={14} />} color="pink">
+            اضافه کردن مدیر جدید
           </Tabs.Tab>
         </Tabs.List>
 
@@ -211,133 +212,11 @@ const ManageUsersView = () => {
         </Tabs.Panel>
 
         <Tabs.Panel value="create" pt="xs">
-          <Table striped highlightOnHover>
-            <thead>
-              <tr>
-                <th>نام متخصص</th>
-                <th>تخصص(ها)</th>
-                <th>مدارک اعتبارسنجی</th>
-                <th>جزئیات</th>
-                <th>تأیید</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user: User, idx: number) => {
-                if (user.role === UserRole.Specialist && !user.isValidated)
-                  return (
-                    <tr key={user.id}>
-                      <td>
-                        {user.firstName} {user.lastName}
-                      </td>
-                      <td>
-                        <SpecialitiesBadges speciality={user.speciality} />
-                      </td>
-                      <td>
-                        <Paperclip size={24} />
-                      </td>
-                      <td>
-                        <UnstyledButton
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setIsUserModalOpen(true);
-                          }}
-                        >
-                          <ExternalLink color="blue" size={22} />
-                        </UnstyledButton>
-                      </td>
-
-                      <td>
-                        <div style={{ display: "flex" }}>
-                          <UnstyledButton
-                            onClick={() => {
-                              validateSpecialist(user);
-                            }}
-                          >
-                            <Check color="green" size={22} />
-                          </UnstyledButton>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-              })}
-            </tbody>
-          </Table>
+          {specialistValidationComponent()}
         </Tabs.Panel>
 
         <Tabs.Panel value="reputation" pt="xs">
-          <Grid my="sm" justify="center" align="flex-end">
-            <Grid.Col span={8}>
-              <DateRangePicker
-                locale="fa"
-                label="زمان شروع سفارشات"
-                placeholder="انتخاب بازه‌ی زمانی"
-                value={startTimeInterval}
-                onChange={setStartTimeInterval}
-              />
-            </Grid.Col>
-            <Grid.Col span={3}>
-              <Button
-                mt="sm"
-                color="pink"
-                leftIcon={<ListSearch size={20} />}
-                onClick={() => getPopularRequests()}
-              >
-                جست‌وجوی سفارشات
-              </Button>
-            </Grid.Col>
-            <Grid.Col span={1}>
-              <Switch
-                size="lg"
-                color="pink"
-                mb={3}
-                checked={ascending}
-                onChange={(event) => {
-                  setAscending(event.currentTarget.checked);
-                  popularities.reverse();
-                }}
-                onLabel="صعودی"
-                offLabel="نزولی"
-              />
-            </Grid.Col>
-          </Grid>
-          <Table striped highlightOnHover verticalSpacing="sm">
-            <thead>
-              <tr>
-                <th>ردیف</th>
-                <th>عنوان</th>
-                <th>دسته‌بندی</th>
-                <th>تعداد درخواست</th>
-              </tr>
-            </thead>
-            <tbody>
-              {popularityRows.map((row: Popularity, i) => (
-                <tr key={i}>
-                  <td>{(tab3_activePage - 1) * PAGE_SIZE + (i + 1)}</td>
-                  <td>{row.speciality.title}</td>
-                  <td>
-                    {row.speciality.parent == null ? (
-                      "-"
-                    ) : (
-                      <SpecialitiesBadges
-                        speciality={[row.speciality.parent]}
-                      />
-                    )}
-                  </td>
-                  <td>{row.count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <Center>
-            <Pagination
-              total={Math.ceil(popularities.length / PAGE_SIZE)}
-              color="pink"
-              radius="md"
-              withEdges
-              page={tab3_activePage}
-              onChange={setTab3_activePage}
-            />
-          </Center>
+          <NewManagerForm/>
         </Tabs.Panel>
       </Tabs>
 
@@ -349,6 +228,60 @@ const ManageUsersView = () => {
       />
     </>
   );
+
+  function specialistValidationComponent() {
+    return <Table striped highlightOnHover>
+      <thead>
+        <tr>
+          <th>نام متخصص</th>
+          <th>تخصص(ها)</th>
+          <th>مدارک اعتبارسنجی</th>
+          <th>جزئیات</th>
+          <th>تأیید</th>
+        </tr>
+      </thead>
+      <tbody>
+        {users.map((user: User, idx: number) => {
+          if (user.role === UserRole.Specialist && !user.isValidated)
+            return (
+              <tr key={user.id}>
+                <td>
+                  {user.firstName} {user.lastName}
+                </td>
+                <td>
+                  <SpecialitiesBadges speciality={user.speciality} />
+                </td>
+                <td>
+                  <Paperclip size={24} />
+                </td>
+                <td>
+                  <UnstyledButton
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setIsUserModalOpen(true);
+                    } }
+                  >
+                    <ExternalLink color="blue" size={22} />
+                  </UnstyledButton>
+                </td>
+
+                <td>
+                  <div style={{ display: "flex" }}>
+                    <UnstyledButton
+                      onClick={() => {
+                        validateSpecialist(user);
+                      } }
+                    >
+                      <Check color="green" size={22} />
+                    </UnstyledButton>
+                  </div>
+                </td>
+              </tr>
+            );
+        })}
+      </tbody>
+    </Table>;
+  }
 
   function userTableComponent() {
     return (
@@ -474,6 +407,8 @@ const ManageUsersView = () => {
       </form>
     );
   }
+
+  
 };
 
 export default ManageUsersView;

@@ -34,7 +34,6 @@ export class FieldFilter {
   }
 
   get_pair(): string[] {
-    console.log(typeof this.value);
     if (typeof this.value === "string") return [this.name, this.value];
     else return [this.name, this.value.join(",")];
   }
