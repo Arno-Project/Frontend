@@ -45,6 +45,8 @@ export class AuthAPI extends BaseAPI {
       specialities: params["specialities"],
     };
 
+    console.log(renamed_params)
+
     const response = await this.sendPostRequest({
       path: `register/${role}/`,
       body: renamed_params,

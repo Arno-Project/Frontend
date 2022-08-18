@@ -3,7 +3,8 @@ import {
   Center,
   TextInput,
   Table,
-  Textarea,
+  Stack,
+  SimpleGrid,
   Title,
   Pagination,
   Tabs,
@@ -14,6 +15,7 @@ import {
   Switch,
   Group,
   UnstyledButton,
+  Accordion,
 } from "@mantine/core";
 
 import { showNotification } from "@mantine/notifications";
@@ -27,6 +29,7 @@ import { APIDataToSpecialities, APIDataToUsers } from "../../models/utils";
 import { notifyUser } from "../utils";
 
 import {
+  Eraser,
   Paperclip,
   Check,
   Eye,
@@ -60,11 +63,7 @@ interface Popularity {
 }
 
 const ManageUsersView = () => {
-  const [specTitle, setSpecTitle] = useState<string>("");
-  const [specCategory, setSpecCategory] = useState<string | null>("");
-
   const [activePage, setPage] = useState(1);
-  const [specialities, setSpecialities] = useState<Speciality[]>([]);
 
   const [popularities, setPopularities] = useState<Popularity[]>([]);
   const [tab3_activePage, setTab3_activePage] = useState(1);
@@ -76,8 +75,6 @@ const ManageUsersView = () => {
 
   const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
-  const user = useAppSelector((state) => state.auth.user);
 
   const [users, setUsers] = useState<User[]>([]);
 
@@ -158,30 +155,25 @@ const ManageUsersView = () => {
       }
     }
     if (selectedSpecialities.length > 0) {
-      const filter = new FieldFilter(
-        FieldFilterName.Specialities,
-        selectedSpecialities.join(","),
-        FieldFilterType.Exact
+      filters.push(
+        new FieldFilter(
+          FieldFilterName.Speciality,
+          selectedSpecialities.join(","),
+          FieldFilterType.Exact
+        )
       );
-      filters.push(filter);
+      filters.push(
+        new FieldFilter(
+          FieldFilterName.Role,
+          UserRole.Specialist,
+          FieldFilterType.Exact
+        )
+      );
     }
     console.log(filters);
     getData(filters);
   };
 
-  const applyFilters = (specArr: Speciality[]): Speciality[] => {
-    return specArr.filter(
-      (s: Speciality) =>
-        s.title.includes(specTitle) &&
-        (s.parent == null
-          ? false
-          : Boolean(specCategory)
-          ? s.parent.id.toString() === specCategory
-          : true)
-    );
-  };
-
-  const filteredRows = applyFilters(specialities);
   const rows = users.slice(
     PAGE_SIZE * (activePage - 1),
     PAGE_SIZE * activePage
@@ -212,107 +204,10 @@ const ManageUsersView = () => {
         </Tabs.List>
 
         <Tabs.Panel value="manage" pt="xs">
-          <div className="search-criteria">
-            <Group align="flex-end">
-              <form onSubmit={searchForm.onSubmit(submitForm)}>
-                <TextInput
-                  icon={<Search size={20} />}
-                  label="نام"
-                  placeholder="نام"
-                  {...searchForm.getInputProps("name")}
-                />
-                <TextInput
-                  icon={<Search size={20} />}
-                  label="شماره تماس"
-                  placeholder="شماره تماس"
-                  {...searchForm.getInputProps("phone")}
-                />
-                <TextInput
-                  icon={<Search size={20} />}
-                  label="ایمیل"
-                  placeholder="ایمیل"
-                  {...searchForm.getInputProps("email")}
-                />
-                <TextInput
-                  icon={<Search size={20} />}
-                  label="نام کاربری"
-                  placeholder="نام کاربری"
-                  {...searchForm.getInputProps("username")}
-                />
-                <div style={{ marginTop: "16px" }}>
-                  <SpecialityMultiSelect
-                    setter={onSpecialitySelectChange}
-                    required={false}
-                    error=""
-                  />
-                </div>
-                <MultiSelect
-                  label="نقش"
-                  placeholder="همه"
-                  clearable
-                  data={Object.values(UserRole).map((r) => ({
-                    value: r,
-                    label: RoleDict[r],
-                  }))}
-                  {...searchForm.getInputProps("roles")}
-                />
-
-                <Button
-                  type="submit"
-                  variant="gradient"
-                  gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-                  leftIcon={<ListSearch size={20} />}
-                >
-                  جست‌وجو
-                </Button>
-              </form>
-            </Group>
-          </div>
-
-          <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
-            <thead>
-              <tr>
-                <th>نام کاربری</th>
-                <th>نام</th>
-                <th>نقش</th>
-                <th>شماره تماس</th>
-                <th>جزئیات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((user: User, idx: number) => (
-                <tr key={user.id}>
-                  <td>{user.username}</td>
-                  <td>
-                    {user.firstName} {user.lastName}
-                  </td>
-                  <td>{RoleDict[user.role]}</td>
-                  <td>{user.phone}</td>
-                  <td>
-                    <UnstyledButton
-                      onClick={() => {
-                        setSelectedUser(user);
-                        setIsUserModalOpen(true);
-                      }}
-                    >
-                      <ExternalLink color="blue" size={22} />
-                    </UnstyledButton>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <Center mt="sm">
-            <Pagination
-              mt="sm"
-              total={Math.ceil(users.length / PAGE_SIZE)}
-              color="cyan"
-              radius="md"
-              withEdges
-              page={activePage}
-              onChange={setPage}
-            />
-          </Center>
+          <>
+            {userSearchComponent()}
+            {userTableComponent()}
+          </>
         </Tabs.Panel>
 
         <Tabs.Panel value="create" pt="xs">
@@ -454,6 +349,131 @@ const ManageUsersView = () => {
       />
     </>
   );
+
+  function userTableComponent() {
+    return (
+      <>
+        <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
+          <thead>
+            <tr>
+              <th>نام کاربری</th>
+              <th>نام</th>
+              <th>نقش</th>
+              <th>شماره تماس</th>
+              <th>جزئیات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((user: User, idx: number) => (
+              <tr key={user.id}>
+                <td>{user.username}</td>
+                <td>
+                  {user.firstName} {user.lastName}
+                </td>
+                <td>{RoleDict[user.role]}</td>
+                <td>{user.phone}</td>
+                <td>
+                  <UnstyledButton
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setIsUserModalOpen(true);
+                    }}
+                  >
+                    <ExternalLink color="blue" size={22} />
+                  </UnstyledButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Center mt="sm">
+          <Pagination
+            mt="sm"
+            total={Math.ceil(users.length / PAGE_SIZE)}
+            color="cyan"
+            radius="md"
+            withEdges
+            page={activePage}
+            onChange={setPage}
+          />
+        </Center>
+      </>
+    );
+  }
+
+  function userSearchComponent() {
+    return (
+      <form onSubmit={searchForm.onSubmit(submitForm)}>
+        <Stack>
+          <SimpleGrid cols={2}>
+            <TextInput
+              rightSection={() => {
+                return "sfsfs";
+              }}
+              label="نام"
+              placeholder="نام"
+              {...searchForm.getInputProps("name")}
+            />
+            <TextInput
+              label="نام کاربری"
+              placeholder="نام کاربری"
+              {...searchForm.getInputProps("username")}
+            />
+            <TextInput
+              label="شماره تماس"
+              placeholder="شماره تماس"
+              {...searchForm.getInputProps("phone")}
+            />
+
+            <TextInput
+              label="ایمیل"
+              placeholder="ایمیل"
+              {...searchForm.getInputProps("email")}
+            />
+            <MultiSelect
+              label="نقش"
+              placeholder="همه"
+              clearable
+              data={Object.values(UserRole).map((r) => ({
+                value: r,
+                label: RoleDict[r],
+              }))}
+              {...searchForm.getInputProps("roles")}
+            />
+
+            <SpecialityMultiSelect
+              setter={onSpecialitySelectChange}
+              required={false}
+              error=""
+            />
+          </SimpleGrid>
+
+          <Group position="center" spacing="md">
+            <Button
+              type="submit"
+              variant="gradient"
+              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+              leftIcon={<ListSearch size={20} />}
+            >
+              جست‌وجو
+            </Button>
+            <Button
+              variant="outline"
+              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+              leftIcon={<Eraser size={20} />}
+              onClick={() => {
+                searchForm.reset();
+                setSelectedSpecialities([]);
+                getData([]);
+              }}
+            >
+              پاک‌ کردن
+            </Button>
+          </Group>
+        </Stack>
+      </form>
+    );
+  }
 };
 
 export default ManageUsersView;

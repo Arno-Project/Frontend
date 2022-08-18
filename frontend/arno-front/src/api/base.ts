@@ -20,7 +20,6 @@ export enum FieldFilterName {
   Phone = "phone",
   Email = "email",
   Roles = "roles",
-  Specialities = "specialities",
 }
 
 export class FieldFilter {
@@ -35,6 +34,7 @@ export class FieldFilter {
   }
 
   get_pair(): string[] {
+    console.log(typeof this.value);
     if (typeof this.value === "string") return [this.name, this.value];
     else return [this.name, this.value.join(",")];
   }
@@ -226,7 +226,7 @@ abstract class BaseListAPI extends BaseAPI {
       fieldFilters.map((field) => field.get_pair())
     );
 
-    console.log("param dict", paramDict)
+    console.log("param dict", paramDict);
 
     const response = await this.sendAuthorizedGetRequest({
       path: this.get_path,
