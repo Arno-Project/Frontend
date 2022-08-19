@@ -66,7 +66,7 @@ const RequestDetailsView = () => {
     }
   };
 
-  const getSpecialists = async () => {
+  const getSpecialists = async (filters: FieldFilter[]) => {
     if (!requestDetails) {
       return;
     }
@@ -80,7 +80,11 @@ const RequestDetailsView = () => {
       `${requestDetails.requested_speciality.id}`,
       FieldFilterType.Exact
     );
-    let res = await AccountAPI.getInstance().get([filter1, filter2]);
+    let res = await AccountAPI.getInstance().get([
+      ...filters,
+      filter1,
+      filter2,
+    ]);
     if (res.success) {
       const users = APIDataToUsers(res);
       setSpecs(users);
@@ -371,12 +375,16 @@ const RequestDetailsView = () => {
               <SpecialistsTable
                 users={specs}
                 button={button}
+                search={{
+                  getUsers: getSpecialists,
+                  searchFields: [FieldFilterName.Name, FieldFilterName.Sort],
+                }}
               ></SpecialistsTable>
             ) : (
               <Button
                 color="blue"
                 onClick={() => {
-                  getSpecialists();
+                  getSpecialists([]);
                   setShowSpecialists(true);
                 }}
               >

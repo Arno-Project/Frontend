@@ -1,23 +1,13 @@
 import {
   Anchor,
   Tooltip,
-  Button,
   Center,
-  TextInput,
   Table,
-  Stack,
-  SimpleGrid,
   Title,
   Pagination,
   Tabs,
-  Grid,
-  Select,
   Space,
-  MultiSelect,
-  Switch,
-  Group,
   UnstyledButton,
-  Accordion,
   Badge,
 } from "@mantine/core";
 
@@ -26,41 +16,30 @@ import { useForm } from "@mantine/form";
 
 import { useState, useEffect } from "react";
 
-import { Speciality, User, UserRole } from "../../models";
+import { User, UserRole } from "../../models";
 import { AccountAPI } from "../../api/accounts";
-import { APIDataToSpecialities, APIDataToUsers } from "../../models/utils";
+import { APIDataToUsers } from "../../models/utils";
 import { notifyUser } from "../utils";
 
 import {
   ZoomInArea,
-  Eraser,
   Paperclip,
   Phone,
   Check,
   Eye,
   Plus,
-  Tool,
   X,
-  Heart,
-  Search,
-  Category,
-  ListSearch,
-  ExternalLink,
   Checklist,
   Mail,
 } from "tabler-icons-react";
 
 import { Helmet } from "react-helmet";
 import { SpecialitiesBadges } from "../../models/SpecialityBadges";
-import { CoreAPI } from "../../api/core";
-import { DateRangePicker } from "@mantine/dates";
-import { useAppSelector } from "../../redux/hooks";
 import UserModal from "../../components/UserModal";
 import { RoleDict, RoleDictColor } from "../../assets/consts";
-import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import NewManagerForm from "../../components/NewManagerForm";
-import SpecialistsTable from "../../components/SpecialistsTable";
+import UserSearchComponent from "../../components/UserSearchComponent";
 
 const TITLE = "مدیریت کاربران";
 const PAGE_SIZE = 10;
@@ -183,7 +162,17 @@ const ManageUsersView = () => {
 
         <Tabs.Panel value="view" pt="xs">
           <>
-            {userSearchComponent()}
+            <UserSearchComponent
+              getData={getData}
+              searchFields={[
+                FieldFilterName.Name,
+                FieldFilterName.Phone,
+                FieldFilterName.Email,
+                FieldFilterName.Roles,
+                FieldFilterName.Speciality,
+                FieldFilterName.Sort,
+              ]}
+            />
             {userTableComponent()}
           </>
         </Tabs.Panel>
@@ -340,87 +329,6 @@ const ManageUsersView = () => {
           />
         </Center>
       </>
-    );
-  }
-
-  function userSearchComponent() {
-    return (
-      <form onSubmit={searchForm.onSubmit(submitForm)}>
-        <Stack>
-          <SimpleGrid cols={2}>
-            <TextInput
-              rightSection={() => {
-                return "sfsfs";
-              }}
-              label="نام یا نام کاربری"
-              placeholder="نام یا نام کاربری"
-              {...searchForm.getInputProps("name")}
-            />
-            <TextInput
-              label="تلفن همراه"
-              placeholder="تلفن همراه"
-              {...searchForm.getInputProps("phone")}
-            />
-
-            <TextInput
-              label="ایمیل"
-              placeholder="ایمیل"
-              {...searchForm.getInputProps("email")}
-            />
-            <MultiSelect
-              label="نقش"
-              placeholder="همه"
-              clearable
-              data={Object.values(UserRole).map((r) => ({
-                value: r,
-                label: RoleDict[r],
-              }))}
-              {...searchForm.getInputProps("roles")}
-            />
-
-            <SpecialityMultiSelect
-              setter={onSpecialitySelectChange}
-              required={false}
-              error=""
-            />
-
-            <Select
-              clearable
-              label="مرتب سازی بر اساس"
-              placeholder="پیش‌فرض"
-              {...searchForm.getInputProps("sort")}
-              data={[
-                { value: "-score", label: "بیشترین امتیاز" },
-                { value: "score", label: "کم‌ترین امتیاز" },
-                { value: "-date_joined", label: "جدیدترین تاریخ عضویت" },
-                { value: "date_joined", label: "قدیمی‌ترین تاریخ عضویت" },
-              ]}
-            />
-          </SimpleGrid>
-          <Group position="center" spacing="md">
-            <Button
-              type="submit"
-              variant="gradient"
-              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-              leftIcon={<ListSearch size={20} />}
-            >
-              جست‌وجو
-            </Button>
-            <Button
-              variant="outline"
-              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-              leftIcon={<Eraser size={20} />}
-              onClick={() => {
-                searchForm.reset();
-                setSelectedSpecialities([]);
-                getData([]);
-              }}
-            >
-              پاک‌ کردن
-            </Button>
-          </Group>
-        </Stack>
-      </form>
     );
   }
 };
