@@ -61,6 +61,7 @@ const UserModal = (props: {
         overlayOpacity={0.55}
         overlayBlur={3}
         size="80%"
+        style={{ position: "absolute", zIndex: 1000 }}
       >
         <LoadingOverlay visible={!props.user} overlayBlur={2} />
         {props.user && (

@@ -116,18 +116,17 @@ const EditProfileView = () => {
     }
     const allSpecialities = await AccountAPI.getInstance().fetchSpecialities();
     const mySpec = APIDataToUsers(res)[0].speciality.map((s) => s.id);
-    const selectedSpec = selectedSpecialities.map(
-      (s) => allSpecialities.filter((sp) => sp.title === s)[0].id
-    );
+    
     for (let specialityId of allSpecialities.map((s) => s.id)) {
+      let specialityIdStr = specialityId + ""
       if (
         mySpec.includes(specialityId) &&
-        !selectedSpec.includes(specialityId)
+        !selectedSpecialities.includes(specialityIdStr)
       ) {
         await AccountAPI.getInstance().removeSpeciality(specialityId);
       }
       if (
-        selectedSpec.includes(specialityId) &&
+        selectedSpecialities.includes(specialityIdStr) &&
         !mySpec.includes(specialityId)
       ) {
         await AccountAPI.getInstance().addSpeciality(specialityId);
@@ -211,7 +210,7 @@ const EditProfileView = () => {
         {user?.role === UserRole.Specialist && (
           <Checkbox
             mt="xl"
-            label="فعال بودن متخصص"
+            label="در حال حاضر مایل به ارائه‌ی سرویس می‌باشم."
             {...editProfileForm.getInputProps("is_active", {
               type: "checkbox",
             })}
