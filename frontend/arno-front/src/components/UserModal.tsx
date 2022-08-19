@@ -168,6 +168,7 @@ const UserModal = (props: {
             )}
 
             {props.user.role === UserRole.Specialist &&
+            props.validateSpecialist !== null &&
               !props.user.isValidated && (
                 <Button
                   variant="light"

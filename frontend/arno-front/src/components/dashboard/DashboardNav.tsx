@@ -144,7 +144,7 @@ export function DashboardNav() {
   );
 
   return (
-    <Navbar p="xs" width={{ base: 300 }}>
+    <Navbar p="xs" width={{ base: 250 }}>
       {/* <Navbar.Section mt="xs">
         <Brand />
       </Navbar.Section> */}

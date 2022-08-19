@@ -29,6 +29,7 @@ import { APIDataToSpecialities, APIDataToUsers } from "../../models/utils";
 import { notifyUser } from "../utils";
 
 import {
+  ZoomInArea,
   Eraser,
   Paperclip,
   Check,
@@ -42,6 +43,7 @@ import {
   ListSearch,
   ExternalLink,
   Checklist,
+  UserCircle,
 } from "tabler-icons-react";
 
 import { Helmet } from "react-helmet";
@@ -54,6 +56,7 @@ import { RoleDict } from "../../assets/consts";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import NewManagerForm from "../../components/NewManagerForm";
+import SpecialistsTable from "../../components/SpecialistsTable";
 
 const TITLE = "مدیریت کاربران";
 const PAGE_SIZE = 10;
@@ -66,21 +69,15 @@ interface Popularity {
 const ManageUsersView = () => {
   const [activePage, setPage] = useState(1);
 
-  const [popularities, setPopularities] = useState<Popularity[]>([]);
-  const [tab3_activePage, setTab3_activePage] = useState(1);
-
-  const [ascending, setAscending] = useState<boolean>(false);
-  const [startTimeInterval, setStartTimeInterval] = useState<
-    [Date | null, Date | null]
-  >([new Date(), new Date()]);
-
   const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [users, setUsers] = useState<User[]>([]);
 
+  const [specs, setSpecs] = useState<User[]>([]);
+
   const getData = async (filters: FieldFilter[]) => {
-    const res = await AccountAPI.getInstance().get(filters);
+    let res = await AccountAPI.getInstance().get(filters);
     if (res.success) {
       console.log("R", res);
       const users = APIDataToUsers(res);
@@ -94,18 +91,15 @@ const ManageUsersView = () => {
         icon: <X size={18} />,
       });
     }
-  };
 
-  const getPopularRequests = async () => {
-    const query = {
-      desired_start_time_gte: startTimeInterval[0],
-      desired_start_time_lte: startTimeInterval[1],
-    };
-    const res = await CoreAPI.getInstance().getRequestPopularityReport(query);
-    if (res.success) {
-      const data = res.data!["popularity" as keyof object] as Popularity[];
-      setPopularities(data);
-    }
+    const filter = new FieldFilter(
+      FieldFilterName.Role,
+      UserRole.Specialist,
+      FieldFilterType.Exact
+    );
+    res = await AccountAPI.getInstance().get([filter]);
+    const specs = APIDataToUsers(res);
+    setSpecs(specs);
   };
 
   useEffect(() => {
@@ -180,11 +174,6 @@ const ManageUsersView = () => {
     PAGE_SIZE * activePage
   );
 
-  const popularityRows = popularities.slice(
-    PAGE_SIZE * (tab3_activePage - 1),
-    PAGE_SIZE * tab3_activePage
-  );
-
   return (
     <>
       <Helmet>
@@ -193,30 +182,37 @@ const ManageUsersView = () => {
       <Title order={2}>{TITLE}</Title>
       <Tabs defaultValue="manage">
         <Tabs.List>
-          <Tabs.Tab value="manage" icon={<Eye size={14} />} color="teal">
+          <Tabs.Tab value="view" icon={<Eye size={14} />} color="teal">
             مشاهده و جست‌وجو
           </Tabs.Tab>
-          <Tabs.Tab value="create" icon={<Checklist size={14} />} color="yellow">
+          <Tabs.Tab value="edit" icon={<Checklist size={14} />} color="yellow">
             متخصصین در انتظار تایید
           </Tabs.Tab>
-          <Tabs.Tab value="reputation" icon={<Plus size={14} />} color="pink">
+          <Tabs.Tab value="new" icon={<Plus size={14} />} color="pink">
             اضافه کردن مدیر جدید
+          </Tabs.Tab>
+          <Tabs.Tab value="view2" icon={<UserCircle size={14} />} color="green">
+            متخصصین سامانه
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="manage" pt="xs">
+        <Tabs.Panel value="view" pt="xs">
           <>
             {userSearchComponent()}
             {userTableComponent()}
           </>
         </Tabs.Panel>
 
-        <Tabs.Panel value="create" pt="xs">
+        <Tabs.Panel value="edit" pt="xs">
           {specialistValidationComponent()}
         </Tabs.Panel>
 
-        <Tabs.Panel value="reputation" pt="xs">
-          <NewManagerForm/>
+        <Tabs.Panel value="new" pt="xs">
+          <NewManagerForm />
+        </Tabs.Panel>
+
+        <Tabs.Panel value="view2" pt="xs">
+          <SpecialistsTable users={specs} button={null} />
         </Tabs.Panel>
       </Tabs>
 
@@ -230,57 +226,59 @@ const ManageUsersView = () => {
   );
 
   function specialistValidationComponent() {
-    return <Table striped highlightOnHover>
-      <thead>
-        <tr>
-          <th>نام متخصص</th>
-          <th>تخصص(ها)</th>
-          <th>مدارک اعتبارسنجی</th>
-          <th>جزئیات</th>
-          <th>تأیید</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map((user: User, idx: number) => {
-          if (user.role === UserRole.Specialist && !user.isValidated)
-            return (
-              <tr key={user.id}>
-                <td>
-                  {user.firstName} {user.lastName}
-                </td>
-                <td>
-                  <SpecialitiesBadges speciality={user.speciality} />
-                </td>
-                <td>
-                  <Paperclip size={24} />
-                </td>
-                <td>
-                  <UnstyledButton
-                    onClick={() => {
-                      setSelectedUser(user);
-                      setIsUserModalOpen(true);
-                    } }
-                  >
-                    <ExternalLink color="blue" size={22} />
-                  </UnstyledButton>
-                </td>
-
-                <td>
-                  <div style={{ display: "flex" }}>
+    return (
+      <Table striped highlightOnHover>
+        <thead>
+          <tr>
+            <th>نام متخصص</th>
+            <th>تخصص(ها)</th>
+            <th>مدارک اعتبارسنجی</th>
+            <th>جزئیات</th>
+            <th>تأیید</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user: User, idx: number) => {
+            if (user.role === UserRole.Specialist && !user.isValidated)
+              return (
+                <tr key={user.id}>
+                  <td>
+                    {user.firstName} {user.lastName}
+                  </td>
+                  <td>
+                    <SpecialitiesBadges speciality={user.speciality} />
+                  </td>
+                  <td>
+                    <Paperclip size={24} />
+                  </td>
+                  <td>
                     <UnstyledButton
                       onClick={() => {
-                        validateSpecialist(user);
-                      } }
+                        setSelectedUser(user);
+                        setIsUserModalOpen(true);
+                      }}
                     >
-                      <Check color="green" size={22} />
+                      <ZoomInArea color="black" size={22} />
                     </UnstyledButton>
-                  </div>
-                </td>
-              </tr>
-            );
-        })}
-      </tbody>
-    </Table>;
+                  </td>
+
+                  <td>
+                    <div style={{ display: "flex" }}>
+                      <UnstyledButton
+                        onClick={() => {
+                          validateSpecialist(user);
+                        }}
+                      >
+                        <Check color="green" size={22} />
+                      </UnstyledButton>
+                    </div>
+                  </td>
+                </tr>
+              );
+          })}
+        </tbody>
+      </Table>
+    );
   }
 
   function userTableComponent() {
@@ -312,7 +310,7 @@ const ManageUsersView = () => {
                       setIsUserModalOpen(true);
                     }}
                   >
-                    <ExternalLink color="blue" size={22} />
+                    <ZoomInArea color="black" size={22} />
                   </UnstyledButton>
                 </td>
               </tr>
@@ -407,8 +405,6 @@ const ManageUsersView = () => {
       </form>
     );
   }
-
-  
 };
 
 export default ManageUsersView;

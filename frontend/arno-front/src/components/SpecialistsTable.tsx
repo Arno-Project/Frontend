@@ -60,10 +60,11 @@ const SpecialistsTable = (props: {
       <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
         <thead>
           <tr>
-            <th>ردیف</th>
             <th>نام متخصص</th>
-            <th>تخصص(ها)</th>
+            <th>تخصص‌ها</th>
             <th>امتیاز</th>
+            <th>جزئیات</th>
+
           </tr>
         </thead>
         <tbody>
