@@ -11,9 +11,11 @@ import {
   ActionIcon,
   Button,
 } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { Check, X, Message, Pencil, ExternalLink } from "tabler-icons-react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
 
@@ -22,18 +24,14 @@ import { RequestStatus, ServiceSummary, User, UserRole } from "../../models";
 import { APIDataToServiceSummary, APIDataToUsers } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
-
-import { Check, X, Message, Pencil } from "tabler-icons-react";
-import { showNotification } from "@mantine/notifications";
-
-import { Helmet } from "react-helmet";
-import SpecialistsTable from "../../components/SpecialistsTable";
 import { SpecialistRow } from "../../components/SpecialistRow";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { AccountAPI } from "../../api/accounts";
 import { useAppSelector } from "../../redux/hooks";
+import SpecialistsTable from "../../components/SpecialistsTable";
 import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 
+import { Helmet } from "react-helmet";
 const TITLE = "جزئیات سفارش";
 
 const RequestDetailsView = () => {
@@ -539,6 +537,30 @@ const RequestDetailsView = () => {
           </MapContainer>
         </>
       )}
+      {!!requestDetails &&
+        [RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
+          requestDetails!.status
+        ) && (
+          <>
+            <Divider
+              size="xs"
+              my="xs"
+              label="ویرایش درخواست"
+              labelPosition="left"
+            />
+            <Button
+              color="lime"
+              onClick={() => {
+                navigate("/dashboard/request_service/", {
+                  state: { request: requestDetails },
+                });
+              }}
+              leftIcon={<ExternalLink size={20} />}
+            >
+              ویرایش
+            </Button>
+          </>
+        )}
       {specialistComponent}
       <RequestFeedbackModal
         role={user!.role}
