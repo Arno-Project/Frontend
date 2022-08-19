@@ -18,7 +18,7 @@ import {
   Group,
   UnstyledButton,
   Accordion,
-  Badge
+  Badge,
 } from "@mantine/core";
 
 import { showNotification } from "@mantine/notifications";
@@ -114,10 +114,10 @@ const ManageUsersView = () => {
     initialValues: {
       name: "",
       phone: "",
-      username: "",
       email: "",
       specialities: [],
       roles: [],
+      sort: "",
     },
 
     validate: {},
@@ -284,13 +284,13 @@ const ManageUsersView = () => {
                   {user.firstName} {user.lastName}
                 </td>
                 <td>
-                <Badge
-                  color={RoleDictColor[user.role]}
-                  variant="dot"
-                  size="lg"
-                >
-                  {RoleDict[user.role]}
-                </Badge>
+                  <Badge
+                    color={RoleDictColor[user.role]}
+                    variant="dot"
+                    size="lg"
+                  >
+                    {RoleDict[user.role]}
+                  </Badge>
                 </td>
                 <td>{user.score !== undefined ? user.score : "_"}</td>
                 <td>
@@ -352,14 +352,9 @@ const ManageUsersView = () => {
               rightSection={() => {
                 return "sfsfs";
               }}
-              label="نام"
-              placeholder="نام"
+              label="نام یا نام کاربری"
+              placeholder="نام یا نام کاربری"
               {...searchForm.getInputProps("name")}
-            />
-            <TextInput
-              label="نام کاربری"
-              placeholder="نام کاربری"
-              {...searchForm.getInputProps("username")}
             />
             <TextInput
               label="تلفن همراه"
@@ -388,8 +383,20 @@ const ManageUsersView = () => {
               required={false}
               error=""
             />
-          </SimpleGrid>
 
+            <Select
+              clearable
+              label="مرتب سازی بر اساس"
+              placeholder="پیش‌فرض"
+              {...searchForm.getInputProps("sort")}
+              data={[
+                { value: "-score", label: "بیشترین امتیاز" },
+                { value: "score", label: "کم‌ترین امتیاز" },
+                { value: "-date_joined", label: "جدیدترین تاریخ عضویت" },
+                { value: "date_joined", label: "قدیمی‌ترین تاریخ عضویت" },
+              ]}
+            />
+          </SimpleGrid>
           <Group position="center" spacing="md">
             <Button
               type="submit"

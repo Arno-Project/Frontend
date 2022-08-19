@@ -1,8 +1,5 @@
 import { ZoomInArea } from "tabler-icons-react";
-import {
-  Button,
-  UnstyledButton,
-} from "@mantine/core";
+import { Button, UnstyledButton } from "@mantine/core";
 
 import { User } from "../models";
 
@@ -33,13 +30,13 @@ export const SpecialistRow = (props: {
       </td>
       <td>{user.score}</td>
       <td>
-          <UnstyledButton
-            onClick={() => {
-              setIsUserModalOpen(true);
-            }}
-          >
-            <ZoomInArea color="black" size={22} />
-          </UnstyledButton>
+        <UnstyledButton
+          onClick={() => {
+            setIsUserModalOpen(true);
+          }}
+        >
+          <ZoomInArea color="black" size={22} />
+        </UnstyledButton>
         {props.button !== null && (
           <Button
             color="orange"
@@ -55,6 +52,7 @@ export const SpecialistRow = (props: {
       </td>
 
       <UserModal
+        key={user.id}
         user={props.user}
         isOpen={isUserModalOpen}
         changeIsOpen={setIsUserModalOpen}

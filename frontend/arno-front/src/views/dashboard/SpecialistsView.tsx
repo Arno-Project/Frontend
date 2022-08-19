@@ -22,12 +22,17 @@ const SpecialistsView = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const getData = async () => {
-    const filter = new FieldFilter(
+    const filter1 = new FieldFilter(
       FieldFilterName.Role,
       UserRole.Specialist,
       FieldFilterType.Exact
     );
-    let res = await AccountAPI.getInstance().get([filter]);
+    const filter2 = new FieldFilter(
+      FieldFilterName.Sort,
+      '-score',
+      FieldFilterType.Exact
+    );
+    let res = await AccountAPI.getInstance().get([filter1, filter2]);
     const users = APIDataToUsers(res);
     setUsers(users);
   };

@@ -20,6 +20,7 @@ export enum FieldFilterName {
   Phone = "phone",
   Email = "email",
   Roles = "roles",
+  Sort = "sort",
 }
 
 export class FieldFilter {
