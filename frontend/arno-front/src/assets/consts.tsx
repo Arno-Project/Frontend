@@ -29,7 +29,7 @@ export const AccessRules: any = {
   "/request_service": [UserRole.Customer],
   "/create_request": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/manage_services": [UserRole.TechnicalManager, UserRole.CompanyManager],
-  "/manage_specialities": [UserRole.CompanyManager],
+  "/manage_specialities": [UserRole.CompanyManager, UserRole.Specialist],
   "/manage_users": [UserRole.CompanyManager, UserRole.TechnicalManager],
   "/customer_requests": [UserRole.Specialist],
   "/chats": [UserRole.Customer, UserRole.Specialist],
