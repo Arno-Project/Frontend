@@ -1,4 +1,6 @@
 import {
+  Anchor,
+  Tooltip,
   Button,
   Center,
   TextInput,
@@ -16,6 +18,7 @@ import {
   Group,
   UnstyledButton,
   Accordion,
+  Badge
 } from "@mantine/core";
 
 import { showNotification } from "@mantine/notifications";
@@ -32,6 +35,7 @@ import {
   ZoomInArea,
   Eraser,
   Paperclip,
+  Phone,
   Check,
   Eye,
   Plus,
@@ -43,7 +47,7 @@ import {
   ListSearch,
   ExternalLink,
   Checklist,
-  UserCircle,
+  Mail,
 } from "tabler-icons-react";
 
 import { Helmet } from "react-helmet";
@@ -52,7 +56,7 @@ import { CoreAPI } from "../../api/core";
 import { DateRangePicker } from "@mantine/dates";
 import { useAppSelector } from "../../redux/hooks";
 import UserModal from "../../components/UserModal";
-import { RoleDict } from "../../assets/consts";
+import { RoleDict, RoleDictColor } from "../../assets/consts";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import NewManagerForm from "../../components/NewManagerForm";
@@ -61,11 +65,6 @@ import SpecialistsTable from "../../components/SpecialistsTable";
 const TITLE = "مدیریت کاربران";
 const PAGE_SIZE = 10;
 
-interface Popularity {
-  speciality: Speciality;
-  count: number;
-}
-
 const ManageUsersView = () => {
   const [activePage, setPage] = useState(1);
 
@@ -73,8 +72,6 @@ const ManageUsersView = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [users, setUsers] = useState<User[]>([]);
-
-  const [specs, setSpecs] = useState<User[]>([]);
 
   const getData = async (filters: FieldFilter[]) => {
     let res = await AccountAPI.getInstance().get(filters);
@@ -91,15 +88,6 @@ const ManageUsersView = () => {
         icon: <X size={18} />,
       });
     }
-
-    const filter = new FieldFilter(
-      FieldFilterName.Role,
-      UserRole.Specialist,
-      FieldFilterType.Exact
-    );
-    res = await AccountAPI.getInstance().get([filter]);
-    const specs = APIDataToUsers(res);
-    setSpecs(specs);
   };
 
   useEffect(() => {
@@ -180,7 +168,7 @@ const ManageUsersView = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      <Tabs defaultValue="manage">
+      <Tabs defaultValue="view">
         <Tabs.List>
           <Tabs.Tab value="view" icon={<Eye size={14} />} color="teal">
             مشاهده و جست‌وجو
@@ -190,9 +178,6 @@ const ManageUsersView = () => {
           </Tabs.Tab>
           <Tabs.Tab value="new" icon={<Plus size={14} />} color="pink">
             اضافه کردن مدیر جدید
-          </Tabs.Tab>
-          <Tabs.Tab value="view2" icon={<UserCircle size={14} />} color="green">
-            متخصصین سامانه
           </Tabs.Tab>
         </Tabs.List>
 
@@ -209,10 +194,6 @@ const ManageUsersView = () => {
 
         <Tabs.Panel value="new" pt="xs">
           <NewManagerForm />
-        </Tabs.Panel>
-
-        <Tabs.Panel value="view2" pt="xs">
-          <SpecialistsTable users={specs} button={null} />
         </Tabs.Panel>
       </Tabs>
 
@@ -290,8 +271,9 @@ const ManageUsersView = () => {
               <th>نام کاربری</th>
               <th>نام</th>
               <th>نقش</th>
-              <th>شماره تماس</th>
+              <th>امتیاز</th>
               <th>جزئیات</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -301,8 +283,16 @@ const ManageUsersView = () => {
                 <td>
                   {user.firstName} {user.lastName}
                 </td>
-                <td>{RoleDict[user.role]}</td>
-                <td>{user.phone}</td>
+                <td>
+                <Badge
+                  color={RoleDictColor[user.role]}
+                  variant="dot"
+                  size="lg"
+                >
+                  {RoleDict[user.role]}
+                </Badge>
+                </td>
+                <td>{user.score !== undefined ? user.score : "_"}</td>
                 <td>
                   <UnstyledButton
                     onClick={() => {
@@ -312,6 +302,27 @@ const ManageUsersView = () => {
                   >
                     <ZoomInArea color="black" size={22} />
                   </UnstyledButton>
+                </td>
+                <td>
+                  <Tooltip
+                    color="gray"
+                    position="right"
+                    label={"تماس با " + user.phone}
+                  >
+                    <Anchor href={"callto://" + user.phone}>
+                      <Phone color="green" size={15} />
+                    </Anchor>
+                  </Tooltip>
+                  <Space w="sm" />
+                  <Tooltip
+                    color="gray"
+                    position="right"
+                    label={"ارسال ایمیل به " + user.email}
+                  >
+                    <Anchor href={"mailto:" + user.email}>
+                      <Mail color="blue" size={15} />
+                    </Anchor>
+                  </Tooltip>
                 </td>
               </tr>
             ))}
@@ -351,8 +362,8 @@ const ManageUsersView = () => {
               {...searchForm.getInputProps("username")}
             />
             <TextInput
-              label="شماره تماس"
-              placeholder="شماره تماس"
+              label="تلفن همراه"
+              placeholder="تلفن همراه"
               {...searchForm.getInputProps("phone")}
             />
 

@@ -56,18 +56,7 @@ const links: MainLinkProps[] = [
     label: "مشکلات فنی",
     path: "/technical_issues",
   },
-  {
-    icon: <Users size={16} />,
-    color: "teal",
-    label: "مختصصین سامانه",
-    path: "/specialists",
-  },
-  {
-    icon: <UserExclamation size={16} />,
-    color: "violet",
-    label: "انتقادات و پیشنهادات",
-    path: "/suggestion_complaint",
-  },
+
   {
     icon: <MathFunction size={16} />, // or <Checklist />? :)
     color: "grape",
@@ -83,7 +72,7 @@ const links: MainLinkProps[] = [
   {
     icon: <Bucket size={16} />,
     color: "teal",
-    label: "سفارش‌ها",
+    label: "درخواست‌های من",
     path: "/requests",
   },
   {
@@ -98,6 +87,12 @@ const links: MainLinkProps[] = [
   //   label: "مشاهده خدمات",
   //   path: "/services",
   // },
+  {
+    icon: <ShoppingCart size={16} />,
+    color: "lime",
+    label: "درخواست‌ها",
+    path: "/customer_requests",
+  },
   {
     icon: <ClipboardText size={16} />,
     color: "blue",
@@ -123,16 +118,22 @@ const links: MainLinkProps[] = [
     path: "/create_request",
   },
   {
-    icon: <ShoppingCart size={16} />,
-    color: "lime",
-    label: "درخواست‌ها",
-    path: "/customer_requests",
+    icon: <Users size={16} />,
+    color: "teal",
+    label: "مختصصین سامانه",
+    path: "/specialists",
   },
   {
     icon: <Message size={16} />,
     color: "red",
     label: "پیام‌ها",
     path: "/chats",
+  },
+  {
+    icon: <UserExclamation size={16} />,
+    color: "violet",
+    label: "انتقادات و پیشنهادات",
+    path: "/suggestion_complaint",
   },
 ];
 

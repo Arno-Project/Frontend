@@ -27,7 +27,7 @@ const ViewCustomerRequests = () => {
     } else {
       showNotification({
         title: "خطا",
-        message: "دریافت سفارش‌ها از سرور با خطا مواجه شد",
+        message: "دریافت درخواست‌ها از سرور با خطا مواجه شد",
         color: "red",
         icon: <X size={18} />,
       });

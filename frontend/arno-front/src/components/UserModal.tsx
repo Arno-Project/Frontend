@@ -61,7 +61,7 @@ const UserModal = (props: {
         overlayOpacity={0.55}
         overlayBlur={3}
         size="80%"
-        style={{ position: "absolute", zIndex: 1000 }}
+        style={{ zIndex: 1000 }}
       >
         <LoadingOverlay visible={!props.user} overlayBlur={2} />
         {props.user && (
@@ -101,7 +101,7 @@ const UserModal = (props: {
             <Space h="md" />
             <Group>
               <Text size="md" color="dimmed">
-                شماره تماس:
+                تلفن همراه:
               </Text>
               <Text>{props.user.phone}</Text>
             </Group>

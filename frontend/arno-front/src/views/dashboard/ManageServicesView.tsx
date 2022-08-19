@@ -70,7 +70,7 @@ const ManageServicesView = () => {
     } else {
       showNotification({
         title: "خطا",
-        message: "دریافت سفارش‌ها از سرور با خطا مواجه شد",
+        message: "دریافت درخواست‌ها از سرور با خطا مواجه شد",
         color: "red",
         icon: <X size={18} />,
       });
@@ -102,7 +102,7 @@ const ManageServicesView = () => {
     } else {
       showNotification({
         title: "خطا",
-        message: "دریافت سفارش‌ها از سرور با خطا مواجه شد",
+        message: "دریافت درخواست‌ها از سرور با خطا مواجه شد",
         color: "red",
         icon: <X size={18} />,
       });
