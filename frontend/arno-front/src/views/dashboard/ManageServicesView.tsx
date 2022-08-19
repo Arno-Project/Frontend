@@ -132,7 +132,7 @@ const ManageServicesView = () => {
   const renderRows = () => {
     const body: any[] = cancelableRows.map((obj: ServiceSummary, i) => (
       <tr key={i}>
-        <td>{i + 1}</td>
+        <td>{(tab1_activePage - 1) * PAGE_SIZE + (i + 1)}</td>
         <td>{obj.customerName}</td>
         <td>{!!obj.specialistName ? obj.specialistName : "-"}</td>
         <td>
@@ -291,7 +291,7 @@ const ManageServicesView = () => {
             <tbody>
               {pendingRows.map((row, i) => (
                 <tr key={i}>
-                  <td>{i + 1}</td>
+                  <td>{(tab2_activePage - 1) * PAGE_SIZE + (i + 1)}</td>
                   <td>{row.customerName}</td>
                   <td>
                     <Tooltip

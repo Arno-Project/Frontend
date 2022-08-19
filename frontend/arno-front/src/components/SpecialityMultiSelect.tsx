@@ -42,7 +42,7 @@ export default function SpecialityMultiSelect({
         .filter((s) => s.parent !== null)
         .map((s) => ({
           label: s.title,
-          value: s.id,
+          value: s.id.toString(),
           group: s.parent?.title,
         }))}
       icon={<UserSearch size={20} />}
