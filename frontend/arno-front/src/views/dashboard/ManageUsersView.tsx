@@ -172,6 +172,7 @@ const ManageUsersView = () => {
                 FieldFilterName.Speciality,
                 FieldFilterName.Sort,
               ]}
+              includeQuickFilters={true}
             />
             {userTableComponent()}
           </>

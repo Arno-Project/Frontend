@@ -43,6 +43,7 @@ const SpecialistsTable = (props: {
         <UserSearchComponent
           getData={props.search.getUsers}
           searchFields={props.search.searchFields}
+          includeQuickFilters={false}
         />
       )}
 
