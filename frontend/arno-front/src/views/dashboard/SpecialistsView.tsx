@@ -21,19 +21,28 @@ const SpecialistsView = () => {
 
   const [users, setUsers] = useState<User[]>([]);
 
-  const getData = async () => {
-    const filter = new FieldFilter(
+  const getData = async (filters: FieldFilter[]) => {
+    const filter1 = new FieldFilter(
       FieldFilterName.Role,
       UserRole.Specialist,
       FieldFilterType.Exact
     );
-    let res = await AccountAPI.getInstance().get([filter]);
+    const filter2 = new FieldFilter(
+      FieldFilterName.Sort,
+      "-score",
+      FieldFilterType.Exact
+    );
+    let res = await AccountAPI.getInstance().get([
+      filter2,
+      ...filters,
+      filter1,
+    ]);
     const users = APIDataToUsers(res);
     setUsers(users);
   };
 
   useEffect(() => {
-    getData();
+    getData([]);
   }, []);
 
   return (
@@ -47,7 +56,14 @@ const SpecialistsView = () => {
         مشاهده متخصصین برحسب امتیاز
       </Title>
 
-      <SpecialistsTable users={users} button={null}></SpecialistsTable>
+      <SpecialistsTable
+        users={users}
+        button={null}
+        search={{
+          getUsers: getData,
+          searchFields: [FieldFilterName.Name, FieldFilterName.Sort, FieldFilterName.Speciality],
+        }}
+      ></SpecialistsTable>
     </>
   );
 };

@@ -13,11 +13,17 @@ import { ListSearch, Search } from "tabler-icons-react";
 import { User } from "../models";
 import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
 import { SpecialistRow } from "./SpecialistRow";
+import UserSearchComponent from "./UserSearchComponent";
+import { FieldFilterName } from "../api/base";
 
 const PAGE_SIZE = 5;
 
 const SpecialistsTable = (props: {
   users: User[];
+  search: {
+    getUsers: Function;
+    searchFields: FieldFilterName[];
+  } | null;
   button: {
     label: string;
     action: Function;
@@ -33,37 +39,20 @@ const SpecialistsTable = (props: {
 
   return (
     <>
-      <div className="search-criteria">
-        <Group align="flex-end">
-          <TextInput
-            // value={inputValue}
-            // onChange={(event) => setInputValue(event.currentTarget.value)}
-            icon={<Search size={20} />}
-            label="نام متخصص"
-            placeholder="نام"
-          />
-
-          <SpecialityMultiSelect setter={setSelectedValues} />
-
-          <Button
-            variant="gradient"
-            gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-            leftIcon={<ListSearch size={20} />}
-            // loading={isSearching}
-            // onClick={() => fetchResults()}
-          >
-            جست‌وجو
-          </Button>
-        </Group>
-      </div>
+      {props.search !== null && (
+        <UserSearchComponent
+          getData={props.search.getUsers}
+          searchFields={props.search.searchFields}
+        />
+      )}
 
       <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
         <thead>
           <tr>
-            <th>ردیف</th>
             <th>نام متخصص</th>
-            <th>تخصص(ها)</th>
+            <th>تخصص‌ها</th>
             <th>امتیاز</th>
+            <th>جزئیات</th>
           </tr>
         </thead>
         <tbody>

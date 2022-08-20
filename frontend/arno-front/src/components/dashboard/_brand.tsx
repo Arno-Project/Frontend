@@ -1,16 +1,18 @@
 import { Group, ActionIcon, Box, Text, Indicator, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { Logout, Bell } from "tabler-icons-react";
+import { Logout, Bell, QuestionMark } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout } from "../../redux/auth";
 import { AuthAPI } from "../../api/auth";
+import { toggleSteps } from "../../redux/intro";
 
 export function Brand() {
   let navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const notificationCount = useAppSelector((state) => state.auth.notificationCount);
+  const stepsEnabled = useAppSelector((state) => state.intro.stepsEnabled);
 
   const doLogout = async () => {
     await AuthAPI.getInstance().logout();
@@ -21,6 +23,12 @@ export function Brand() {
   const navigateToNotifs = () => {
     navigate("/dashboard/notifications"); 
   };
+
+  const introTutorChangeState = () =>
+  {
+    dispatch(toggleSteps())
+  }
+
 
 
   return (
@@ -46,6 +54,10 @@ export function Brand() {
           داشبورد
         </Text>
         <Group>
+          
+          <ActionIcon variant="default" onClick={() => introTutorChangeState()} size={30}>
+            <QuestionMark size={16} />
+          </ActionIcon>
           <Indicator disabled={notificationCount === 0} color="red">
             <ActionIcon
               variant="default"

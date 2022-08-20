@@ -45,6 +45,8 @@ export class AuthAPI extends BaseAPI {
       specialities: params["specialities"],
     };
 
+    console.log(renamed_params)
+
     const response = await this.sendPostRequest({
       path: `register/${role}/`,
       body: renamed_params,
@@ -53,6 +55,29 @@ export class AuthAPI extends BaseAPI {
     });
 
     console.info("SIGNUP", response);
+    return response;
+  }
+
+  async registerManager(params: any, role: UserRole) {
+    const renamed_params = {
+      first_name: params["firstName"],
+      last_name: params["lastName"],
+      email: params["email"],
+      username: params["username"],
+      phone: params["phone"],
+      password: params["password"],
+    };
+
+    console.log(renamed_params)
+
+    const response = await this.sendAuthorizedPostRequest({
+      path: `manager/register/${role}/`,
+      body: renamed_params,
+      headers: null,
+      params: null,
+    });
+
+    console.info("SIGNUPMAN", response);
     return response;
   }
 

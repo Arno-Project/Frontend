@@ -1,9 +1,12 @@
-
-import { Button } from "@mantine/core";
+import { ZoomInArea } from "tabler-icons-react";
+import { Button, UnstyledButton } from "@mantine/core";
 
 import { User } from "../models";
 
+import { useState } from "react";
+
 import { SpecialitiesBadges } from "../models/SpecialityBadges";
+import UserModal from "./UserModal";
 
 export const SpecialistRow = (props: {
   user: User;
@@ -13,11 +16,12 @@ export const SpecialistRow = (props: {
     action: Function;
   } | null;
 }) => {
+  const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
+
   const user = props.user;
   const idx = props.idx;
   return (
     <tr key={user.id}>
-      <td>{idx}</td>
       <td>
         {user.firstName} {user.lastName}
       </td>
@@ -25,8 +29,15 @@ export const SpecialistRow = (props: {
         <SpecialitiesBadges speciality={user.speciality} />
       </td>
       <td>{user.score}</td>
-      {props.button !== null && (
-        <td>
+      <td>
+        <UnstyledButton
+          onClick={() => {
+            setIsUserModalOpen(true);
+          }}
+        >
+          <ZoomInArea color="black" size={22} />
+        </UnstyledButton>
+        {props.button !== null && (
           <Button
             color="orange"
             variant="outline"
@@ -37,8 +48,16 @@ export const SpecialistRow = (props: {
           >
             {props.button.label}
           </Button>
-        </td>
-      )}
+        )}
+      </td>
+
+      <UserModal
+        key={user.id}
+        user={props.user}
+        isOpen={isUserModalOpen}
+        changeIsOpen={setIsUserModalOpen}
+        validateSpecialist={null}
+      />
     </tr>
   );
 };

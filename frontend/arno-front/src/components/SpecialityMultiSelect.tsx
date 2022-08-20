@@ -39,10 +39,10 @@ export default function SpecialityMultiSelect({
       onChange={setter}
       className="font-reminder"
       data={specialities
-        .filter((s) => s.parent !== null)
-        .map((s) => ({
+        .filter((s:Speciality) => s.parent !== null)
+        .map((s:Speciality) => ({
           label: s.title,
-          value: s.id.toString(),
+          value: s.id + "",
           group: s.parent?.title,
         }))}
       icon={<UserSearch size={20} />}

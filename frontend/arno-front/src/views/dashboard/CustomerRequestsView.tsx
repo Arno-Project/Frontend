@@ -15,12 +15,14 @@ import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 import { RequestStatus, ServiceSummary } from "../../models";
 import { CoreAPI } from "../../api/core";
 import { APIDataToRequestsSummary } from "../../models/utils";
-
 import { Helmet } from "react-helmet";
 import { notifyUser } from "../utils";
-const TITLE = "سفارش‌های من";
+
+const TITLE = "درخواست‌های من";
 
 const CustomerRequestsView = () => {
+
+
   const navigate = useNavigate();
   const [rows, setRows] = useState<ServiceSummary[]>([]);
 
@@ -102,7 +104,7 @@ const CustomerRequestsView = () => {
       </Helmet>
       <Title order={2}>{TITLE}</Title>
       <Title order={3} my="md">
-        وضعیت سفارش‌ها
+        وضعیت درخواست‌ها
       </Title>
       <Table striped highlightOnHover>
         <thead>

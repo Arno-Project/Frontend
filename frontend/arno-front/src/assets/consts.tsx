@@ -10,8 +10,8 @@ export const RoleDict: any = {
 export const RoleDictColor: any = {
   "C": "orange",
   "S": "green",
-  "TM": "pink",
-  "CM": "red",
+  "TM": "indigo",
+  "CM": "grape",
 };
 
 
