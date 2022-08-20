@@ -2,7 +2,7 @@ import {
   Button,
   TextInput,
   Stack,
-  SimpleGrid,
+  Grid,
   Select,
   MultiSelect,
   Group,
@@ -49,17 +49,9 @@ const UserSearchComponent = (props: {
     console.log(v);
     console.log(selectedSpecialities);
     let filters = [];
-    for (const [key, value] of Object.entries(v)) {
-      if (value && (key !== "roles" || key.length > 0)) {
-        const filter = new FieldFilter(
-          key as FieldFilterName,
-          value as string,
-          FieldFilterType.Exact
-        );
-        filters.push(filter);
-      }
-    }
+
     if (selectedSpecialities.length > 0) {
+      searchForm.setFieldValue("roles", [UserRole.Specialist as never]);
       filters.push(
         new FieldFilter(
           FieldFilterName.Speciality,
@@ -75,6 +67,18 @@ const UserSearchComponent = (props: {
         )
       );
     }
+
+    for (const [key, value] of Object.entries(searchForm.values)) {
+      if (value && (key !== "roles" || key.length > 0)) {
+        const filter = new FieldFilter(
+          key as FieldFilterName,
+          value as string,
+          FieldFilterType.Exact
+        );
+        filters.push(filter);
+      }
+    }
+
     console.log(filters);
     props.getData(filters);
   };
@@ -82,63 +86,94 @@ const UserSearchComponent = (props: {
   return (
     <form onSubmit={searchForm.onSubmit(submitForm)}>
       <Stack>
-        <SimpleGrid cols={2}>
+        <Grid grow>
           {props.searchFields.includes(FieldFilterName.Name) && (
-            <TextInput
-              label="نام یا نام کاربری"
-              placeholder="نام یا نام کاربری"
-              {...searchForm.getInputProps("name")}
-            />
+            <Grid.Col sm={6} md={4}>
+              <TextInput
+                label="نام یا نام کاربری"
+                placeholder="نام یا نام کاربری"
+                {...searchForm.getInputProps("name")}
+              />
+            </Grid.Col>
           )}
           {props.searchFields.includes(FieldFilterName.Phone) && (
-            <TextInput
-              label="تلفن همراه"
-              placeholder="تلفن همراه"
-              {...searchForm.getInputProps("phone")}
-            />
+            <Grid.Col sm={6} md={4}>
+              <TextInput
+                label="تلفن همراه"
+                placeholder="تلفن همراه"
+                {...searchForm.getInputProps("phone")}
+              />
+            </Grid.Col>
           )}
 
           {props.searchFields.includes(FieldFilterName.Email) && (
-            <TextInput
-              label="ایمیل"
-              placeholder="ایمیل"
-              {...searchForm.getInputProps("email")}
-            />
+            <Grid.Col sm={6} md={4}>
+              <TextInput
+                label="ایمیل"
+                placeholder="ایمیل"
+                {...searchForm.getInputProps("email")}
+              />
+            </Grid.Col>
           )}
           {props.searchFields.includes(FieldFilterName.Roles) && (
-            <MultiSelect
-              label="نقش"
-              placeholder="همه"
-              clearable
-              data={Object.values(UserRole).map((r) => ({
-                value: r,
-                label: RoleDict[r],
-              }))}
-              {...searchForm.getInputProps("roles")}
-            />
+            <Grid.Col sm={6} md={4}>
+              <MultiSelect
+                label="نقش"
+                placeholder="همه"
+                clearable
+                data={Object.values(UserRole).map((r) => ({
+                  value: r,
+                  label: RoleDict[r],
+                }))}
+                {...searchForm.getInputProps("roles")}
+                disabled={
+                  // enable this filter only if no speciality is selected
+                  props.searchFields.includes(FieldFilterName.Speciality) &&
+                  selectedSpecialities.length > 0
+                }
+              />
+            </Grid.Col>
           )}
           {props.searchFields.includes(FieldFilterName.Speciality) && (
-            <SpecialityMultiSelect
-              setter={onSpecialitySelectChange}
-              required={false}
-              error=""
-            />
+            <Grid.Col sm={6} md={4}>
+              <SpecialityMultiSelect
+                setter={onSpecialitySelectChange}
+                required={false}
+                error=""
+                disabled={
+                  // enable this filter only if specialist role is selected
+                  props.searchFields.includes(FieldFilterName.Roles) &&
+                  !(
+                    (searchForm.values["roles"] as object[]).length === 1 &&
+                    searchForm.values["roles"].at(0) === UserRole.Specialist
+                  )
+                }
+              />
+            </Grid.Col>
           )}
           {props.searchFields.includes(FieldFilterName.Sort) && (
-            <Select
-              clearable
-              label="مرتب سازی بر اساس"
-              placeholder="پیش‌فرض"
-              {...searchForm.getInputProps("sort")}
-              data={[
-                { value: "-score", label: "بیشترین امتیاز" },
-                { value: "score", label: "کم‌ترین امتیاز" },
-                { value: "-date_joined", label: "جدیدترین تاریخ عضویت" },
-                { value: "date_joined", label: "قدیمی‌ترین تاریخ عضویت" },
-              ]}
-            />
+            <Grid.Col sm={6} md={4}>
+              <Select
+                clearable
+                label="مرتب سازی بر اساس"
+                placeholder="پیش‌فرض"
+                {...searchForm.getInputProps("sort")}
+                data={[
+                  {
+                    value: "-score",
+                    label: "بیشترین امتیاز (برای کاربران عادی)",
+                  },
+                  {
+                    value: "score",
+                    label: "کم‌ترین امتیاز (برای کاربران عادی)",
+                  },
+                  { value: "-date_joined", label: "جدیدترین تاریخ عضویت" },
+                  { value: "date_joined", label: "قدیمی‌ترین تاریخ عضویت" },
+                ]}
+              />
+            </Grid.Col>
           )}
-        </SimpleGrid>
+        </Grid>
         <Group position="center" spacing="md">
           <Button
             type="submit"

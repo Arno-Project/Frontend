@@ -11,6 +11,7 @@ export default function SpecialityMultiSelect({
   setter,
   required,
   error,
+  disabled=true
 }: any) {
   const [specialities, setSpecialities] = useState<Speciality[]>([]);
 
@@ -46,12 +47,13 @@ export default function SpecialityMultiSelect({
           group: s.parent?.title,
         }))}
       icon={<UserSearch size={20} />}
-      label="انتخاب تخصص‌ها"
+      label="انتخاب تخصص‌ها برای متخصصین"
       placeholder="تخصص‌های مورد نظر"
       required={required}
       error={error}
       searchable
       clearable
+      disabled={disabled}
     />
   );
 }
