@@ -76,7 +76,7 @@ const DashboardPage = () => {
 
   });
   useEffect(() => {
-    if (location.pathname === "/dashboard") {
+    if (location.pathname === "/dashboard") { // This if is a hack.
       let navbarStep: any = []
       if (user) {
         navbarStep = NavbarSteps[user!.role];
