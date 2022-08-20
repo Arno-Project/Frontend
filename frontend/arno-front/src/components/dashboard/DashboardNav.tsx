@@ -101,14 +101,14 @@ const links: MainLinkProps[] = [
     color: "lime",
     label: "درخواست‌ها",
     path: "/customer_requests",
-    classname: ""
+    classname: "tour-customer-requests"
   },
   {
     icon: <ClipboardText size={16} />,
     color: "blue",
     label: "خدمات ارائه شده",
     path: "/my_services",
-    classname: ""
+    classname: "tour-my-services"
   },
   {
     icon: <Edit size={16} />,
