@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { useInterval } from "@mantine/hooks";
 import { useEffect, useState } from "react";
+import { Steps } from "intro.js-react";
 
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ import { logout, setNeedUpdate, setUserInfo, setUserNotificationCount } from "..
 
 import { APIDataToNotifications, APIDataToUser } from "../models/utils";
 import { NotificationAPI } from "../api/notifications";
+import { toggleSteps,setSteps } from "../redux/intro";
 
 import { DashboardNav } from "../components/dashboard/DashboardNav";
 import AvailableServicesView from "./dashboard/AvailableServicesView";
@@ -49,6 +51,8 @@ import ManageUsersView from "./dashboard/ManageUsersView";
 const TITLE = "آرنو | داشبورد";
 
 const DashboardPage = () => {
+
+
   const theme = useMantineTheme();
 
   const [loading, setLoading] = useState(true);
@@ -56,6 +60,33 @@ const DashboardPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const steps= [
+    {
+      element: ".tour-my-requests",
+      intro: "در این قسمت لیست درخواست‌های ثبت شده خود را مشاهده می‌کنید."
+    },
+    {
+      element: ".tour-request-service",
+      intro: "در این قسمت می‌توانید درخواست جدید ثبت نمایید."
+    },
+    {
+      element: ".tour-specialists",
+      intro: "در این قسمت می‌توانید متخصصین سامانه را مشاهده نمایید."
+    },
+    {
+      element: ".tour-chat",
+      intro: "در این قسمت می‌توانید به تبادیل پیام و چت بپردازید."
+    },
+    {
+      element: ".tour-suggestion-complaint",
+      intro: "این قسمت برای ثبت انتقادات و پیشنهادات در نظر گرفته شده است."
+    },
+  ]
+
+  useEffect(()=>{
+    dispatch(setSteps(steps))
+  },[])
 
   const getNotifData = async () => {
     let res = await NotificationAPI.getInstance().get([]);
@@ -117,7 +148,7 @@ const DashboardPage = () => {
   const inDashboardMainPage = () => {
     return location.pathname === "/dashboard";
   };
-  
+
   let component = <></>;
   if (!loading && token) {
     component = (
