@@ -12,14 +12,18 @@ import {
   Switch,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
+import { DateRangePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 
 import { useState, useEffect } from "react";
 
-import { Speciality } from "../../models";
+import { Speciality, UserRole } from "../../models";
 import { AccountAPI } from "../../api/accounts";
 import { APIDataToSpecialities } from "../../models/utils";
 import { notifyUser } from "../utils";
+import { SpecialitiesBadges } from "../../models/SpecialityBadges";
+import { CoreAPI } from "../../api/core";
+import { useAppSelector } from "../../redux/hooks";
 
 import {
   Eye,
@@ -33,10 +37,8 @@ import {
 } from "tabler-icons-react";
 
 import { Helmet } from "react-helmet";
-import { SpecialitiesBadges } from "../../models/SpecialityBadges";
-import { CoreAPI } from "../../api/core";
-import { DateRangePicker } from "@mantine/dates";
 const TITLE = "مدیریت تخصص‌ها";
+
 const PAGE_SIZE = 4;
 
 interface Popularity {
@@ -45,6 +47,8 @@ interface Popularity {
 }
 
 const ManageSpecialitiesView = () => {
+  const user = useAppSelector((state) => state.auth.user);
+
   const [specTitle, setSpecTitle] = useState<string>("");
   const [specCategory, setSpecCategory] = useState<string | null>("");
 
@@ -157,9 +161,15 @@ const ManageSpecialitiesView = () => {
           <Tabs.Tab value="create" icon={<Tool size={14} />} color="cyan">
             افزودن تخصص جدید
           </Tabs.Tab>
-          <Tabs.Tab value="reputation" icon={<Heart size={14} />} color="pink">
-            تخصص‌های پرتقاضا
-          </Tabs.Tab>
+          {user!.role !== UserRole.Specialist && (
+            <Tabs.Tab
+              value="reputation"
+              icon={<Heart size={14} />}
+              color="pink"
+            >
+              تخصص‌های پرتقاضا
+            </Tabs.Tab>
+          )}
         </Tabs.List>
 
         <Tabs.Panel value="manage" pt="xs">

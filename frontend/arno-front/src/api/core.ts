@@ -64,6 +64,18 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
+  async editRequest(requestId: number, body: any) {
+    const response = await this.sendAuthorizedPutRequest({
+      path: `request/edit/${requestId}/`,
+      body: body,
+      headers: null,
+      params: null,
+    });
+
+    console.info("editRequest", response);
+    return response;
+  }
+
   async cancelRequest(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/cancel/",

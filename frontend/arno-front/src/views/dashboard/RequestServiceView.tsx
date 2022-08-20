@@ -11,14 +11,15 @@ import {
   Textarea,
   Title,
 } from "@mantine/core";
-import {useForm} from '@mantine/form';
-import {DatePicker} from "@mantine/dates";
-import {Map2, MapPin, Send, UserSearch, X} from "tabler-icons-react";
+import { useForm } from "@mantine/form";
+import { DatePicker } from "@mantine/dates";
+import { Map2, MapPin, Pencil, Send, UserSearch, X } from "tabler-icons-react";
 
 import {CoreAPI} from "../../api/core";
 import {notifyUser} from "../utils";
 
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {showNotification} from "@mantine/notifications";
 import {Speciality} from "../../models";
@@ -35,6 +36,9 @@ const TITLE = "درخواست خدمات";
 const initialLocation = {lat: 35.6857447, lng: 51.3892365};
 
 const RequestServiceView = () => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editingRequestId, setEditingRequestId] = useState<number>(-1);
+
   const [position, setPosition] = useState<any>(initialLocation);
   const [locationModalOpened, setLocationModalOpened] =
       useState<boolean>(false);
@@ -42,6 +46,7 @@ const RequestServiceView = () => {
   const [specialities, setSpecialities] = useState<Speciality[]>([]);
 
   const markerRef = useRef(null);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -51,24 +56,19 @@ const RequestServiceView = () => {
     }
   }, [location.pathname])
 
-  useEffect(() => {
-    initSpecialities();
-  }, []);
-
-  const initSpecialities = async () => {
-    const spec = await AccountAPI.getInstance().fetchSpecialities();
-    setSpecialities(spec);
-  };
+  const { state }: any = useLocation();
 
   const submitRequestForm = useForm({
     initialValues: {
       requested_speciality: "",
-      desired_start_time: new Date(),
+      desired_start_time: null,
       description: "",
     },
     validate: {
-      requested_speciality: (value) => value.length > 0 ? null : "این بخش نمی‌تواند خالی باشد",
-      description: (value) => value.trim().length > 0 ? null : "این بخش نمی‌تواند خالی باشد",
+      requested_speciality: (value) =>
+        value.length > 0 ? null : "این بخش نمی‌تواند خالی باشد",
+      description: (value) =>
+        value.trim().length > 0 ? null : "این بخش نمی‌تواند خالی باشد",
     },
   });
 
@@ -77,13 +77,70 @@ const RequestServiceView = () => {
       address: "",
     },
     validate: {
-      address: (value) => value.trim().length > 5 ? null : "لطفا آدرس بلندتری وارد کنید",
+      address: (value) =>
+        value.trim().length > 5 ? null : "لطفا آدرس بلندتری وارد کنید",
     },
   });
+
+  useEffect(() => {
+    initSpecialities();
+    if (!!state && state.hasOwnProperty("request")) {
+      const { request: reqParam }: any = state;
+      submitRequestForm.setValues({
+        requested_speciality: reqParam.requested_speciality.title,
+        desired_start_time: reqParam.start_time,
+        description: reqParam.description,
+      });
+      submitLocationForm.setValues({
+        address: reqParam.location.address,
+      });
+      setRequestLocationId(reqParam.location.id);
+      setPosition({
+        lat: reqParam.location.latitude,
+        lng: reqParam.location.longitude,
+      });
+      setEditingRequestId(reqParam.id);
+      setIsEditing(true);
+    }
+  }, []);
+
+  const initSpecialities = async () => {
+    const spec = await AccountAPI.getInstance().fetchSpecialities();
+    setSpecialities(spec);
+  };
 
   const submitForm = async (values: any) => {
     values["requested_speciality"] = specialities.find(
         (s) => s.title === values["requested_speciality"]
+    )?.id;
+
+    if (isEditing) {
+      await updateExistingRequest(values);
+    } else {
+      await postNewRequest(values);
+    }
+  };
+
+  const updateExistingRequest = async (values: any) => {
+    const res = await CoreAPI.getInstance().editRequest(editingRequestId, {
+      ...values,
+      location: requestLocationId,
+    });
+
+    notifyUser(
+      res,
+      "ویرایش موفقیت‌آمیز",
+      "در حال بازگشت به صفحه‌ی جزئیات درخواست..."
+    );
+
+    if (res.success) {
+      navigate("/dashboard/request_details/" + editingRequestId);
+    }
+  };
+
+  const postNewRequest = async (values: any) => {
+    values["requested_speciality"] = specialities.find(
+      (s) => s.title === values["requested_speciality"]
     )?.id;
 
     if (!validateForm()) {
@@ -131,50 +188,102 @@ const RequestServiceView = () => {
   };
 
   return (
-      <>
-        <Helmet>
-          <title>{"آرنو | " + TITLE}</title>
-        </Helmet>
-        <Title order={2}>{TITLE}</Title>
-        <form onSubmit={submitRequestForm.onSubmit(submitForm)}>
-          <div style={{marginTop: "16px"}}>
-            <Select
-                className="font-reminder tour-speciality-select"
-                data={specialities
-                    .filter((s) => s.parent !== null)
-                    .map((s) => ({
-                      label: s.title,
-                      value: s.title,
-                      group: s.parent?.title,
-                    }))}
-                icon={<UserSearch size={20}/>}
-                label="انتخاب تخصص"
-                placeholder="تخصص مورد نیاز"
-                required
-                searchable
-                clearable
-                {...submitRequestForm.getInputProps("requested_speciality")}
-            />
-          </div>
-          <DatePicker
-              className="tour-start-date-select"
-              locale="fa"
-              placeholder="یک روز را انتخاب کنید"
-              label="زمان شروع"
-              required
-              {...submitRequestForm.getInputProps("desired_start_time")}
+    <>
+      <Helmet>
+        <title>{"آرنو | " + TITLE}</title>
+      </Helmet>
+      {isEditing?
+      <Title order={2}>
+        {"ویرایش درخواست شماره " + editingRequestId}
+      </Title>
+      :
+      <Title order={2}>{TITLE}</Title>
+      }
+      <form onSubmit={submitRequestForm.onSubmit(submitForm)}>
+        <div style={{ marginTop: "16px" }}>
+          <Select
+            className="font-reminder tour-speciality-select"
+            data={specialities
+              .filter((s) => s.parent !== null)
+              .map((s) => ({
+                label: s.title,
+                value: s.title,
+                group: s.parent?.title,
+              }))}
+            icon={<UserSearch size={20} />}
+            label="انتخاب تخصص"
+            placeholder="تخصص مورد نیاز"
+            required
+            searchable
+            clearable
+            {...submitRequestForm.getInputProps("requested_speciality")}
           />
-          <Center>
+        </div>
+        <DatePicker
+          className="tour-start-date-select"
+          locale="fa"
+          placeholder="یک روز را انتخاب کنید"
+          label="زمان شروع"
+          required
+          {...submitRequestForm.getInputProps("desired_start_time")}
+        />
+        <Center>
+          <Button
+            className="tour-submit-address-button"
+            mt="md"
+            color="cyan"
+            leftIcon={<Map2 size={20} />}
+            onClick={() => setLocationModalOpened(true)}
+          >
+            ثبت آدرس
+          </Button>
+        </Center>
+
+        <Textarea
+          className="tour-description-textarea"
+          mt="sm"
+          placeholder="توضیحات"
+          label="شرح سفارش"
+          description="لطفا شرح کامل درخواست خود را بنویسید."
+          autosize
+          minRows={4}
+          maxRows={6}
+          required
+          {...submitRequestForm.getInputProps("description")}
+        />
+        <Center>
+          {isEditing ? (
             <Button
-                className="tour-submit-address-button"
-                mt="md"
-                color="cyan"
-                leftIcon={<Map2 size={20}/>}
-                onClick={() => setLocationModalOpened(true)}
+              className="tour-submit-address-button"
+              mt="md"
+              variant="gradient"
+              gradient={{ from: "lime", to: "teal", deg: 105 }}
+              leftIcon={<Pencil size={20} />}
+              type="submit"
             >
-              ثبت آدرس
+              ویرایش سفارش
             </Button>
-          </Center>
+          ) : (
+            <Button
+              className="tour-submit-address-button"
+              mt="md"
+              variant="gradient"
+              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+              leftIcon={<Send size={20} />}
+              type="submit"
+            >
+              ثبت سفارش
+            </Button>
+          )}
+        </Center>
+      </form>
+
+      <Modal
+        opened={locationModalOpened}
+        onClose={() => setLocationModalOpened(false)}
+        title="تعیین آدرس روی نقشه"
+      >
+        <form onSubmit={submitLocationForm.onSubmit(submitLocation)}>
 
           <Textarea
               className="tour-description-textarea"

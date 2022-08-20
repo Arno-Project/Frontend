@@ -148,6 +148,12 @@ type SystemLog = {
   created_at: Date;
 };
 
+type ScorePolicy = {
+  id: number;
+  minimum_score: number;
+  allowed_requests: number;
+};
+
 export {
   UserRole,
   UserGeneralRole,
@@ -169,4 +175,5 @@ export type {
   Notification,
   Metric,
   SystemLog,
+  ScorePolicy,
 };
