@@ -1,22 +1,29 @@
 import { UserRole } from "../models";
 
 export const RoleDict: any = {
-  "C": "مشتری",
-  "S": "متخصص",
-  "TM": "مدیر فنی",
-  "CM": "مدیر شرکت",
+  C: "مشتری",
+  S: "متخصص",
+  TM: "مدیر فنی",
+  CM: "مدیر شرکت",
 };
 
 export const RoleDictColor: any = {
-  "C": "orange",
-  "S": "green",
-  "TM": "indigo",
-  "CM": "grape",
+  C: "orange",
+  S: "green",
+  TM: "indigo",
+  CM: "grape",
 };
 
+export const SystemFeedbackTypeDict: any = {
+  T: "مشکل فنی",
+  C: "انتقاد",
+  S: "پیشنهاد",
+  O: "سایر",
+};
 
 export const AccessRules: any = {
   "/technical_issues": [UserRole.TechnicalManager, UserRole.CompanyManager],
+  "/system_feedbacks": [UserRole.CompanyManager],
   "/specialists": [UserRole.Customer, UserRole.Specialist],
   "/suggestion_complaint": [UserRole.Customer, UserRole.Specialist],
   "/evaluation_metrics": [UserRole.CompanyManager],
@@ -36,28 +43,27 @@ export const AccessRules: any = {
 };
 
 export const RequestStatusBadge: any = {
-  "PEND": { message: "در حال بررسی", color: "yellow" },
-  "WAIS": { message: "در انتظار تایید کاربر", color: "indigo" },
-  "WAIC": { message: "در انتظار پذیرش متخصص", color: "violet" },
-  "PROG": { message: "در حال انجام", color: "cyan" },
-  "DONE": { message: "انجام شده", color: "teal" },
-  "CNCL": { message: "لغو شده", color: "gray" },
-  "REJC": { message: "رد شده", color: "orange" },
+  PEND: { message: "در حال بررسی", color: "yellow" },
+  WAIS: { message: "در انتظار تایید کاربر", color: "indigo" },
+  WAIC: { message: "در انتظار پذیرش متخصص", color: "violet" },
+  PROG: { message: "در حال انجام", color: "cyan" },
+  DONE: { message: "انجام شده", color: "teal" },
+  CNCL: { message: "لغو شده", color: "gray" },
+  REJC: { message: "رد شده", color: "orange" },
 };
 
-
 export const mantine_colors = [
-"gray",
-"red",
-"pink",
-"grape",
-"violet",
-"indigo",
-"blue",
-"cyan",
-"teal",
-"green",
-"lime",
-"yellow",
-"orange",
-]
+  "gray",
+  "red",
+  "pink",
+  "grape",
+  "violet",
+  "indigo",
+  "blue",
+  "cyan",
+  "teal",
+  "green",
+  "lime",
+  "yellow",
+  "orange",
+];

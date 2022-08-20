@@ -51,6 +51,7 @@ import {Brand} from "../components/dashboard/_brand";
 
 import {Helmet} from "react-helmet";
 import ManageUsersView from "./dashboard/ManageUsersView";
+import SystemFeedbacksView from "./dashboard/SystemFeedbacksView";
 
 const TITLE = "آرنو | داشبورد";
 
@@ -180,6 +181,10 @@ const DashboardPage = () => {
                 <Route
                     path="/technical_issues"
                     element={<TechnicalIssuesView/>}
+                />
+                <Route
+                    path="/system_feedbacks"
+                    element={<SystemFeedbacksView/>}
                 />
                 <Route path="/specialists" element={<SpecialistsView/>}/>
                 <Route

@@ -47,6 +47,7 @@ export function ObjectToUserOrNull(data: Object): User | null {
 }
 
 export function ObjectToFeedback(data: Object): Feedback {
+  console.info("ObjectToFeedback", data)
   let feedback: Feedback = {
     created_at: data["created_at" as keyof object],
     id: data["id" as keyof object],
