@@ -548,7 +548,7 @@ const RequestDetailsView = () => {
       {!!requestDetails &&
         [RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
           requestDetails!.status
-        ) && (
+        ) && user?.role !== UserRole.Specialist && (
           <>
             <Divider
               size="xs"
