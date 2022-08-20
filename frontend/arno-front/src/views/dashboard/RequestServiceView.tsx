@@ -249,7 +249,7 @@ const RequestServiceView = () => {
         <Center>
           {isEditing ? (
             <Button
-              className="tour-submit-address-button"
+              className="tour-submit-button"
               mt="md"
               variant="gradient"
               gradient={{ from: "lime", to: "teal", deg: 105 }}
@@ -260,7 +260,7 @@ const RequestServiceView = () => {
             </Button>
           ) : (
             <Button
-              className="tour-submit-address-button"
+              className="tour-submit-button"
               mt="md"
               variant="gradient"
               gradient={{ from: "cyan", to: "indigo", deg: 105 }}
