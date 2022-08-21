@@ -11,7 +11,7 @@ export default function SpecialityMultiSelect({
   setter,
   required,
   error,
-  disabled=true
+  disabled=false
 }: any) {
   const [specialities, setSpecialities] = useState<Speciality[]>([]);
 

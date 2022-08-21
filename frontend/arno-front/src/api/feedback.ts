@@ -28,6 +28,18 @@ export class SystemFeedbackAPI extends BaseListAPI {
     return response;
   }
 
+  async markAsRead(ids: number[]) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: "system/search/",
+      body: { ids: ids },
+      headers: null,
+      params: null,
+    });
+
+    console.info("markAsRead", response);
+    return response;
+  }
+
   async getTechnicalFeedbacks() {
     const response = await this.sendAuthorizedGetRequest({
       path: "system/search/",
