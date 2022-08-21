@@ -293,6 +293,51 @@ const PolicyTableStep = {
   intro: "در این قسمت سیاست‌های امتیازی برای حداکثر درخواست قابل انجام به صورت همزمان را مشاهده می‌کنید."
 }
 
+const ManagerCreateRequestFormStep = {
+  element: ".tour-create-request-form",
+  intro: "در این قسمت می‌توانید درخواست جدید را به صورت دستی برای مشتری ایجاد کنید."
+}
+const ManagerCreateRequestIdStep = {
+  element: ".tour-create-request-id",
+  intro: "در این قسمت آی‌دی مشتری را وارد نمایید."
+}
+
+const ManagerCreateRequestSpecialtyStep = {
+  element: ".tour-create-request-specialty",
+  intro: "در این قسمت تخصص لازم برای درخواست  را مشخص نمایید."
+}
+
+
+const ManagerCreateRequestDateStep = {
+  element: ".tour-create-request-date",
+  intro: "در این قسمت تاریخ شروع درخواست  را مشخص نمایید."
+}
+
+const ManagerCreateRequestAddressStep = {
+  element: ".tour-create-request-address",
+  intro: "با کلیک بر این دکمه آدرس درخواست  را ثبت نمایید."
+}
+
+const ManagerCreateRequestDescriptionStep = {
+  element: ".tour-create-request-description",
+  intro: "در این قسمت توضیحات درخواست  را بنویسید."
+}
+
+const ManagerCreateRequestSubmitStep = {
+  element: ".tour-create-request-submit",
+  intro: "با کلیک بر این دکمه، درخواست جدید را ثبت کنید."
+}
+
+export const ManagerCreateRequestSteps = [
+  ManagerCreateRequestFormStep,
+  ManagerCreateRequestIdStep,
+  ManagerCreateRequestSpecialtyStep,
+  ManagerCreateRequestDateStep,
+  ManagerCreateRequestAddressStep,
+  ManagerCreateRequestDescriptionStep,
+  ManagerCreateRequestSubmitStep
+]
+
 export const PolicySteps = [
   AddPolicyStep,
   PolicyTableStep
