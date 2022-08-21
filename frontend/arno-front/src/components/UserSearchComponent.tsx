@@ -184,6 +184,7 @@ const UserSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.Name) && (
               <Grid.Col sm={6} md={4}>
                 <TextInput
+                  className="tour-search-input-name"
                   label="نام یا نام کاربری"
                   placeholder="نام یا نام کاربری"
                   {...searchForm.getInputProps("name")}
@@ -193,6 +194,7 @@ const UserSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.Phone) && (
               <Grid.Col sm={6} md={4}>
                 <TextInput
+                  className="tour-search-input-phone"
                   label="تلفن همراه"
                   placeholder="تلفن همراه"
                   {...searchForm.getInputProps("phone")}
@@ -203,6 +205,7 @@ const UserSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.Email) && (
               <Grid.Col sm={6} md={4}>
                 <TextInput
+                  className="tour-search-input-email"
                   label="ایمیل"
                   placeholder="ایمیل"
                   {...searchForm.getInputProps("email")}
@@ -212,6 +215,7 @@ const UserSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.Roles) && (
               <Grid.Col sm={6} md={4}>
                 <MultiSelect
+                  className="tour-search-input-role"
                   label="نقش"
                   placeholder="همه"
                   clearable
@@ -248,6 +252,7 @@ const UserSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.Sort) && (
               <Grid.Col sm={6} md={4}>
                 <Select
+                  className="tour-search-input-sort"
                   clearable
                   label="مرتب سازی بر اساس"
                   placeholder="پیش‌فرض"
@@ -270,6 +275,7 @@ const UserSearchComponent = (props: {
           </Grid>
           <Group position="center" spacing="md">
             <Button
+              className="tour-search-button"
               ref={submitRef}
               type="submit"
               variant="gradient"
@@ -279,6 +285,7 @@ const UserSearchComponent = (props: {
               جست‌وجو
             </Button>
             <Button
+              className="tour-search-button-clear"
               variant="outline"
               gradient={{ from: "cyan", to: "indigo", deg: 105 }}
               leftIcon={<Eraser size={20} />}

@@ -47,7 +47,7 @@ const SpecialistsTable = (props: {
         />
       )}
 
-      <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
+      <Table striped highlightOnHover verticalSpacing="sm" mt="sm" className="tour-specialist-list">
         <thead>
           <tr>
             <th>نام متخصص</th>

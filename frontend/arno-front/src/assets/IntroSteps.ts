@@ -81,10 +81,68 @@ export const CreateRequestSteps = [
   }
 ]
 
+const SearchNameStep={
+    element: ".tour-search-input-name",
+    intro: "در این قسمت می‌توانید بخشی از نام یا نام‌کاربری را برای جست‌وجو وارد کنید."
+}
 
-export const MyRequestsStatus = [
+const SearchPhoneStep={
+  element: ".tour-search-input-phone",
+  intro: "در این قسمت می‌توانید شماره موبایل را برای جست‌وجو وارد کنید."
+}
+
+const SearchEmailStep={
+  element: ".tour-search-input-email",
+  intro: "در این قسمت می‌توانید ایمیل را برای جست‌وجو وارد کنید."
+}
+
+const SearchRoleStep={
+  element: ".tour-search-input-role",
+  intro: "در این قسمت می‌توانید نقش (نوع) کاربر را برای جست‌وجو وارد کنید."
+}
+
+
+const SearchSpecialtyStep={
+  element: ".tour-search-input-speciality",
+  intro: "در این قسمت می‌توانید تخصص‌های مدنظر را برای جست‌وجو وارد کنید."
+}
+
+const SearchSortStep={
+  element: ".tour-search-input-sort",
+  intro: "در این قسمت می‌توانید معیار مرتب‌سازی را مشخص نمایید."
+}
+
+const SearchButtonStep={
+  element: ".tour-search-button",
+  intro: "با کلیک بر این دکمه جست‌وجو انجام می‌شود."
+}
+
+const SearchButtonClearStep={
+  element: ".tour-search-button-clear",
+  intro: "با کلیک بر این دکمه فیلتر‌های جست‌وجو همگی پاک می‌شوند."
+}
+
+
+
+
+
+
+export const MyRequestsStatusSteps = [
   {
     element: ".tour-my-requests-status",
     intro: "در این قسمت می‌توانید وضعیت درخواست‌های خود را مشاهده نمایید."
+  }
+]
+
+
+export const SpecialistListSteps = [
+    SearchNameStep,
+    SearchSpecialtyStep,
+    SearchSortStep,
+    SearchButtonStep,
+    SearchButtonClearStep,
+  {
+    element: ".tour-specialist-list",
+    intro: "در این قسمت می‌توانید لیست متخصصین را مشاهده نمایید."
   }
 ]

@@ -38,7 +38,7 @@ export default function SpecialityMultiSelect({
   return (
     <MultiSelect
       onChange={setter}
-      className="font-reminder"
+      className="font-reminder tour-search-input-speciality"
       data={specialities
         .filter((s:Speciality) => s.parent !== null)
         .map((s:Speciality) => ({

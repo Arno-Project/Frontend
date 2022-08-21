@@ -19,7 +19,7 @@ import { Helmet } from "react-helmet";
 import { notifyUser } from "../utils";
 import {useAppDispatch} from "../../redux/hooks";
 import {setSteps} from "../../redux/intro";
-import {MyRequestsStatus} from "../../assets/IntroSteps";
+import {MyRequestsStatusSteps} from "../../assets/IntroSteps";
 
 const TITLE = "درخواست‌های من";
 
@@ -43,7 +43,7 @@ const CustomerRequestsView = () => {
 
   useEffect(() => {
     if (location.pathname === "/dashboard/requests") {
-      dispatch(setSteps(MyRequestsStatus));
+      dispatch(setSteps(MyRequestsStatusSteps));
     }
   }, [location.pathname]);
 

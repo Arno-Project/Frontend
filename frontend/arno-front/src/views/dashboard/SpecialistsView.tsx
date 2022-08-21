@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Space, Table, Title } from "@mantine/core";
 import { X, Check, Paperclip } from "tabler-icons-react";
 
-import { useAppSelector } from "../../redux/hooks";
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import { User, UserRole } from "../../models";
 
 import { Helmet } from "react-helmet";
@@ -12,6 +12,9 @@ import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { APIDataToUsers } from "../../models/utils";
 import SpecialistsTable from "../../components/SpecialistsTable";
 import { SpecialitiesBadges } from "../../models/SpecialityBadges";
+import {useLocation} from "react-router-dom";
+import {setSteps} from "../../redux/intro";
+import {SpecialistListSteps} from "../../assets/IntroSteps";
 const TITLE = "متخصصان";
 
 const PAGE_SIZE = 4;
@@ -20,6 +23,16 @@ const SpecialistsView = () => {
   const user = useAppSelector((state) => state.auth.user);
 
   const [users, setUsers] = useState<User[]>([]);
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/specialists") {
+      dispatch(setSteps(SpecialistListSteps));
+    }
+  }, [location.pathname]);
+
 
   const getData = async (filters: FieldFilter[]) => {
     const filter1 = new FieldFilter(
