@@ -253,6 +253,16 @@ export const RequestDetailsRejectSpecialistStep={
   intro: "با کلیک بر این گزینه می‌توانید متخصص را برای انجام درخواست رد کنید."
 }
 
+export const RequestDetailsAcceptRequestFromSpecialistStep={
+    element: ".tour-request-details-accept-from-specialist-button",
+  intro:"با کلیک بر این دکمه می‌توانید آمادگی اولیه خود را برای انجام درخواست اعلام کنید."
+}
+
+export const RequestDetailsChatToCustomerStep={
+    element: ".tour-request-details-send-message-to-customer-button",
+  intro:"با کلیک بر این دکمه می‌توانید با مشتری درخواست‌دهنده چت کنید."
+}
+
 export const RequestDetailsStateSteps = [
   RequestDetailsInfoStep
 ]

@@ -34,8 +34,8 @@ import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 import {Helmet} from "react-helmet";
 import {setSteps} from "../../redux/intro";
 import {
-  RequestDetailsAcceptRejectSpecialistDividerStep,
-  RequestDetailsAcceptSpecialistStep,
+  RequestDetailsAcceptRejectSpecialistDividerStep, RequestDetailsAcceptRequestFromSpecialistStep,
+  RequestDetailsAcceptSpecialistStep, RequestDetailsChatToCustomerStep,
   RequestDetailsChooseSpecialistButtonStep,
   RequestDetailsEditRequestButtonStep,
   RequestDetailsRejectSpecialistStep,
@@ -249,6 +249,14 @@ const RequestDetailsView = () => {
           }
 
         }
+        if (user!.role === UserRole.Specialist) {
+
+          if (requestDetails.status === RequestStatus.Pending)
+          {
+            steps.push(RequestDetailsAcceptRequestFromSpecialistStep);
+          }
+          steps.push(RequestDetailsChatToCustomerStep);
+        }
 
 
         if ([RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
@@ -317,6 +325,7 @@ const RequestDetailsView = () => {
               />
               <Group>
                 <Button
+                    className="tour-request-details-accept-from-specialist-button"
                     color="blue"
                     onClick={() => {
                       selectRequest();
@@ -371,6 +380,7 @@ const RequestDetailsView = () => {
             />
             <Group>
               <Button
+                  className="tour-request-details-send-message-to-customer-button"
                   color="yellow"
                   onClick={() => {
                     sendMessage(requestDetails.customer.id);
