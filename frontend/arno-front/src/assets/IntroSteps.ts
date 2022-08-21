@@ -283,6 +283,21 @@ export const SystemFeedbackSteps = [
   SystemFeedbackMarkAllStep
 ]
 
+const AddPolicyStep = {
+  element: ".tour-add-policy",
+  intro: "با کلیک بر این دکمه، می‌توانید سیاست امتیازی جدید را به سیستم اضافه کنید."
+}
+
+const PolicyTableStep = {
+  element: ".tour-policy-table",
+  intro: "در این قسمت سیاست‌های امتیازی برای حداکثر درخواست قابل انجام به صورت همزمان را مشاهده می‌کنید."
+}
+
+export const PolicySteps = [
+  AddPolicyStep,
+  PolicyTableStep
+]
+
 const NotificationPageStep = {
   element: ".tour-notification-page",
   intro: "در این قسمت می‌توانید نوتیفیکشن‌های خود را مشاهده نمایید."

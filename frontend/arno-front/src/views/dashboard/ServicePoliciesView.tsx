@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useForm } from "@mantine/form";
+import {useEffect, useState} from "react";
+import {useForm} from "@mantine/form";
 
 import {
   ActionIcon,
@@ -13,14 +13,19 @@ import {
   Title,
 } from "@mantine/core";
 
-import { Rating } from "react-simple-star-rating";
-import { Edit, Plus, X } from "tabler-icons-react";
+import {Rating} from "react-simple-star-rating";
+import {Edit, Plus, X} from "tabler-icons-react";
 
-import { ScorePolicy } from "../../models";
-import { ScoreAPI } from "../../api/score";
+import {ScorePolicy} from "../../models";
+import {ScoreAPI} from "../../api/score";
 
-import { Helmet } from "react-helmet";
-import { notifyUser } from "../utils";
+import {Helmet} from "react-helmet";
+import {notifyUser} from "../utils";
+import {useAppDispatch} from "../../redux/hooks";
+import {useLocation} from "react-router-dom";
+import {PolicySteps, ReportCSVStep, ReportFormSteps} from "../../assets/IntroSteps";
+import {setSteps} from "../../redux/intro";
+
 const TITLE = "سیاست‌گذاری خدمت‌دهی";
 
 const fillColorArray = [
@@ -63,19 +68,19 @@ const ServicePoliciesView = () => {
     if (policy === null) {
       const res = await ScoreAPI.getInstance().createScorePolicy(values);
       notifyUser(
-        res,
-        "ثبت موفقیت‌آمیز",
-        "سیاست ارائه خدمات با موفقیت ایجاد شد."
+          res,
+          "ثبت موفقیت‌آمیز",
+          "سیاست ارائه خدمات با موفقیت ایجاد شد."
       );
     } else {
       const res = await ScoreAPI.getInstance().updateScorePolicy(
-        policy!.id,
-        values
+          policy!.id,
+          values
       );
       notifyUser(
-        res,
-        "ویرایش موفقیت‌آمیز",
-        "سیاست ارائه خدمات با موفقیت ویرایش شد."
+          res,
+          "ویرایش موفقیت‌آمیز",
+          "سیاست ارائه خدمات با موفقیت ویرایش شد."
       );
     }
     setPolicyFormModalOpened(false);
@@ -85,7 +90,7 @@ const ServicePoliciesView = () => {
 
   const removePolicy = async () => {
     const res = await ScoreAPI.getInstance().deleteScorePolicy(
-      toRemovePolicyID!
+        toRemovePolicyID!
     );
 
     notifyUser(res, "حذف موفقیت‌آمیز", "معیار ارزیابی با موفقیت حذف شد.");
@@ -103,144 +108,154 @@ const ServicePoliciesView = () => {
     },
   });
 
-  return (
-    <>
-      <Helmet>
-        <title>{"آرنو | " + TITLE}</title>
-      </Helmet>
-      <Group position="apart">
-        <Title order={2}>{TITLE}</Title>
-        <Button
-          variant="light"
-          size="xs"
-          color="violet"
-          leftIcon={<Plus size={16} />}
-          onClick={() => {
-            setToEditPolicy(null);
-            setRating(0);
-            editPolicyForm.setFieldValue("allowed_requests", 0);
-            setPolicyFormModalOpened(true);
-          }}
-        >
-          افزودن سیاست جدید
-        </Button>
-      </Group>
-      <Space h="lg" />
+  const dispatch = useAppDispatch();
+  const location = useLocation();
 
-      <Center>
-        <Table className="centered-table" verticalSpacing="md" striped highlightOnHover>
-          <thead>
+  useEffect(() => {
+    if (location.pathname === "/dashboard/service_policy") {
+      dispatch(setSteps(PolicySteps));
+    }
+  }, [location.pathname]);
+
+  return (
+      <>
+        <Helmet>
+          <title>{"آرنو | " + TITLE}</title>
+        </Helmet>
+        <Group position="apart">
+          <Title order={2}>{TITLE}</Title>
+          <Button
+              className="tour-add-policy"
+              variant="light"
+              size="xs"
+              color="violet"
+              leftIcon={<Plus size={16}/>}
+              onClick={() => {
+                setToEditPolicy(null);
+                setRating(0);
+                editPolicyForm.setFieldValue("allowed_requests", 0);
+                setPolicyFormModalOpened(true);
+              }}
+          >
+            افزودن سیاست جدید
+          </Button>
+        </Group>
+        <Space h="lg"/>
+
+        <Center>
+          <Table className="centered-table tour-policy-table" verticalSpacing="md" striped highlightOnHover>
+            <thead>
             <tr>
               <th>ردیف</th>
               <th>حداقل امتیاز</th>
               <th>حداکثر تعداد خدمات هم‌زمان</th>
               <th>ویرایش/حذف</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {policies.map((p, i) => (
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td>
-                  <Rating
-                    ratingValue={p.minimum_score}
-                    size={30}
-                    transition
-                    allowHalfIcon
-                    fillColorArray={fillColorArray}
-                    readonly={true}
-                  />
-                </td>
-                <td>{p.allowed_requests}</td>
-                <td>
-                  <Group position="center">
-                    <ActionIcon
-                      onClick={() => {
-                        editPolicyForm.setValues({
-                          minimum_score: p.minimum_score,
-                          allowed_requests: p.allowed_requests,
-                        });
-                        setToEditPolicy(p);
-                        setRating(p.minimum_score);
-                        setPolicyFormModalOpened(true);
-                      }}
-                    >
-                      <Edit color={"#40bfa3"} size={22} />
-                    </ActionIcon>
-                    <ActionIcon
-                      onClick={() => {
-                        setToRemovePolicyID(p.id);
-                      }}
-                    >
-                      <X color="red" size={22} />
-                    </ActionIcon>
-                  </Group>
-                </td>
-              </tr>
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>
+                    <Rating
+                        ratingValue={p.minimum_score}
+                        size={30}
+                        transition
+                        allowHalfIcon
+                        fillColorArray={fillColorArray}
+                        readonly={true}
+                    />
+                  </td>
+                  <td>{p.allowed_requests}</td>
+                  <td>
+                    <Group position="center">
+                      <ActionIcon
+                          onClick={() => {
+                            editPolicyForm.setValues({
+                              minimum_score: p.minimum_score,
+                              allowed_requests: p.allowed_requests,
+                            });
+                            setToEditPolicy(p);
+                            setRating(p.minimum_score);
+                            setPolicyFormModalOpened(true);
+                          }}
+                      >
+                        <Edit color={"#40bfa3"} size={22}/>
+                      </ActionIcon>
+                      <ActionIcon
+                          onClick={() => {
+                            setToRemovePolicyID(p.id);
+                          }}
+                      >
+                        <X color="red" size={22}/>
+                      </ActionIcon>
+                    </Group>
+                  </td>
+                </tr>
             ))}
-          </tbody>
-        </Table>
-      </Center>
+            </tbody>
+          </Table>
+        </Center>
 
-      <Modal
-        centered
-        opened={toRemovePolicyID !== null}
-        onClose={() => setToRemovePolicyID(null)}
-        title="اخطار"
-        overlayOpacity={0.55}
-        overlayBlur={3}
-      >
-        آیا از حذف این سیاست مطمئن هستید؟
-        <Group position="right">
-          <Button mt="sm" color="red" onClick={() => removePolicy()}>
-            حذف
-          </Button>
-          <Button
-            mt="sm"
-            color="blue"
-            onClick={() => setToRemovePolicyID(null)}
-          >
-            انصراف
-          </Button>
-        </Group>
-      </Modal>
-
-      <Modal
-        centered
-        opened={policyFormModalOpened}
-        onClose={() => {
-          setPolicyFormModalOpened(false);
-          setToEditPolicy(null);
-        }}
-        title="افزودن/ویرایش معیار"
-        overlayOpacity={0.55}
-        overlayBlur={3}
-      >
-        <form onSubmit={editPolicyForm.onSubmit(editPolicy)}>
-          <Rating
-            ratingValue={rating}
-            onClick={setRating}
-            initialValue={toEditPolicy?.minimum_score}
-            size={30}
-            transition
-            allowHalfIcon
-            fillColorArray={fillColorArray}
-            readonly={false}
-          />
-          <NumberInput
-            placeholder="تعداد خدمات"
-            max={20}
-            min={0}
-            {...editPolicyForm.getInputProps("allowed_requests")}
-          />
+        <Modal
+            centered
+            opened={toRemovePolicyID !== null}
+            onClose={() => setToRemovePolicyID(null)}
+            title="اخطار"
+            overlayOpacity={0.55}
+            overlayBlur={3}
+        >
+          آیا از حذف این سیاست مطمئن هستید؟
           <Group position="right">
-            <Button mt="md" color="blue" type="submit">
-              ثبت
+            <Button mt="sm" color="red" onClick={() => removePolicy()}>
+              حذف
+            </Button>
+            <Button
+                mt="sm"
+                color="blue"
+                onClick={() => setToRemovePolicyID(null)}
+            >
+              انصراف
             </Button>
           </Group>
-        </form>
-      </Modal>
-    </>
+        </Modal>
+
+        <Modal
+            centered
+            opened={policyFormModalOpened}
+            onClose={() => {
+              setPolicyFormModalOpened(false);
+              setToEditPolicy(null);
+            }}
+            title="افزودن/ویرایش معیار"
+            overlayOpacity={0.55}
+            overlayBlur={3}
+        >
+          <form onSubmit={editPolicyForm.onSubmit(editPolicy)}>
+            <Rating
+                ratingValue={rating}
+                onClick={setRating}
+                initialValue={toEditPolicy?.minimum_score}
+                size={30}
+                transition
+                allowHalfIcon
+                fillColorArray={fillColorArray}
+                readonly={false}
+            />
+            <NumberInput
+                placeholder="تعداد خدمات"
+                max={20}
+                min={0}
+                {...editPolicyForm.getInputProps("allowed_requests")}
+            />
+            <Group position="right">
+              <Button mt="md" color="blue" type="submit">
+                ثبت
+              </Button>
+            </Group>
+          </form>
+        </Modal>
+      </>
   );
 };
 
