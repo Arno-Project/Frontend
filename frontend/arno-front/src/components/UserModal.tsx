@@ -40,6 +40,7 @@ const UserModal = (props: {
   changeIsOpen: Function;
   validateSpecialist: Function | null;
 }) => {
+  console.info("UserModal", props)
   // useEffect(() => {
   //   getData();
   // }, []);
@@ -87,7 +88,7 @@ const UserModal = (props: {
             </Card.Section>
 
             {props.user.role === UserRole.Specialist &&
-              !props.user.isValidated && (
+              props.user.isValidated === false && (
                 <>
                   <Space h="md" />
                   <Group>

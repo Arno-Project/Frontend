@@ -8,7 +8,7 @@ import { mantine_colors } from "../assets/consts";
 export const SpecialitiesBadges = (props: { speciality: Speciality[] }) => {
   return (
     <>
-      {props.speciality.map((s, i) => {
+      {props.speciality && props.speciality.map((s, i) => {
         return (
           <Tooltip
             key={i}
