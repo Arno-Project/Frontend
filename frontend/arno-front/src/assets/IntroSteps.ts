@@ -225,8 +225,53 @@ const AddEvalMetricStep = {
 
 const EvalMetricTableStep = {
   element: ".tour-metric-table",
-  intro: "در این قسمت معیارهای ارزیابی برای مشتری و متخصص را مشاهده می‌کنید."
+  intro: "در این قسمت معیارهای ارزیابی برای مشتری و متخصص را مشاهده و جست‌وجو می‌کنید."
 }
+
+const ReportFormStep = {
+  element: ".tour-report-form",
+  intro: "در این بخش می‌توانید لاگ‌های سیستمی را دریافت کنید."
+}
+
+const ReportFormTypeStep = {
+  element: ".tour-report-type",
+  intro: "در این قسمت می‌توانید نوع لاگ را انتخاب کنید."
+}
+
+const ReportFormDateStep = {
+  element: ".tour-report-date",
+  intro: "در این قسمت می‌توانید بازه زمانی لاگ را مشخص کنید."
+}
+
+const ReportFormSourceStep = {
+  element: ".tour-report-source",
+  intro: "در این قسمت می‌توانید منبع لاگ را بنویسید."
+}
+
+const ReportFormMessageStep = {
+  element: ".tour-report-message",
+  intro: "در این قسمت می‌توانید متن لاگ را بنویسید."
+}
+
+const ReportFormSubmitStep = {
+  element: ".tour-report-submit",
+  intro: "با کلیک بر این دکمه، جست‌وجوی لاگ انجام می‌شود."
+}
+
+export const ReportCSVStep = {
+  element: ".tour-report-csv",
+  intro: "با کلیک بر این دکمه، لاگ‌های انتخاب شده را به صورت فایل CSV دریافت می‌کنید."
+}
+
+export const ReportFormSteps = [
+  ReportFormStep,
+  ReportFormDateStep,
+  ReportFormTypeStep,
+  ReportFormSourceStep,
+  ReportFormMessageStep,
+  ReportFormSubmitStep,
+]
+
 
 export const EvalMetricSteps = [
   AddEvalMetricStep,
@@ -340,7 +385,6 @@ export const ChatSendStep = {
   element: ".tour-chat-send",
   intro: "با کلیک کردن بر این دکمه پیام شما ارسال می‌شود."
 }
-
 
 
 export const SingleChatSteps = [
