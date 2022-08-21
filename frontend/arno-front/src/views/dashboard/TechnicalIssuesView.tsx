@@ -121,7 +121,9 @@ const TechnicalIssuesView = () => {
       <Title order={2} mb="sm">
         {TITLE}
       </Title>
+      {!!rows && rows.length > 0 && (
       <Text>برای دریافت گزارش کل مشکلات روی دکمه زیر کلیک کنید:</Text>
+          )}
       <Center>
         {!!rows && rows.length > 0 && (
           <CSVLink
