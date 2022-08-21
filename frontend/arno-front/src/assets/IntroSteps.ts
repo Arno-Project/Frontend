@@ -15,6 +15,21 @@ const UserProfileStep = {
   intro: "با کلیک بر این دکمه وارد پروفایل کاربری خود می‌شوید."
 }
 
+const ChatStep = {
+  element: ".tour-chat",
+  intro: "در این قسمت می‌توانید به تبادل پیام و چت بپردازید."
+}
+
+const SuggestionComplaintButtonStep =  {
+  element: ".tour-suggestion-complaint",
+  intro: "این قسمت برای ثبت انتقادات و پیشنهادات در نظر گرفته شده است."
+}
+
+const SpecialistsButtonStep ={
+  element: ".tour-specialists",
+  intro: "در این قسمت می‌توانید متخصصین سامانه را مشاهده نمایید."
+}
+
 const CustomerNavbarSteps = [
   {
     element: ".tour-my-requests",
@@ -24,18 +39,9 @@ const CustomerNavbarSteps = [
     element: ".tour-request-service",
     intro: "در این قسمت می‌توانید درخواست جدید ثبت نمایید."
   },
-  {
-    element: ".tour-specialists",
-    intro: "در این قسمت می‌توانید متخصصین سامانه را مشاهده نمایید."
-  },
-  {
-    element: ".tour-chat",
-    intro: "در این قسمت می‌توانید به تبادل پیام و چت بپردازید."
-  },
-  {
-    element: ".tour-suggestion-complaint",
-    intro: "این قسمت برای ثبت انتقادات و پیشنهادات در نظر گرفته شده است."
-  },
+  SpecialistsButtonStep,
+  ChatStep,
+  SuggestionComplaintButtonStep,
   UserProfileStep,
   NotificationIconStep,
   LogoutIconStep
@@ -51,18 +57,9 @@ const SpecialistNavbarSteps = [
     element: ".tour-my-services",
     intro: "در این قسمت می‌توانید خدماتی که تاکنون ارائه داده‌اید را مشاهده نمایید."
   },
-  {
-    element: ".tour-specialists",
-    intro: "در این قسمت می‌توانید متخصصین سامانه را مشاهده نمایید."
-  },
-  {
-    element: ".tour-chat",
-    intro: "در این قسمت می‌توانید به تبادل پیام و چت بپردازید."
-  },
-  {
-    element: ".tour-suggestion-complaint",
-    intro: "این قسمت برای ثبت انتقادات و پیشنهادات در نظر گرفته شده است."
-  },
+  SpecialistsButtonStep,
+  ChatStep,
+  SuggestionComplaintButtonStep,
   UserProfileStep,
   NotificationIconStep,
   LogoutIconStep
