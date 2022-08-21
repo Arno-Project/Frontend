@@ -34,10 +34,11 @@ import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 import {Helmet} from "react-helmet";
 import {setSteps} from "../../redux/intro";
 import {
+  RequestDetailsAcceptCustomerRequestFromSpecialistStep,
   RequestDetailsAcceptRejectSpecialistDividerStep, RequestDetailsAcceptRequestFromSpecialistStep,
   RequestDetailsAcceptSpecialistStep, RequestDetailsChatToCustomerStep,
   RequestDetailsChooseSpecialistButtonStep, RequestDetailsCompleteRequestStep,
-  RequestDetailsEditRequestButtonStep,
+  RequestDetailsEditRequestButtonStep, RequestDetailsRejectCustomerRequestFromSpecialistStep,
   RequestDetailsRejectSpecialistStep,
   RequestDetailsSelectedSpecialistStep,
   RequestDetailsShowSpecialistButtonStep,
@@ -266,6 +267,12 @@ const RequestDetailsView = () => {
           if (requestDetails.status === RequestStatus.Done) {
             steps.push(RequestDetailsSubmitFeedbackStep);
           }
+          if (
+              requestDetails.status === RequestStatus.WaitForSpecialist &&
+              user!.id === requestDetails.specialist?.id
+          ) {
+            steps.push(...[RequestDetailsAcceptCustomerRequestFromSpecialistStep, RequestDetailsRejectCustomerRequestFromSpecialistStep]);
+          }
           steps.push(RequestDetailsChatToCustomerStep);
         }
 
@@ -302,6 +309,7 @@ const RequestDetailsView = () => {
               {requestDetails?.specialist && (
                   <Group>
                     <Button
+                        className="tour-request-details-accept-customer-request-from-specialist"
                         color="blue"
                         onClick={() => {
                           acceptOrRejectCustomerRequest(true);
@@ -311,6 +319,7 @@ const RequestDetailsView = () => {
                       قبول درخواست مشتری
                     </Button>
                     <Button
+                        className="tour-request-details-reject-customer-request-from-specialist"
                         color="red"
                         onClick={() => {
                           acceptOrRejectCustomerRequest(false);

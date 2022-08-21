@@ -11,14 +11,16 @@ import {
   Checks,
 } from "tabler-icons-react";
 
-import { useAppSelector } from "../../redux/hooks";
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import { Chat, User, UserRole } from "../../models";
 
 import { Helmet } from "react-helmet";
 import { APIDataToChats } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import { ChatsAPI } from "../../api/chats";
+import {setSteps} from "../../redux/intro";
+import {ChatSteps, SpecialistListSteps} from "../../assets/IntroSteps";
 
 const TITLE = "پیام‌ها";
 
@@ -41,6 +43,15 @@ const ChatsView = () => {
     getData();
   }, []);
 
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/chats") {
+      dispatch(setSteps(ChatSteps));
+    }
+  }, [location.pathname]);
+
   const navigateToChatPage = (peerID: number) => {
     navigate(`${peerID}`);
   };
@@ -51,7 +62,7 @@ const ChatsView = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      <>
+      <div className="tour-chat-table">
         {chats.length > 0 ? (
           <Table striped highlightOnHover verticalSpacing="lg">
             <thead></thead>
@@ -101,7 +112,7 @@ const ChatsView = () => {
             )}
           </>
         )}
-      </>
+      </div>
     </>
   );
 };

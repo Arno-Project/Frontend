@@ -273,6 +273,60 @@ export const RequestDetailsSubmitFeedbackStep = {
   intro: "با کلیک بر روی این دکمه می توانید بازخورد خود را نسبت به درخواست ثبت کنید."
 }
 
+
+
+
+export const RequestDetailsAcceptCustomerRequestFromSpecialistStep={
+  element:".tour-request-details-accept-customer-request-from-specialist",
+  intro:"با کلیک بر روی این دکمه می‌توانید درخواست مشتری برای انجام درخواست را بپذیرید."
+}
+
+export const RequestDetailsRejectCustomerRequestFromSpecialistStep={
+  element:".tour-request-details-reject-customer-request-from-specialist",
+  intro:"با کلیک بر روی این دکمه می‌توانید درخواست مشتری برای انجام درخواست را رد کنید."
+}
+
+
+export const CustomerRequestTableStep = {
+    element: ".tour-customer-request-table",
+  intro:"در این قسمت درخواست‌های مشتریان را که منتظر متخصصی برای انجام هستند مشاهده می‌کنید."
+}
+
+export const ChatTableStep = {
+    element: ".tour-chat-table",
+    intro:"در این قسمت چت‌های خود را در صورت وجود مشاهده می‌کنید و با کلیک بر روی‌ آن‌ها وارد چت با آن فرد خواهید شد."
+}
+
+export const ChatBackStep = {
+  element: ".tour-back-to-chat-list",
+  intro:"با کلیک کردن بر این دکمه به صفحه مربوط به لیست چت‌ها باز می‌گردید."
+}
+
+export const ChatInputStep = {
+  element: ".tour-chat-input",
+  intro:"در این قسمت می‌توانید متن پیام را بنویسید."
+}
+
+export const ChatSendStep = {
+  element: ".tour-chat-send",
+  intro:"با کلیک کردن بر این دکمه پیام شما ارسال می‌شود."
+}
+
+export const SingleChatSteps = [
+    ChatInputStep,
+    ChatSendStep,
+    ChatBackStep
+]
+
+export const ChatSteps = [
+    ChatTableStep,
+]
+
+export const CustomerRequestStep = [
+    CustomerRequestTableStep
+]
+
+
 export const RequestDetailsStateSteps = [
   RequestDetailsInfoStep
 ]
