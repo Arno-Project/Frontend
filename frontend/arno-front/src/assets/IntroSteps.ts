@@ -1,4 +1,5 @@
 import {UserRole} from "../models";
+import exp from "constants";
 
 const NotificationIconStep = {
   element: ".tour-notification-icon",
@@ -20,12 +21,12 @@ const ChatStep = {
   intro: "در این قسمت می‌توانید به تبادل پیام و چت بپردازید."
 }
 
-const SuggestionComplaintButtonStep =  {
+const SuggestionComplaintButtonStep = {
   element: ".tour-suggestion-complaint",
   intro: "این قسمت برای ثبت انتقادات و پیشنهادات در نظر گرفته شده است."
 }
 
-const SpecialistsButtonStep ={
+const SpecialistsButtonStep = {
   element: ".tour-specialists",
   intro: "در این قسمت می‌توانید متخصصین سامانه را مشاهده نمایید."
 }
@@ -161,6 +162,57 @@ export const MyRequestsStatusSteps = [
     element: ".tour-my-requests-status",
     intro: "در این قسمت می‌توانید وضعیت درخواست‌های خود را مشاهده نمایید."
   }
+]
+
+
+const ManageSpecialitiesSearchCategoryStep = {
+  element: ".tour-manage-specialities-search-category",
+  intro: "در این قسمت می‌توانید دسته‌بندی تخصص را برای جست‌وجو وارد کنید."
+}
+
+const ManageSpecialitiesSearchTitleStep = {
+  element: ".tour-manage-specialities-search-title",
+  intro: "در این قسمت می‌توانید عنوان تخصص را برای جست‌وجو وارد کنید."
+}
+
+const ManageSpecialitiesSearchTableStep = {
+  element: ".tour-manage-specialities-search-table",
+  intro: "در این قسمت می‌توانید تخصص‌های موجود را مشاهده نمایید."
+}
+
+
+const ManageSpecialitiesInputTitleStep = {
+  element: ".tour-manage-specialities-input-title",
+  intro: "در این قسمت عنوان تخصص را وارد کنید."
+}
+
+const ManageSpecialitiesInputCategoryStep = {
+  element: ".tour-manage-specialities-input-category",
+  intro: "در این قسمت دسته‌بندی تخصص را انتخاب کنید."
+}
+
+const ManageSpecialitiesInputDescriptionStep = {
+  element: ".tour-manage-specialities-input-description",
+  intro: "در این قسمت توضیحات تخصص را وارد کنید."
+}
+
+const ManageSpecialitiesInputSubmitStep = {
+  element: ".tour-manage-specialities-input-submit",
+  intro: "با کلیک بر این دکمه تخصص جدید را ثبت نمایید."
+}
+
+export const ManageSpecialitiesSearchSteps = [
+  ManageSpecialitiesSearchCategoryStep,
+  ManageSpecialitiesSearchTitleStep,
+  ManageSpecialitiesSearchTableStep
+
+]
+
+export const ManageSpecialitiesInputSteps = [
+  ManageSpecialitiesInputTitleStep,
+  ManageSpecialitiesInputCategoryStep,
+  ManageSpecialitiesInputDescriptionStep,
+  ManageSpecialitiesInputSubmitStep
 ]
 
 
