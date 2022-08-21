@@ -6,9 +6,23 @@ import { SystemFeedbackAPI } from "../../api/feedback";
 import { Helmet } from "react-helmet";
 import { FeedbackType } from "../../models";
 import { notifyUser } from "../utils";
+import {useEffect} from "react";
+import {setSteps} from "../../redux/intro";
+import {SpecialistListSteps, SuggestionComplaintSteps} from "../../assets/IntroSteps";
+import {useAppDispatch} from "../../redux/hooks";
+import {useLocation} from "react-router-dom";
 const TITLE = "انتقادات و پیشنهادات";
 
 const UserFeedbackView = () => {
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/suggestion_complaint") {
+      dispatch(setSteps(SuggestionComplaintSteps));
+    }
+  }, [location.pathname]);
 
   const userFeedbackForm = useForm({
     initialValues: {
@@ -44,6 +58,7 @@ const UserFeedbackView = () => {
 
       <form onSubmit={userFeedbackForm.onSubmit(handleSubmit)}>
         <Select
+          className="tour-input-complaint-type"
           mt="sm"
           label="نوع بازخورد"
           description="لطفا یک مورد را انتخاب کنید:"
@@ -57,6 +72,7 @@ const UserFeedbackView = () => {
           {...userFeedbackForm.getInputProps("type")}
         />
         <Textarea
+          className="tour-input-complaint-description"
           mt="sm"
           placeholder="توضیحات"
           label="متن پیام"
@@ -68,7 +84,9 @@ const UserFeedbackView = () => {
           {...userFeedbackForm.getInputProps("text")}
         />
         <Center>
-          <Button mt="md" color="blue" type="submit">
+          <Button
+              className="tour-button-submit-complaint"
+              mt="md" color="blue" type="submit">
             ارسال
           </Button>
         </Center>
