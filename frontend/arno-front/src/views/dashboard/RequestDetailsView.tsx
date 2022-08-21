@@ -36,12 +36,12 @@ import {setSteps} from "../../redux/intro";
 import {
   RequestDetailsAcceptRejectSpecialistDividerStep, RequestDetailsAcceptRequestFromSpecialistStep,
   RequestDetailsAcceptSpecialistStep, RequestDetailsChatToCustomerStep,
-  RequestDetailsChooseSpecialistButtonStep,
+  RequestDetailsChooseSpecialistButtonStep, RequestDetailsCompleteRequestStep,
   RequestDetailsEditRequestButtonStep,
   RequestDetailsRejectSpecialistStep,
   RequestDetailsSelectedSpecialistStep,
   RequestDetailsShowSpecialistButtonStep,
-  RequestDetailsStateSteps,
+  RequestDetailsStateSteps, RequestDetailsSubmitFeedbackStep,
   SearchButtonClearStep,
   SearchButtonStep,
   SearchNameStep,
@@ -247,13 +247,24 @@ const RequestDetailsView = () => {
           if (requestDetails.status === RequestStatus.WaitForCustomer) {
             steps.push(...[RequestDetailsAcceptRejectSpecialistDividerStep, RequestDetailsAcceptSpecialistStep, RequestDetailsRejectSpecialistStep]);
           }
+          if (requestDetails.status === RequestStatus.Done) {
+            steps.push(RequestDetailsSubmitFeedbackStep);
+          }
 
         }
         if (user!.role === UserRole.Specialist) {
 
-          if (requestDetails.status === RequestStatus.Pending)
-          {
+          if (requestDetails.status === RequestStatus.Pending) {
             steps.push(RequestDetailsAcceptRequestFromSpecialistStep);
+          }
+          if (
+              requestDetails.status === RequestStatus.In_progress &&
+              user!.id === requestDetails.specialist?.id
+          ) {
+            steps.push(RequestDetailsCompleteRequestStep);
+          }
+          if (requestDetails.status === RequestStatus.Done) {
+            steps.push(RequestDetailsSubmitFeedbackStep);
           }
           steps.push(RequestDetailsChatToCustomerStep);
         }
@@ -265,6 +276,7 @@ const RequestDetailsView = () => {
           console.log("hello")
           steps.push(RequestDetailsEditRequestButtonStep);
         }
+
       }
       dispatch(setSteps(steps));
     }
@@ -355,6 +367,7 @@ const RequestDetailsView = () => {
               {requestDetails?.specialist && (
                   <Group>
                     <Button
+                        className="tour-request-details-complete-request-button"
                         color="green"
                         onClick={() => {
                           endRequest();
@@ -526,25 +539,27 @@ const RequestDetailsView = () => {
         );
       }
     }
-
-    if (requestDetails.status === RequestStatus.Done) {
-      specialistComponent = (
-          <>
-            {specialistComponent}
-            <Divider size="sm" my="xs" label="بازخورد" labelPosition="left"/>
-            <Group>
-              <Button
-                  color="pink"
-                  onClick={() => {
-                    setIsFeedbackModalOpen(true);
-                  }}
-                  leftIcon={<Pencil size={20}/>}
-              >
-                ثبت بازخورد
-              </Button>
-            </Group>
-          </>
-      );
+    if (user!.role === UserRole.Customer || user!.role === UserRole.Specialist) {
+      if (requestDetails.status === RequestStatus.Done) {
+        specialistComponent = (
+            <>
+              {specialistComponent}
+              <Divider size="sm" my="xs" label="بازخورد" labelPosition="left"/>
+              <Group>
+                <Button
+                    className="tour-request-details-submit-feedback"
+                    color="pink"
+                    onClick={() => {
+                      setIsFeedbackModalOpen(true);
+                    }}
+                    leftIcon={<Pencil size={20}/>}
+                >
+                  ثبت بازخورد
+                </Button>
+              </Group>
+            </>
+        );
+      }
     }
   }
   return (
