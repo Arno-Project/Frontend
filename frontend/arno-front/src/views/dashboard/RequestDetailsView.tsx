@@ -11,29 +11,33 @@ import {
   ActionIcon,
   Button,
 } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
+import {showNotification} from "@mantine/notifications";
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {useParams, useNavigate, useLocation} from "react-router-dom";
-import { Check, X, Message, Pencil, ExternalLink } from "tabler-icons-react";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { LatLngTuple } from "leaflet";
+import {Check, X, Message, Pencil, ExternalLink} from "tabler-icons-react";
+import {MapContainer, Marker, TileLayer} from "react-leaflet";
+import {LatLngTuple} from "leaflet";
 
-import { CoreAPI } from "../../api/core";
-import { RequestStatus, ServiceSummary, User, UserRole } from "../../models";
-import { APIDataToServiceSummary, APIDataToUsers } from "../../models/utils";
-import { formatDateString } from "../../dateUtils";
-import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
-import { SpecialistRow } from "../../components/SpecialistRow";
-import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
-import { AccountAPI } from "../../api/accounts";
+import {CoreAPI} from "../../api/core";
+import {RequestStatus, ServiceSummary, User, UserRole} from "../../models";
+import {APIDataToServiceSummary, APIDataToUsers} from "../../models/utils";
+import {formatDateString} from "../../dateUtils";
+import {mantine_colors, RequestStatusBadge} from "../../assets/consts";
+import {SpecialistRow} from "../../components/SpecialistRow";
+import {FieldFilter, FieldFilterName, FieldFilterType} from "../../api/base";
+import {AccountAPI} from "../../api/accounts";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import SpecialistsTable from "../../components/SpecialistsTable";
 import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 import {setSteps} from "../../redux/intro";
-import {NotificationSteps, RequestDetailsStateSteps} from "../../assets/IntroSteps";
+import {
+  RequestDetailsEditRequestButtonStep, RequestDetailsSelectedSpecialistStep, RequestDetailsShowSpecialistButtonStep,
+  RequestDetailsStateSteps
+} from "../../assets/IntroSteps";
+
 const TITLE = "جزئیات سفارش";
 
 const RequestDetailsView = () => {
@@ -41,6 +45,7 @@ const RequestDetailsView = () => {
 
   const { requestId } = useParams();
   const [requestDetails, setRequestDetails] = useState<ServiceSummary>();
+  const [hasRequestDetails, setHasRequestDetails] = useState(0);
   const [position, setPosition] = useState<[number, number]>([35.7, 51.3]);
 
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -50,12 +55,6 @@ const RequestDetailsView = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
-  useEffect(() => {
-
-    if ( /dashboard\/request_details\/\d+/g.test(location.pathname)) {
-      dispatch(setSteps(RequestDetailsStateSteps));
-    }
-  }, [location.pathname]);
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getRequestDetails(requestId!);
@@ -64,6 +63,7 @@ const RequestDetailsView = () => {
       console.log(data);
 
       setRequestDetails(data);
+      setHasRequestDetails(1);
       if (data.location)
         setPosition([data.location.latitude, data.location.longitude]);
     } else {
@@ -71,7 +71,7 @@ const RequestDetailsView = () => {
         title: "خطا",
         message: res.error!["error" as keyof object],
         color: "red",
-        icon: <X size={18} />,
+        icon: <X size={18}/>,
       });
     }
   };
@@ -81,14 +81,14 @@ const RequestDetailsView = () => {
       return;
     }
     const filter1 = new FieldFilter(
-      FieldFilterName.Role,
-      UserRole.Specialist,
-      FieldFilterType.Exact
+        FieldFilterName.Role,
+        UserRole.Specialist,
+        FieldFilterType.Exact
     );
     const filter2 = new FieldFilter(
-      FieldFilterName.Speciality,
-      `${requestDetails.requested_speciality.id}`,
-      FieldFilterType.Exact
+        FieldFilterName.Speciality,
+        `${requestDetails.requested_speciality.id}`,
+        FieldFilterType.Exact
     );
     let res = await AccountAPI.getInstance().get([
       ...filters,
@@ -107,8 +107,8 @@ const RequestDetailsView = () => {
 
   const acceptOrRejectCustomerRequest = async (is_accept: boolean) => {
     const res = await CoreAPI.getInstance().acceptOrRejectCustomerRequest(
-      requestDetails!.id,
-      is_accept
+        requestDetails!.id,
+        is_accept
     );
 
     if (res.success) {
@@ -117,7 +117,7 @@ const RequestDetailsView = () => {
         title: "عملیات موفقیت‌آمیز",
         message: `درخواست با موفقیت ${is_accept_string} شد.`,
         color: "teal",
-        icon: <Check size={18} />,
+        icon: <Check size={18}/>,
       });
 
       getData();
@@ -126,8 +126,8 @@ const RequestDetailsView = () => {
 
   const acceptOrRejectSpecialist = async (is_accept: boolean) => {
     const res = await CoreAPI.getInstance().acceptOrRejectSpecialist(
-      requestDetails!.id,
-      is_accept
+        requestDetails!.id,
+        is_accept
     );
 
     if (res.success) {
@@ -136,7 +136,7 @@ const RequestDetailsView = () => {
         title: "عملیات موفقیت‌آمیز",
         message: `متخصص با موفقیت ${is_accept_string} شد.`,
         color: "teal",
-        icon: <Check size={18} />,
+        icon: <Check size={18}/>,
       });
 
       getData();
@@ -146,8 +146,8 @@ const RequestDetailsView = () => {
   const chooseSpecialist = async (id: number) => {
     console.log("choose", id);
     const res = await CoreAPI.getInstance().chooseSpecialist(
-      requestDetails!.id,
-      id
+        requestDetails!.id,
+        id
     );
 
     if (res.success) {
@@ -155,7 +155,7 @@ const RequestDetailsView = () => {
         title: "عملیات موفقیت‌آمیز",
         message: `متخصص با موفقیت انتخاب شد.`,
         color: "teal",
-        icon: <Check size={18} />,
+        icon: <Check size={18}/>,
       });
 
       getData();
@@ -164,7 +164,7 @@ const RequestDetailsView = () => {
 
   const selectRequest = async () => {
     const res = await CoreAPI.getInstance().selectRequestBySpecialist(
-      requestDetails!.id
+        requestDetails!.id
     );
 
     if (res.success) {
@@ -172,7 +172,7 @@ const RequestDetailsView = () => {
         title: "عملیات موفقیت‌آمیز",
         message: `درخواست با موفقیت پذیرفته شد.`,
         color: "teal",
-        icon: <Check size={18} />,
+        icon: <Check size={18}/>,
       });
 
       getData();
@@ -188,7 +188,7 @@ const RequestDetailsView = () => {
         title: "عملیات موفقیت‌آمیز",
         message: `درخواست با موفقیت به اتمام رسید.`,
         color: "teal",
-        icon: <Check size={18} />,
+        icon: <Check size={18}/>,
       });
 
       getData();
@@ -201,13 +201,54 @@ const RequestDetailsView = () => {
     navigate("/dashboard/chats/" + id);
   };
 
+  useEffect(() => {
+    let steps = []
+    if (/dashboard\/request_details\/\d+/g.test(location.pathname)) {
+      steps.push(...RequestDetailsStateSteps);
+      console.log("here11")
+      console.log(requestDetails)
+      console.log("here12")
+
+      if (requestDetails) {
+        console.log("here2")
+        if (user!.role === UserRole.Customer) {
+          if (
+              requestDetails.status === RequestStatus.In_progress ||
+              requestDetails.status === RequestStatus.WaitForSpecialist
+          ) {
+            steps.push(RequestDetailsSelectedSpecialistStep);
+          }
+          if (
+              requestDetails.status === RequestStatus.Pending ||
+              requestDetails.status === RequestStatus.WaitForCustomer
+          )
+          {
+            if (!showSpecialists)
+            {
+              steps.push(RequestDetailsShowSpecialistButtonStep);
+            }
+          }
+        }
+
+
+        if ([RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
+            requestDetails!.status
+        ) && user?.role !== UserRole.Specialist){
+          console.log("hello")
+            steps.push(RequestDetailsEditRequestButtonStep);
+        }
+      }
+      dispatch(setSteps(steps));
+    }
+  }, [location.pathname,hasRequestDetails,showSpecialists,requestDetails]);
+
   let specialistComponent = <></>;
 
   if (requestDetails) {
     if (user!.role === UserRole.Specialist) {
       if (
-        requestDetails.status === RequestStatus.WaitForSpecialist &&
-        user!.id === requestDetails.specialist?.id
+          requestDetails.status === RequestStatus.WaitForSpecialist &&
+          user!.id === requestDetails.specialist?.id
       ) {
         specialistComponent = (
           <>
@@ -270,8 +311,8 @@ const RequestDetailsView = () => {
       }
 
       if (
-        requestDetails.status === RequestStatus.In_progress &&
-        user!.id === requestDetails.specialist?.id
+          requestDetails.status === RequestStatus.In_progress &&
+          user!.id === requestDetails.specialist?.id
       ) {
         specialistComponent = (
           <>
@@ -392,6 +433,7 @@ const RequestDetailsView = () => {
               ></SpecialistsTable>
             ) : (
               <Button
+                className="tour-show-specialist-button"
                 color="blue"
                 onClick={() => {
                   getSpecialists([]);
@@ -408,8 +450,8 @@ const RequestDetailsView = () => {
       }
 
       if (
-        requestDetails.status === RequestStatus.In_progress ||
-        requestDetails.status === RequestStatus.WaitForSpecialist
+          requestDetails.status === RequestStatus.In_progress ||
+          requestDetails.status === RequestStatus.WaitForSpecialist
       ) {
         specialistComponent = (
           <>
@@ -421,7 +463,7 @@ const RequestDetailsView = () => {
               labelPosition="left"
             />
             {requestDetails?.specialist && (
-              <Grid align={"center"}>
+              <Grid align={"center"} className="tour-request-details-selected-specialist">
                 <Grid.Col span={9}>
                   <Table>
                     <tbody>
@@ -472,11 +514,11 @@ const RequestDetailsView = () => {
     }
   }
   return (
-    <>
-      <Helmet>
-        <title>{"آرنو | " + TITLE}</title>
-      </Helmet>
-      <Title order={2}>{"سفارش شماره " + requestId}</Title>
+      <>
+        <Helmet>
+          <title>{"آرنو | " + TITLE}</title>
+        </Helmet>
+        <Title order={2}>{"سفارش شماره " + requestId}</Title>
 
       <Divider size="sm" my="xs" label="مشخصات سفارش" labelPosition="left" />
       {!!requestDetails && (
@@ -569,6 +611,7 @@ const RequestDetailsView = () => {
               labelPosition="left"
             />
             <Button
+              className="tour-request-details-edit-button"
               color="lime"
               onClick={() => {
                 navigate("/dashboard/request_service/", {

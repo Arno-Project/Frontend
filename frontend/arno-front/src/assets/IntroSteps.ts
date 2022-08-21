@@ -202,29 +202,44 @@ const ManageSpecialitiesInputSubmitStep = {
 }
 
 
-
 const NotificationMarkAllStep = {
-    element: ".tour-mark-all-as-read",
-    intro: "با کلیک بر این دکمه، همه نوتیفیکشن‌ها به حالت خوانده شده تبدیل می‌شوند."
+  element: ".tour-mark-all-as-read",
+  intro: "با کلیک بر این دکمه، همه نوتیفیکشن‌ها به حالت خوانده شده تبدیل می‌شوند."
 }
 
 const NotificationPageStep = {
-    element: ".tour-notification-page",
-    intro: "در این قسمت می‌توانید نوتیفیکشن‌های خود را مشاهده نمایید."
+  element: ".tour-notification-page",
+  intro: "در این قسمت می‌توانید نوتیفیکشن‌های خود را مشاهده نمایید."
 }
 
-const RequestDetailsInfoStep ={
+const RequestDetailsInfoStep = {
   element: ".tour-request-details-info",
   intro: "در این قسمت می‌توانید اطلاعات درخواست را مشاهده نمایید."
 }
 
-export const RequestDetailsStateSteps =[
-    RequestDetailsInfoStep
+export const RequestDetailsSelectedSpecialistStep = {
+  element: ".tour-request-details-selected-specialist",
+  intro: "در این قسمت می‌توانید اطلاعات متخصص را مشاهده نمایید."
+}
+
+export const RequestDetailsEditRequestButtonStep={
+  element: ".tour-request-details-edit-button",
+  intro: "با کلیک بر این دکمه می‌توانید درخواست را ویرایش نمایید."
+}
+
+export const RequestDetailsShowSpecialistButtonStep={
+  element: ".tour-show-specialist-button",
+  intro: "با کلیک بر این دکمه می‌توانید لیست متخصصان را مشاهده نمایید."
+}
+
+
+export const RequestDetailsStateSteps = [
+  RequestDetailsInfoStep
 ]
 
 export const NotificationSteps = [
-    NotificationPageStep,
-    NotificationMarkAllStep
+  NotificationPageStep,
+  NotificationMarkAllStep
 ]
 
 export const ManageSpecialitiesSearchSteps = [
