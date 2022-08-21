@@ -222,45 +222,55 @@ export const RequestDetailsSelectedSpecialistStep = {
   intro: "در این قسمت می‌توانید اطلاعات متخصص را مشاهده نمایید."
 }
 
-export const RequestDetailsEditRequestButtonStep={
+export const RequestDetailsEditRequestButtonStep = {
   element: ".tour-request-details-edit-button",
   intro: "با کلیک بر این دکمه می‌توانید درخواست را ویرایش نمایید."
 }
 
-export const RequestDetailsShowSpecialistButtonStep={
+export const RequestDetailsShowSpecialistButtonStep = {
   element: ".tour-show-specialist-button",
   intro: "با کلیک بر این دکمه می‌توانید لیست متخصصان را مشاهده نمایید."
 }
 
-export const RequestDetailsChooseSpecialistButtonStep={
-    element: ".tour-choose-specialist-button-1",
-    intro: "با کلیک بر این دکمه می‌توانید از متخصص برای انجام این کار درخواست کنید."
+export const RequestDetailsChooseSpecialistButtonStep = {
+  element: ".tour-choose-specialist-button-1",
+  intro: "با کلیک بر این دکمه می‌توانید از متخصص برای انجام این کار درخواست کنید."
 
 }
 
-export const RequestDetailsAcceptRejectSpecialistDividerStep={
-    element: ".tour-request-details-accept-or-reject-specialist",
-    intro: "در این قسمت می‌توانید مشخصات متخصصی که برای درخواست اعلام آمادگی کرده را مشاهده نمایید."
+export const RequestDetailsAcceptRejectSpecialistDividerStep = {
+  element: ".tour-request-details-accept-or-reject-specialist",
+  intro: "در این قسمت می‌توانید مشخصات متخصصی که برای درخواست اعلام آمادگی کرده را مشاهده نمایید."
 }
 
-export const RequestDetailsAcceptSpecialistStep={
+export const RequestDetailsAcceptSpecialistStep = {
   element: ".tour-request-details-accept-specialist",
   intro: "با کلیک بر این گزینه می‌توانید متخصص را برای انجام درخواست تایید کنید."
 }
 
-export const RequestDetailsRejectSpecialistStep={
+export const RequestDetailsRejectSpecialistStep = {
   element: ".tour-request-details-reject-specialist",
   intro: "با کلیک بر این گزینه می‌توانید متخصص را برای انجام درخواست رد کنید."
 }
 
-export const RequestDetailsAcceptRequestFromSpecialistStep={
-    element: ".tour-request-details-accept-from-specialist-button",
-  intro:"با کلیک بر این دکمه می‌توانید آمادگی اولیه خود را برای انجام درخواست اعلام کنید."
+export const RequestDetailsAcceptRequestFromSpecialistStep = {
+  element: ".tour-request-details-accept-from-specialist-button",
+  intro: "با کلیک بر این دکمه می‌توانید آمادگی اولیه خود را برای انجام درخواست اعلام کنید."
 }
 
-export const RequestDetailsChatToCustomerStep={
-    element: ".tour-request-details-send-message-to-customer-button",
-  intro:"با کلیک بر این دکمه می‌توانید با مشتری درخواست‌دهنده چت کنید."
+export const RequestDetailsChatToCustomerStep = {
+  element: ".tour-request-details-send-message-to-customer-button",
+  intro: "با کلیک بر این دکمه می‌توانید با مشتری درخواست‌دهنده چت کنید."
+}
+
+export const RequestDetailsCompleteRequestStep = {
+  element: ".tour-request-details-complete-request-button",
+  intro: "با کلیک بر این دکمه می‌توانید اتمام درخواست را اعلام نمایید."
+}
+
+export const RequestDetailsSubmitFeedbackStep = {
+    element: ".tour-request-details-submit-feedback",
+  intro: "با کلیک بر روی این دکمه می توانید بازخورد خود را نسبت به درخواست ثبت کنید."
 }
 
 export const RequestDetailsStateSteps = [
@@ -286,7 +296,7 @@ export const ManageSpecialitiesInputSteps = [
   ManageSpecialitiesInputSubmitStep
 ]
 
-export const SpecialistListStep =   {
+export const SpecialistListStep = {
   element: ".tour-specialist-list",
   intro: "در این قسمت می‌توانید لیست متخصصین را مشاهده نمایید."
 }
