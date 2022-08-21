@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Title, Text, Space, Alert, Group, Button } from "@mantine/core";
 import { Helmet } from "react-helmet";
 import { formatDateString } from "../../dateUtils";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {
   AlertCircle,
   AlertTriangle,
@@ -16,6 +16,8 @@ import { AuthAPI } from "../../api/auth";
 import { NotificationAPI } from "../../api/notifications";
 import { Notification, NotificationType } from "../../models";
 import { APIDataToNotifications } from "../../models/utils";
+import {setSteps} from "../../redux/intro";
+import {NotificationSteps, SpecialistListSteps} from "../../assets/IntroSteps";
 
 const TITLE = "اعلان‌ها";
 
@@ -24,6 +26,14 @@ const NotificationsView = () => {
 
   let navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/notifications") {
+      dispatch(setSteps(NotificationSteps));
+    }
+  }, [location.pathname]);
 
   const [notifs, setNotifs] = useState<Notification[]>([]);
   const [notifsReadStatus, setNotifsReadStatus] = useState<boolean[]>([]);
@@ -75,6 +85,7 @@ const NotificationsView = () => {
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
         <Button
+          className="tour-mark-all-as-read"
           variant="outline"
           size="xs"
           color="dark"
@@ -83,7 +94,7 @@ const NotificationsView = () => {
           علامت‌گذاری همه به عنوان خوانده شده
         </Button>
       </Group>
-      <>
+      <div className="tour-notification-page">
         <Space h="lg" />
         {notifs.length === 0 || notifsReadStatus.every((is_read) => is_read) ? (
           <Alert radius="lg" title="" color="gray" variant="light">
@@ -136,7 +147,7 @@ const NotificationsView = () => {
             </div>
           );
         })}
-      </>
+      </div>
     </>
   );
 };

@@ -14,7 +14,7 @@ import {
 import { showNotification } from "@mantine/notifications";
 
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {useParams, useNavigate, useLocation} from "react-router-dom";
 import { Check, X, Message, Pencil, ExternalLink } from "tabler-icons-react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
@@ -27,11 +27,13 @@ import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 import { SpecialistRow } from "../../components/SpecialistRow";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { AccountAPI } from "../../api/accounts";
-import { useAppSelector } from "../../redux/hooks";
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import SpecialistsTable from "../../components/SpecialistsTable";
 import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 
 import { Helmet } from "react-helmet";
+import {setSteps} from "../../redux/intro";
+import {NotificationSteps, RequestDetailsStateSteps} from "../../assets/IntroSteps";
 const TITLE = "جزئیات سفارش";
 
 const RequestDetailsView = () => {
@@ -44,6 +46,16 @@ const RequestDetailsView = () => {
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [specs, setSpecs] = useState<User[]>([]);
   const [showSpecialists, setShowSpecialists] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+
+    if ( /dashboard\/request_details\/\d+/g.test(location.pathname)) {
+      dispatch(setSteps(RequestDetailsStateSteps));
+    }
+  }, [location.pathname]);
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getRequestDetails(requestId!);
@@ -468,7 +480,7 @@ const RequestDetailsView = () => {
 
       <Divider size="sm" my="xs" label="مشخصات سفارش" labelPosition="left" />
       {!!requestDetails && (
-        <>
+        <div className="tour-request-details-info">
           <div style={{ display: "flex" }}>
             <Text weight={500} span>
               تخصص مورد نیاز:
@@ -543,7 +555,7 @@ const RequestDetailsView = () => {
             />
             <Marker position={position as LatLngTuple}></Marker>
           </MapContainer>
-        </>
+        </div>
       )}
       {!!requestDetails &&
         [RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
