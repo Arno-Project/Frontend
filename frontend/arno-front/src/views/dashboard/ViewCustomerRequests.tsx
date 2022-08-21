@@ -44,9 +44,6 @@ const ViewCustomerRequests = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      <Title order={3} my="md">
-        لغو خدمات
-      </Title>
       <Table striped highlightOnHover>
         <thead>
           <tr>
