@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 import { ExternalLink, X } from "tabler-icons-react";
 
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 import { RequestStatus, ServiceSummary } from "../../models";
@@ -17,6 +17,9 @@ import { CoreAPI } from "../../api/core";
 import { APIDataToRequestsSummary } from "../../models/utils";
 import { Helmet } from "react-helmet";
 import { notifyUser } from "../utils";
+import {useAppDispatch} from "../../redux/hooks";
+import {setSteps} from "../../redux/intro";
+import {MyRequestsStatus} from "../../assets/IntroSteps";
 
 const TITLE = "درخواست‌های من";
 
@@ -34,6 +37,15 @@ const CustomerRequestsView = () => {
       setRows(data);
     }
   };
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/requests") {
+      dispatch(setSteps(MyRequestsStatus));
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     getData();
@@ -106,7 +118,7 @@ const CustomerRequestsView = () => {
       <Title order={3} my="md">
         وضعیت درخواست‌ها
       </Title>
-      <Table striped highlightOnHover>
+      <Table striped highlightOnHover className="tour-my-requests-status">
         <thead>
           <tr>
             <th>ردیف</th>

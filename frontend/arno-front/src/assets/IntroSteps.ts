@@ -80,3 +80,11 @@ export const CreateRequestSteps = [
     intro: "با کلیک بر روی این دکمه می‌توانید درخواست را ثبت نمایید."
   }
 ]
+
+
+export const MyRequestsStatus = [
+  {
+    element: ".tour-my-requests-status",
+    intro: "در این قسمت می‌توانید وضعیت درخواست‌های خود را مشاهده نمایید."
+  }
+]
