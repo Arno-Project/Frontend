@@ -18,7 +18,7 @@ import {
   FeedbackStatus,
   FeedbackType,
   User,
-  UserRole,
+
 } from "../../models";
 
 import { SystemFeedbackAPI } from "../../api/feedback";
@@ -28,6 +28,10 @@ import { Helmet } from "react-helmet";
 import { SystemFeedbackTypeDict } from "../../assets/consts";
 import UserModal from "../../components/UserModal";
 import { formatDateString } from "../../dateUtils";
+import {useAppDispatch} from "../../redux/hooks";
+import {useLocation} from "react-router-dom";
+import {setSteps} from "../../redux/intro";
+import {CustomerRequestStep, SystemFeedbackSteps} from "../../assets/IntroSteps";
 const TITLE = "پیشنهادات و انتقادات دریافتی";
 
 const SystemFeedbacksView = () => {
@@ -62,6 +66,14 @@ const SystemFeedbacksView = () => {
       getData();
     }
   };
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname === "/dashboard/system_feedbacks") {
+      dispatch(setSteps(SystemFeedbackSteps))
+    }
+  }, [location.pathname]);
 
   const renderRows = () => {
     const body: any[] = rows.map((obj: Feedback, i: number) => {
@@ -133,7 +145,7 @@ const SystemFeedbacksView = () => {
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
         <Button
-          className="tour-mark-all-as-read"
+          className="tour-mark-all-feedback-as-read"
           variant="outline"
           size="xs"
           color="dark"
@@ -143,7 +155,7 @@ const SystemFeedbacksView = () => {
         </Button>
       </Group>
 
-      <Table striped highlightOnHover verticalSpacing="md">
+      <Table striped highlightOnHover verticalSpacing="md" className="tour-system-feedback-table">
         <thead>
           <tr>
             <th></th>

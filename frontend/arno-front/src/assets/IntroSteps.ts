@@ -207,6 +207,37 @@ const NotificationMarkAllStep = {
   intro: "با کلیک بر این دکمه، همه نوتیفیکشن‌ها به حالت خوانده شده تبدیل می‌شوند."
 }
 
+const SystemFeedbackMarkAllStep = {
+  element: ".tour-mark-all-feedback-as-read",
+  intro: "با کلیک بر این دکمه، وضعیت همه بازخوردها به حالت خوانده شده تغییر می‌یابد."
+}
+
+
+const SystemFeedbackTablelStep = {
+  element: ".tour-system-feedback-table",
+  intro: "در این قسمت بازخوردهای سیستم را مشاهده می‌کنید."
+}
+const AddEvalMetricStep = {
+  element: ".tour-add-metric-button",
+  intro: "با کلیک بر این دکمه، می‌توانید معیار ارزیابی جدید به سیستم اضافه کنید."
+}
+
+
+const EvalMetricTableStep = {
+  element: ".tour-metric-table",
+  intro: "در این قسمت معیارهای ارزیابی برای مشتری و متخصص را مشاهده می‌کنید."
+}
+
+export const EvalMetricSteps = [
+  AddEvalMetricStep,
+  EvalMetricTableStep
+]
+
+export const SystemFeedbackSteps = [
+  SystemFeedbackTablelStep,
+  SystemFeedbackMarkAllStep
+]
+
 const NotificationPageStep = {
   element: ".tour-notification-page",
   intro: "در این قسمت می‌توانید نوتیفیکشن‌های خود را مشاهده نمایید."
@@ -309,6 +340,8 @@ export const ChatSendStep = {
   element: ".tour-chat-send",
   intro: "با کلیک کردن بر این دکمه پیام شما ارسال می‌شود."
 }
+
+
 
 export const SingleChatSteps = [
   ChatInputStep,
