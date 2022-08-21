@@ -34,9 +34,18 @@ import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 import {Helmet} from "react-helmet";
 import {setSteps} from "../../redux/intro";
 import {
+  RequestDetailsAcceptRejectSpecialistDividerStep,
+  RequestDetailsAcceptSpecialistStep,
   RequestDetailsChooseSpecialistButtonStep,
-  RequestDetailsEditRequestButtonStep, RequestDetailsSelectedSpecialistStep, RequestDetailsShowSpecialistButtonStep,
-  RequestDetailsStateSteps, SearchButtonClearStep, SearchButtonStep, SearchNameStep, SearchSortStep
+  RequestDetailsEditRequestButtonStep,
+  RequestDetailsRejectSpecialistStep,
+  RequestDetailsSelectedSpecialistStep,
+  RequestDetailsShowSpecialistButtonStep,
+  RequestDetailsStateSteps,
+  SearchButtonClearStep,
+  SearchButtonStep,
+  SearchNameStep,
+  SearchSortStep
 } from "../../assets/IntroSteps";
 
 const TITLE = "جزئیات سفارش";
@@ -235,6 +244,9 @@ const RequestDetailsView = () => {
               }
             }
           }
+          if (requestDetails.status === RequestStatus.WaitForCustomer) {
+            steps.push(...[RequestDetailsAcceptRejectSpecialistDividerStep, RequestDetailsAcceptSpecialistStep, RequestDetailsRejectSpecialistStep]);
+          }
 
         }
 
@@ -378,13 +390,14 @@ const RequestDetailsView = () => {
             <>
               {specialistComponent}
               <Divider
+
                   size="sm"
                   my="xs"
                   label="پذیرش/رد متخصص"
                   labelPosition="left"
               />
               {requestDetails?.specialist && (
-                  <Grid align={"center"}>
+                  <Grid align={"center"} className="tour-request-details-accept-or-reject-specialist">
                     <Grid.Col span={9}>
                       <Table>
                         <tbody>
@@ -398,10 +411,12 @@ const RequestDetailsView = () => {
                     </Grid.Col>
                     <Grid.Col span={3}>
                       <Group>
-                        <ActionIcon onClick={() => acceptOrRejectSpecialist(true)}>
+                        <ActionIcon className="tour-request-details-accept-specialist"
+                                    onClick={() => acceptOrRejectSpecialist(true)}>
                           <Check color="green" size={22}/>
                         </ActionIcon>
-                        <ActionIcon onClick={() => acceptOrRejectSpecialist(false)}>
+                        <ActionIcon className="tour-request-details-reject-specialist"
+                                    onClick={() => acceptOrRejectSpecialist(false)}>
                           <X color="red" size={22}/>
                         </ActionIcon>
                       </Group>

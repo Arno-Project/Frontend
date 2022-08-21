@@ -238,6 +238,21 @@ export const RequestDetailsChooseSpecialistButtonStep={
 
 }
 
+export const RequestDetailsAcceptRejectSpecialistDividerStep={
+    element: ".tour-request-details-accept-or-reject-specialist",
+    intro: "در این قسمت می‌توانید مشخصات متخصصی که برای درخواست اعلام آمادگی کرده را مشاهده نمایید."
+}
+
+export const RequestDetailsAcceptSpecialistStep={
+  element: ".tour-request-details-accept-specialist",
+  intro: "با کلیک بر این گزینه می‌توانید متخصص را برای انجام درخواست تایید کنید."
+}
+
+export const RequestDetailsRejectSpecialistStep={
+  element: ".tour-request-details-reject-specialist",
+  intro: "با کلیک بر این گزینه می‌توانید متخصص را برای انجام درخواست رد کنید."
+}
+
 export const RequestDetailsStateSteps = [
   RequestDetailsInfoStep
 ]
