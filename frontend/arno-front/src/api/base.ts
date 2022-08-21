@@ -272,4 +272,4 @@ abstract class BaseListAPI extends BaseAPI {
   }
 }
 
-export { BASE_URL, BaseAPI, BaseListAPI };
+export { BASE_HOST, BASE_URL, BaseAPI, BaseListAPI };

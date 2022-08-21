@@ -15,7 +15,7 @@ export class AccountAPI extends BaseListAPI {
       await this.getSpecialities();
     }
     return this.specialities;
-  } 
+  }
 
   public static getInstance(): AccountAPI {
     if (!AccountAPI.instance) {
@@ -49,6 +49,32 @@ export class AccountAPI extends BaseListAPI {
     return response;
   }
 
+  async uploadDocument(document: any) {
+    const response = await this.sendAuthorizedPostRequest({
+      path: `specialist/document/`,
+      body: document,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      params: null,
+    });
+
+    console.info("uploadDocument", response);
+    return response;
+  }
+
+  async getSpecialistDocument(id : number) {
+    const response = await this.sendAuthorizedGetRequest({
+      path: `specialist/document/`,
+      body: null,
+      headers: null,
+      params: {id},
+    });
+
+    console.info("getSpecialistDocument", response);
+    return response;
+  }
+
   async getSpecialities() {
     const response = await this.sendGetRequest({
       path: "speciality/",
@@ -58,7 +84,7 @@ export class AccountAPI extends BaseListAPI {
     });
 
     console.info("getSpecialities", response);
-    
+
     if (response.success) {
       this.specialities = APIDataToSpecialities(response);
     }
@@ -90,7 +116,8 @@ export class AccountAPI extends BaseListAPI {
     return response;
   }
 
-  async removeSpeciality(specialityId: number) { // TODO: fix DELETE with body 
+  async removeSpeciality(specialityId: number) {
+    // TODO: fix DELETE with body
     const response = await this.sendAuthorizedPostRequest({
       path: "speciality/delete/",
       body: { speciality_id: specialityId },
@@ -119,7 +146,7 @@ export class AccountAPI extends BaseListAPI {
       path: "all/",
       body: null,
       headers: null,
-      params: {id},
+      params: { id },
     });
 
     console.info("getSpecialistById", response);

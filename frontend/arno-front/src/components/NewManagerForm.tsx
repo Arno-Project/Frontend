@@ -78,7 +78,7 @@ const NewManagerForm = () => {
 
   return (
     <>
-      <div className="transparent-paper">
+      <div>
         {error && error["non_field_errors" as keyof object] && (
           <Notification
             mb="sm"

@@ -85,8 +85,8 @@ const EditProfileView = () => {
   });
 
   const submitEditProfileForm = async (values: any) => {
-    console.log(values);
-    
+    uploadSpecialistDocument(values["documents"]);
+
     const res = await AccountAPI.getInstance().editMyProfile(values);
     if (user?.role === UserRole.Specialist) {
       await syncSpecialities();
@@ -103,6 +103,19 @@ const EditProfileView = () => {
     }
   };
 
+  const uploadSpecialistDocument = async (document: any) => {
+    if (document === null) {
+      return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", document);
+
+    const res = await AccountAPI.getInstance().uploadDocument(formData);
+
+    notifyUser(res, "بارگذاری موفقیت‌آمیز", "مدارک شما با موفقیت آپلود شد.");
+  };
+
   const syncSpecialities = async () => {
     const res = await AccountAPI.getInstance().getSpecialistById(user!.id);
     if (!res.success) {
@@ -116,9 +129,9 @@ const EditProfileView = () => {
     }
     const allSpecialities = await AccountAPI.getInstance().fetchSpecialities();
     const mySpec = APIDataToUsers(res)[0].speciality.map((s) => s.id);
-    
+
     for (let specialityId of allSpecialities.map((s) => s.id)) {
-      let specialityIdStr = specialityId + ""
+      let specialityIdStr = specialityId + "";
       if (
         mySpec.includes(specialityId) &&
         !selectedSpecialities.includes(specialityIdStr)
@@ -140,7 +153,7 @@ const EditProfileView = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      <form encType="multipart/form-data" onSubmit={editProfileForm.onSubmit(submitEditProfileForm)}>
+      <form onSubmit={editProfileForm.onSubmit(submitEditProfileForm)}>
         <LoadingOverlay visible={loading} />
         <Group grow>
           <TextInput
@@ -192,7 +205,8 @@ const EditProfileView = () => {
             mt="sm"
             label="آپلود مدارک"
             placeholder="انتخاب مدارک اعتبارسنجی"
-            icon={ <FileUpload size={20} /> }
+            icon={<FileUpload size={20} />}
+            accept="application/pdf"
             {...editProfileForm.getInputProps("documents")}
           />
         )}
