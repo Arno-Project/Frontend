@@ -9,6 +9,7 @@ import {
   Space,
   UnstyledButton,
   Badge,
+  ActionIcon,
 } from "@mantine/core";
 
 import { showNotification } from "@mantine/notifications";
@@ -33,14 +34,13 @@ import {
   Mail,
 } from "tabler-icons-react";
 
-import { Helmet } from "react-helmet";
-import { SpecialitiesBadges } from "../../models/SpecialityBadges";
 import UserModal from "../../components/UserModal";
 import { RoleDict, RoleDictColor } from "../../assets/consts";
-import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
+import { BASE_HOST, FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import NewManagerForm from "../../components/NewManagerForm";
 import UserSearchComponent from "../../components/UserSearchComponent";
 
+import { Helmet } from "react-helmet";
 const TITLE = "مدیریت کاربران";
 const PAGE_SIZE = 10;
 
@@ -76,8 +76,9 @@ const ManageUsersView = () => {
   const validateSpecialist = async (user: User) => {
     const res = await AccountAPI.getInstance().confirmSpecialist(user.id);
 
+    notifyUser(res, "عملیات موفقیت‌آمیز", "متخصص با موفقیت تایید شد.");
+    
     if (res.success) {
-      notifyUser(res, "عملیات موفقیت‌آمیز", "متخصص با موفقیت تایید شد.");
       getData([]);
     }
   };
@@ -88,6 +89,15 @@ const ManageUsersView = () => {
   const [selectedSpecialities, setSelectedSpecialities] = useState<string[]>(
     []
   );
+
+  const fetchSpecialistDocument = async (userId: number) => {
+    const res = await AccountAPI.getInstance().getSpecialistDocument(userId);
+
+    if (res.success) {
+      const file_url = res.data!["document" as keyof object];
+      window.open(BASE_HOST + file_url, '_blank')
+    }
+  };
 
   const searchForm = useForm({
     initialValues: {
@@ -152,10 +162,10 @@ const ManageUsersView = () => {
           <Tabs.Tab value="view" icon={<Eye size={14} />} color="teal">
             مشاهده و جست‌وجو
           </Tabs.Tab>
-          <Tabs.Tab value="edit" icon={<Checklist size={14} />} color="yellow">
+          <Tabs.Tab value="edit" icon={<Checklist size={14} />} color="green">
             متخصصین در انتظار تایید
           </Tabs.Tab>
-          <Tabs.Tab value="new" icon={<Plus size={14} />} color="pink">
+          <Tabs.Tab value="new" icon={<Plus size={14} />} color="blue">
             اضافه کردن مدیر جدید
           </Tabs.Tab>
         </Tabs.List>
@@ -202,7 +212,6 @@ const ManageUsersView = () => {
         <thead>
           <tr>
             <th>نام متخصص</th>
-            <th>تخصص(ها)</th>
             <th>مدارک اعتبارسنجی</th>
             <th>جزئیات</th>
             <th>تأیید</th>
@@ -217,31 +226,33 @@ const ManageUsersView = () => {
                     {user.firstName} {user.lastName}
                   </td>
                   <td>
-                    <SpecialitiesBadges speciality={user.speciality} />
+                    <ActionIcon
+                      onClick={() => fetchSpecialistDocument(user.id)}
+                      size={30}
+                    >
+                      <Paperclip color="black" size={22} />
+                    </ActionIcon>
                   </td>
                   <td>
-                    <Paperclip size={24} />
-                  </td>
-                  <td>
-                    <UnstyledButton
+                    <ActionIcon
                       onClick={() => {
                         setSelectedUser(user);
                         setIsUserModalOpen(true);
                       }}
                     >
                       <ZoomInArea color="black" size={22} />
-                    </UnstyledButton>
+                    </ActionIcon>
                   </td>
 
                   <td>
                     <div style={{ display: "flex" }}>
-                      <UnstyledButton
+                      <ActionIcon
                         onClick={() => {
                           validateSpecialist(user);
                         }}
                       >
                         <Check color="green" size={22} />
-                      </UnstyledButton>
+                      </ActionIcon>
                     </div>
                   </td>
                 </tr>
