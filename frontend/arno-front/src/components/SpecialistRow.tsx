@@ -14,6 +14,7 @@ export const SpecialistRow = (props: {
   button: {
     label: string;
     action: Function;
+    className: string | null;
   } | null;
 }) => {
   const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
@@ -21,7 +22,7 @@ export const SpecialistRow = (props: {
   const user = props.user;
   const idx = props.idx;
   return (
-    <tr key={user.id}>
+    <tr>
       <td>
         {user.firstName} {user.lastName}
       </td>
@@ -45,6 +46,7 @@ export const SpecialistRow = (props: {
             onClick={() => {
               props.button!.action(user.id);
             }}
+            className={props.button!.className? props.button!.className+"-"+idx : ""}
           >
             {props.button.label}
           </Button>
