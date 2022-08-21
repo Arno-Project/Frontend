@@ -190,7 +190,6 @@ const RequestDetailsView = () => {
   };
 
   const endRequest = async () => {
-    console.log("end");
     const res = await CoreAPI.getInstance().finishRequest(requestDetails!.id);
 
     if (res.success) {
@@ -207,7 +206,6 @@ const RequestDetailsView = () => {
 
   const navigate = useNavigate();
   const sendMessage = async (id: number) => {
-    console.log("send msg");
     navigate("/dashboard/chats/" + id);
   };
 
@@ -215,12 +213,8 @@ const RequestDetailsView = () => {
     let steps = []
     if (/dashboard\/request_details\/\d+/g.test(location.pathname)) {
       steps.push(...RequestDetailsStateSteps);
-      console.log("here11")
-      console.log(requestDetails)
-      console.log("here12")
 
       if (requestDetails) {
-        console.log("here2")
         if (user!.role === UserRole.Customer) {
           if (
               requestDetails.status === RequestStatus.In_progress ||
@@ -238,7 +232,6 @@ const RequestDetailsView = () => {
               steps.push(...[SearchNameStep, SearchSortStep, SearchButtonStep, SearchButtonClearStep,]);
               if (specs) {
                 if (specs.length > 0) {
-                  console.log("choose specialist")
                   steps.push(RequestDetailsChooseSpecialistButtonStep);
                 }
               }
@@ -262,7 +255,6 @@ const RequestDetailsView = () => {
         if ([RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
             requestDetails!.status
         ) && user?.role !== UserRole.Specialist) {
-          console.log("hello")
           steps.push(RequestDetailsEditRequestButtonStep);
         }
       }

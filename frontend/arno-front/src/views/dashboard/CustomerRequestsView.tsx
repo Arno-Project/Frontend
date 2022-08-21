@@ -25,13 +25,13 @@ const TITLE = "درخواست‌های من";
 
 const CustomerRequestsView = () => {
 
-
   const navigate = useNavigate();
   const [rows, setRows] = useState<ServiceSummary[]>([]);
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getMyRequestsStatus();
 
+    console.info("Customer request view ", res)
     if (res.success) {
       const data = APIDataToRequestsSummary(res);
       setRows(data);

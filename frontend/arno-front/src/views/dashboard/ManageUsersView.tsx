@@ -36,7 +36,12 @@ import {
 
 import UserModal from "../../components/UserModal";
 import { RoleDict, RoleDictColor } from "../../assets/consts";
-import { BASE_HOST, FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
+import {
+  BASE_HOST,
+  FieldFilter,
+  FieldFilterName,
+  FieldFilterType,
+} from "../../api/base";
 import NewManagerForm from "../../components/NewManagerForm";
 import UserSearchComponent from "../../components/UserSearchComponent";
 
@@ -55,7 +60,6 @@ const ManageUsersView = () => {
   const getData = async (filters: FieldFilter[]) => {
     let res = await AccountAPI.getInstance().get(filters);
     if (res.success) {
-      console.log("R", res);
       const users = APIDataToUsers(res);
       setUsers(users);
       console.log(users);
@@ -77,73 +81,19 @@ const ManageUsersView = () => {
     const res = await AccountAPI.getInstance().confirmSpecialist(user.id);
 
     notifyUser(res, "عملیات موفقیت‌آمیز", "متخصص با موفقیت تایید شد.");
-    
+
     if (res.success) {
       getData([]);
     }
   };
-
-  const onSpecialitySelectChange = (values: any[]) => {
-    setSelectedSpecialities(values);
-  };
-  const [selectedSpecialities, setSelectedSpecialities] = useState<string[]>(
-    []
-  );
 
   const fetchSpecialistDocument = async (userId: number) => {
     const res = await AccountAPI.getInstance().getSpecialistDocument(userId);
 
     if (res.success) {
       const file_url = res.data!["document" as keyof object];
-      window.open(BASE_HOST + file_url, '_blank')
+      window.open(BASE_HOST + file_url, "_blank");
     }
-  };
-
-  const searchForm = useForm({
-    initialValues: {
-      name: "",
-      phone: "",
-      email: "",
-      specialities: [],
-      roles: [],
-      sort: "",
-    },
-
-    validate: {},
-  });
-
-  const submitForm = (v: any) => {
-    console.log(v);
-    console.log(selectedSpecialities);
-    let filters = [];
-    for (const [key, value] of Object.entries(v)) {
-      if (value && (key !== "roles" || key.length > 0)) {
-        const filter = new FieldFilter(
-          key as FieldFilterName,
-          value as string,
-          FieldFilterType.Exact
-        );
-        filters.push(filter);
-      }
-    }
-    if (selectedSpecialities.length > 0) {
-      filters.push(
-        new FieldFilter(
-          FieldFilterName.Speciality,
-          selectedSpecialities.join(","),
-          FieldFilterType.Exact
-        )
-      );
-      filters.push(
-        new FieldFilter(
-          FieldFilterName.Role,
-          UserRole.Specialist,
-          FieldFilterType.Exact
-        )
-      );
-    }
-    console.log(filters);
-    getData(filters);
   };
 
   const rows = users.slice(
