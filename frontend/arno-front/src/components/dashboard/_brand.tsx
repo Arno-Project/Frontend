@@ -59,7 +59,7 @@ export function Brand() {
             <QuestionMark size={16} />
           </ActionIcon>
           <Indicator disabled={notificationCount === 0} color="red">
-            <ActionIcon
+            <ActionIcon className="tour-notification-icon"
               variant="default"
               onClick={() => navigateToNotifs()}
               size={30}
@@ -67,7 +67,8 @@ export function Brand() {
               <Bell size={16} />
             </ActionIcon>
           </Indicator>
-          <ActionIcon variant="default" onClick={() => doLogout()} size={30}>
+          <ActionIcon className="tour-logout-icon"
+              variant="default" onClick={() => doLogout()} size={30}>
             <Logout size={16} />
           </ActionIcon>
         </Group>

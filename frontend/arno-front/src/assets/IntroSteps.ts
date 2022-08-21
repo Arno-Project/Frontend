@@ -1,5 +1,20 @@
 import {UserRole} from "../models";
 
+const NotificationIconStep = {
+  element: ".tour-notification-icon",
+  intro: "با کلیک بر این دکمه وارد صفحه نوتیفیکشن‌ها می‌شوید."
+}
+
+const LogoutIconStep = {
+  element: ".tour-logout-icon",
+  intro: "با کلیک بر این دکمه از حساب کاربری خود خارج می‌شوید."
+}
+
+const UserProfileStep = {
+  element: ".tour-user-profile",
+  intro: "با کلیک بر این دکمه وارد پروفایل کاربری خود می‌شوید."
+}
+
 const CustomerNavbarSteps = [
   {
     element: ".tour-my-requests",
@@ -21,6 +36,9 @@ const CustomerNavbarSteps = [
     element: ".tour-suggestion-complaint",
     intro: "این قسمت برای ثبت انتقادات و پیشنهادات در نظر گرفته شده است."
   },
+  UserProfileStep,
+  NotificationIconStep,
+  LogoutIconStep
 ]
 
 
@@ -45,6 +63,9 @@ const SpecialistNavbarSteps = [
     element: ".tour-suggestion-complaint",
     intro: "این قسمت برای ثبت انتقادات و پیشنهادات در نظر گرفته شده است."
   },
+  UserProfileStep,
+  NotificationIconStep,
+  LogoutIconStep
 ]
 type EnumDictionary<T extends string | symbol | number, U> = {
   [K in T]: U;
@@ -122,17 +143,17 @@ const SearchButtonClearStep = {
   intro: "با کلیک بر این دکمه فیلتر‌های جست‌وجو همگی پاک می‌شوند."
 }
 
-const InputComplaintType = {
+const InputComplaintTypeStep = {
   element: ".tour-input-complaint-type",
   intro: "در این قسمت می‌توانید نوع بازخورد (پیشنهاد، انتقاد، بازخورد فنی) را مشخص کنید."
 }
 
-const InputComplaintDescription = {
+const InputComplaintDescriptionStep = {
   element: ".tour-input-complaint-description",
   intro: "در این قسمت می‌توانید توضیحات بازخورد را وارد کنید."
 }
 
-const InputComplaintSubmit = {
+const InputComplaintSubmitStep = {
   element: ".tour-button-submit-complaint",
   intro: "با کلیک بر این دکمه بازخورد را ثبت نمایید."
 }
@@ -160,9 +181,9 @@ export const SpecialistListSteps = [
 
 
 export const SuggestionComplaintSteps = [
-  InputComplaintType,
-  InputComplaintDescription,
-  InputComplaintSubmit
+  InputComplaintTypeStep,
+  InputComplaintDescriptionStep,
+  InputComplaintSubmitStep
 ]
 
 
