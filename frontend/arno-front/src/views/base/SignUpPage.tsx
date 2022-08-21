@@ -1,12 +1,6 @@
-import { useForm } from '@mantine/form';
+import { useForm } from "@mantine/form";
 
-import {
-  Input,
-  Notification,
-  Radio,
-  Space,
-  Title,
-} from "@mantine/core";
+import { Input, Notification, Radio, Space, Title } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -25,11 +19,12 @@ import { Lock, Mail, Phone, Check, X, Id } from "tabler-icons-react";
 
 import { AuthAPI } from "../../api/auth";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
-import { UserRole } from "../../models";
+import { Speciality, UserRole } from "../../models";
 import { useAppDispatch } from "../../redux/hooks";
 import { login, setUserInfo } from "../../redux/auth";
 import { APIDataToUser } from "../../models/utils";
-import { PasswordValidator } from '../../assets/PasswordValidator';
+import { PasswordValidator } from "../../assets/PasswordValidator";
+import { AccountAPI } from "../../api/accounts";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("login");
@@ -71,9 +66,16 @@ const SignUpPage = () => {
       // lastName: (value) => formType === "login" || value.trim().length >= 2,
       // email: (value) => /^\S+@\S+$/.test(value),
       password: PasswordValidator.validatePassword,
-      phone: (value: string) => /^(\+|0)\d{10}$/.test(value) ? null : "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
-      confirmPassword: (val: string, values: any) => (formType === "login" || val === values.password) ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
-      termsOfService: (value: boolean) => value === true ? null : "لطفا با مقررات سایت موافقت کنید",
+      phone: (value: string) =>
+        /^(\+|0)\d{10}$/.test(value)
+          ? null
+          : "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
+      confirmPassword: (val: string, values: any) =>
+        formType === "login" || val === values.password
+          ? null
+          : "تکرار رمز مطابق رمز وارد شده نیست.",
+      termsOfService: (value: boolean) =>
+        value === true ? null : "لطفا با مقررات سایت موافقت کنید",
     },
   });
 
@@ -84,18 +86,30 @@ const SignUpPage = () => {
     },
   });
 
-  const handleSubmit = async (values: any) => {
-    if (userRole === UserRole.Specialist && selectedSpecialities.length === 0) {
-      setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
-      return;
-    }
+  const syncSpecialities = async () => {
+    const accountAPI = AccountAPI.getInstance();
+    selectedSpecialities.forEach(async (specialityID: string) => {
+      console.log("syncSpecialities", specialityID);
+      const res = await accountAPI.addSpeciality(parseInt(specialityID));
+      console.log(res);
+    });
+  };
 
+  const handleSubmit = async (values: any) => {
     const api = AuthAPI.getInstance();
 
     let res = null;
     if (formType === "login") {
       res = await api.login(values["username"], values["password"]);
     } else {
+      if (
+        userRole === UserRole.Specialist &&
+        selectedSpecialities.length === 0
+      ) {
+        setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
+        return;
+      }
+
       res = await api.register(
         { specialities: selectedSpecialities, ...values },
         userRole
@@ -109,16 +123,16 @@ const SignUpPage = () => {
       setShowFailureNotification(false);
       setShowSuccessNotification(true);
 
-      if (formType === "login" || userRole === UserRole.Customer) {
-        let user = APIDataToUser(res);
+      let user = APIDataToUser(res);
 
-        dispatch(login(data["token" as keyof object]));
-        dispatch(setUserInfo(user));
+      dispatch(login(data["token" as keyof object]));
+      dispatch(setUserInfo(user));
 
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      }
+      syncSpecialities();
+      
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     } else {
       setErrorMessage(res.error);
       setShowSuccessNotification(false);
