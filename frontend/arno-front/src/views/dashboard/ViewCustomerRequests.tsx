@@ -1,17 +1,19 @@
 import { Table, Title, UnstyledButton, Alert, Space } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 import { ExternalLink, X, AlertCircle } from "tabler-icons-react";
 
 import { CoreAPI } from "../../api/core";
 import { RequestStatus, ServiceSummary } from "../../models";
 import { APIDataToServiceSummary } from "../../models/utils";
-import { useAppSelector } from "../../redux/hooks";
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 
 import { Helmet } from "react-helmet";
 import { SpecialitiesBadges } from "../../models/SpecialityBadges";
+import {setSteps} from "../../redux/intro";
+import {CustomerRequestStep} from "../../assets/IntroSteps";
 const TITLE = "درخواست‌های مشتریان";
 
 const ViewCustomerRequests = () => {
