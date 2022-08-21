@@ -590,6 +590,27 @@ export const NotificationSteps = [
   NotificationMarkAllStep
 ]
 
+const ManageSpecialitiesPopularityFormStep = {
+  element: ".tour-manage-specialities-popularity-form",
+  intro: "در این قسمت می‌توانید تخصص‌ها را به ترتیب محبوبیت در بازه‌های زمانی مختلف مرتب کنید."
+}
+
+const ManageSpecialitiesPopularityDateStep = {
+  element: ".tour-manage-specialities-popularity-date",
+  intro: "در این قسمت می‌توانید بازه زمانی را مشخص کنید."
+}
+
+const ManageSpecialitiesPopularityAscDscStep = {
+  element: ".tour-manage-specialities-popularity-ascdsc",
+  intro: "در این قسمت می‌توانید ترتیب مرتب سازی را مشخص کنید."
+}
+
+const ManageSpecialitiesPopularitySubmitStep = {
+  element: ".tour-manage-specialities-popularity-submit",
+  intro: "با کلیک بر روی این دکمه می‌توانید جست‌وجوی تخصص‌ها را برساس محبوبیت انجام بدهید."
+}
+
+
 export const ManageSpecialitiesSearchSteps = [
   ManageSpecialitiesSearchCategoryStep,
   ManageSpecialitiesSearchTitleStep,
@@ -602,6 +623,13 @@ export const ManageSpecialitiesInputSteps = [
   ManageSpecialitiesInputCategoryStep,
   ManageSpecialitiesInputDescriptionStep,
   ManageSpecialitiesInputSubmitStep
+]
+
+export const ManageSpecialitiesPopularitySteps = [
+  ManageSpecialitiesPopularityFormStep,
+  ManageSpecialitiesPopularityDateStep,
+  ManageSpecialitiesPopularityAscDscStep,
+  ManageSpecialitiesPopularitySubmitStep
 ]
 
 export const SpecialistListStep = {
