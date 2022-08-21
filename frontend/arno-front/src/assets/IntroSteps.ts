@@ -120,7 +120,6 @@ export const SearchRoleStep = {
   intro: "در این قسمت می‌توانید نقش (نوع) کاربر را برای جست‌وجو وارد کنید."
 }
 
-
 export const SearchSpecialtyStep = {
   element: ".tour-search-input-speciality",
   intro: "در این قسمت می‌توانید تخصص‌های مدنظر را برای جست‌وجو وارد کنید."
@@ -337,6 +336,126 @@ export const ManagerCreateRequestSteps = [
   ManagerCreateRequestDescriptionStep,
   ManagerCreateRequestSubmitStep
 ]
+
+
+const QuickSelectStep = {
+  element: ".tour-quick-select",
+  intro: "در این قسمت می‌توانید فیلترهای ترکیبی را به صورت سریع اعمال کنید."
+}
+
+const QuickSelectCustomerBasedOnScoreStep = {
+  element: ".tour-customer-based-on-score",
+  intro: "با کلیک بر این دکمه می‌توانید  فیلتر مرتب‌سازی مشتریان بر اساس امتیاز را به صورت سریع اعمال کنید."
+}
+
+const QuickSelectSpecialistBasedOnScoreStep = {
+  element: ".tour-specialist-based-on-score",
+  intro: "با کلیک بر این دکمه می‌توانید فیلتر مرتب‌سازی متخصصان بر اساس امتیاز به صورت سریع اعمال کنید."
+}
+
+const QuickSelectManagerStep = {
+  element: ".tour-managers-quick-select",
+  intro: "با کلیک بر این دکمه می‌توانید فیلتر انتخاب مدیران به صورت سریع اعمال کنید."
+}
+
+const ManageUsersUserTableStep = {
+  element: ".tour-manage-users-user-table",
+  intro: "در این قسمت لیست کاربران سیستم را مشاهده می‌کنید."
+}
+
+
+export const ManageUsersTab1Steps = [
+  ManageUsersUserTableStep,
+  QuickSelectStep,
+  QuickSelectCustomerBasedOnScoreStep,
+  QuickSelectSpecialistBasedOnScoreStep,
+  QuickSelectManagerStep,
+  SearchNameStep,
+  SearchPhoneStep,
+  SearchEmailStep,
+  SearchRoleStep,
+  SearchSpecialtyStep,
+  SearchSortStep,
+  SearchButtonClearStep,
+  SearchButtonStep
+
+
+]
+
+
+const ManageUsersSpecialistValidationTableStep = {
+  element: ".tour-manage-users-specialist-validation-table",
+  intro: "در این قسمت لیست متخصصان تایید نشده را مشاهده می‌کنید."
+}
+
+export const ManageUsersTab2Steps = [
+  ManageUsersSpecialistValidationTableStep
+]
+
+const ManageUsersAddManagerFormStep = {
+  element: ".manage-users-create-manager-form",
+  intro: "در این قسمت می‌توانید مدیر جدید را به صورت دستی ایجاد کنید."
+}
+
+const ManagerUsersAddManagerRoleStep = {
+  element: ".manage-users-create-manager-role",
+  intro: "در این قسمت نوع مدیر (مدیر شرکت یا مدیر فنی) را مشخص نمایید."
+}
+
+const ManageUsersAddManagerFirstNameStep = {
+  element: ".manage-users-create-manager-first-name",
+  intro: "در این قسمت نام مدیر را وارد نمایید."
+}
+
+const ManageUsersAddManagerLastNameStep = {
+  element: ".manage-users-create-manager-last-name",
+  intro: "در این قسمت نام خانوادگی مدیر را وارد نمایید."
+}
+
+const ManageUsersAddManagerPhoneStep = {
+  element: ".manage-users-create-manager-phone",
+  intro: "در این قسمت شماره تلفن مدیر را وارد نمایید."
+}
+
+const ManageUsersAddManagerUsernameStep = {
+  element: ".manage-users-create-manager-username",
+  intro: "در این قسمت نام کاربری مدیر را وارد نمایید."
+}
+
+const ManageUsersAddManagerEmailStep = {
+  element: ".manage-users-create-manager-email",
+  intro: "در این قسمت ایمیل مدیر را وارد نمایید."
+}
+
+
+const ManageUsersAddManagerPasswordStep = {
+  element: ".manage-users-create-manager-password",
+  intro: "در این قسمت رمز عبور مدیر را وارد نمایید."
+}
+
+const ManageUsersAddManagerConfirmPasswordStep = {
+  element: ".manage-users-create-manager-confirm-password",
+  intro: "در این قسمت رمز عبور مدیر را دوباره وارد نمایید."
+}
+
+const ManageUsersAddManagerSubmitStep = {
+  element: ".manage-users-create-manager-submit",
+  intro: "با کلیک بر این دکمه مدیر جدید را ثبت کنید."
+}
+
+export const ManageUsersTab3Steps = [
+  ManageUsersAddManagerFormStep,
+  ManagerUsersAddManagerRoleStep,
+  ManageUsersAddManagerFirstNameStep,
+  ManageUsersAddManagerLastNameStep,
+  ManageUsersAddManagerPhoneStep,
+  ManageUsersAddManagerUsernameStep,
+  ManageUsersAddManagerEmailStep,
+  ManageUsersAddManagerPasswordStep,
+  ManageUsersAddManagerConfirmPasswordStep,
+  ManageUsersAddManagerSubmitStep
+]
+
 
 export const PolicySteps = [
   AddPolicyStep,
