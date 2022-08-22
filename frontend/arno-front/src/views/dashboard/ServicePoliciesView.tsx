@@ -11,6 +11,7 @@ import {
   Space,
   Table,
   Title,
+  Text,
 } from "@mantine/core";
 
 import {Rating} from "react-simple-star-rating";
@@ -215,22 +216,26 @@ const ServicePoliciesView = () => {
               setPolicyFormModalOpened(false);
               setToEditPolicy(null);
             }}
-            title="افزودن/ویرایش معیار"
+            title="افزودن/ویرایش محدودیت"
             overlayOpacity={0.55}
             overlayBlur={3}
         >
           <form onSubmit={editPolicyForm.onSubmit(editPolicy)}>
+            <Text weight={500} size="sm">حداقل امتیاز:</Text>
+            <Center>
             <Rating
                 ratingValue={rating}
                 onClick={setRating}
                 initialValue={toEditPolicy?.minimum_score}
-                size={30}
+                size={40}
                 transition
                 allowHalfIcon
                 fillColorArray={RatingFillColorArray}
                 readonly={false}
             />
+            </Center>
             <NumberInput
+                label="حداکثر تعداد خدمات هم‌زمان:"
                 placeholder="تعداد خدمات"
                 max={20}
                 min={0}
