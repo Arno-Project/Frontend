@@ -136,11 +136,7 @@ const RequestServiceView = () => {
   };
 
   const postNewRequest = async (values: any) => {
-    values["requested_speciality"] = specialities.find(
-      (s) => s.title === values["requested_speciality"]
-    )?.id;
-
-    if (!validateForm()) {
+        if (!validateForm()) {
       return;
     }
     const res = await CoreAPI.getInstance().submitRequest({
