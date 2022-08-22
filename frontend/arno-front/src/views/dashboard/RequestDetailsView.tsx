@@ -11,7 +11,7 @@ import {
   ActionIcon,
   Button,
   Modal,
-  Stack
+  Stack,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 
@@ -367,6 +367,13 @@ const RequestDetailsView = () => {
           user!.role === UserRole.TechnicalManager
         ) {
           if (
+            [RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
+              requestDetails!.status
+            )
+          ) {
+            steps.push(RequestDetailsEditRequestButtonStep);
+          }
+          if (
             requestDetails.status === RequestStatus.In_progress ||
             requestDetails.status === RequestStatus.WaitForSpecialist ||
             requestDetails.status === RequestStatus.Done
@@ -705,7 +712,7 @@ const RequestDetailsView = () => {
                 align={"center"}
                 className="tour-request-details-selected-specialist"
               >
-                <Grid.Col span={9}>
+                <Grid.Col span={12}>
                   <Table>
                     <tbody>
                       <SpecialistRow
@@ -715,17 +722,6 @@ const RequestDetailsView = () => {
                       />
                     </tbody>
                   </Table>
-                </Grid.Col>
-                <Grid.Col span={3}>
-                  <Group>
-                    <ActionIcon
-                      onClick={() =>
-                        sendMessage(requestDetails!.specialist!.id)
-                      }
-                    >
-                      <Message color={"#40bfa3"} size={22} />
-                    </ActionIcon>
-                  </Group>
                 </Grid.Col>
               </Grid>
             )}
@@ -819,82 +815,81 @@ const RequestDetailsView = () => {
       <Divider size="sm" my="xs" label="مشخصات سفارش" labelPosition="left" />
       {!!requestDetails && (
         <div className="tour-request-details-info">
-           <Stack>
-          <div style={{ display: "flex" }}>
-           
-            <Text weight={500} span>
-              تخصص مورد نیاز:
-            </Text>
-            <Space w="lg" />
-            <Tooltip
-              label={requestDetails.requested_speciality.description}
-              color="gray"
-              transition="skew-down"
-              transitionDuration={300}
-              withArrow
-            >
+          <Stack>
+            <div style={{ display: "flex" }}>
+              <Text weight={500} span>
+                تخصص مورد نیاز:
+              </Text>
+              <Space w="lg" />
+              <Tooltip
+                label={requestDetails.requested_speciality.description}
+                color="gray"
+                transition="skew-down"
+                transitionDuration={300}
+                withArrow
+              >
+                <Badge
+                  key={requestDetails.requested_speciality.id}
+                  color={
+                    mantine_colors[
+                      requestDetails.requested_speciality.id %
+                        mantine_colors.length
+                    ]
+                  }
+                  variant="filled"
+                >
+                  {requestDetails.requested_speciality.title}
+                </Badge>
+              </Tooltip>
+            </div>
+            <div style={{ display: "flex" }}>
+              <Text weight={500} span>
+                تاریخ شروع:
+              </Text>
+              <Space w="lg" />
+              <Text span>{formatDateString(requestDetails.start_time)}</Text>
+              {/* {!!requestDetails && new Date(Date.parse(requestDetails?.start_time)).toLocaleString('fa-IR')}; */}
+            </div>
+            <div style={{ display: "flex" }}>
+              <Text weight={500} span>
+                وضعیت:
+              </Text>
+              <Space w="lg" />
               <Badge
-                key={requestDetails.requested_speciality.id}
-                color={
-                  mantine_colors[
-                    requestDetails.requested_speciality.id %
-                      mantine_colors.length
-                  ]
-                }
+                color={RequestStatusBadge[requestDetails.status].color}
                 variant="filled"
               >
-                {requestDetails.requested_speciality.title}
+                {RequestStatusBadge[requestDetails.status].message}
               </Badge>
-            </Tooltip>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Text weight={500} span>
-              تاریخ شروع:
-            </Text>
-            <Space w="lg" />
-            <Text span>{formatDateString(requestDetails.start_time)}</Text>
-            {/* {!!requestDetails && new Date(Date.parse(requestDetails?.start_time)).toLocaleString('fa-IR')}; */}
-          </div>
-          <div style={{ display: "flex" }}>
-            <Text weight={500} span>
-              وضعیت:
-            </Text>
-            <Space w="lg" />
-            <Badge
-              color={RequestStatusBadge[requestDetails.status].color}
-              variant="filled"
+            </div>
+            <div style={{ display: "flex" }}>
+              <Text weight={500} span>
+                توضیحات:
+              </Text>
+              <Space w="lg" />
+
+              <Text span>{requestDetails.description}</Text>
+            </div>
+            <div style={{ display: "flex" }}>
+              <Text weight={500} span>
+                آدرس:
+              </Text>
+              <Space w="lg" />
+
+              <Text span>{requestDetails.location?.address}</Text>
+            </div>
+            <MapContainer
+              style={{ height: "40vh", width: "40%", borderRadius: "10px" }}
+              center={position as LatLngTuple}
+              zoom={15}
+              scrollWheelZoom={true}
             >
-              {RequestStatusBadge[requestDetails.status].message}
-            </Badge>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Text weight={500} span>
-              توضیحات:
-            </Text>
-            <Space w="lg" />
-
-            <Text span>{requestDetails.description}</Text>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Text weight={500} span>
-              آدرس:
-            </Text>
-            <Space w="lg" />
-
-            <Text span>{requestDetails.location?.address}</Text>
-          </div>
-          <MapContainer
-            style={{ height: "40vh", width: "40%", borderRadius: "10px" }}
-            center={position as LatLngTuple}
-            zoom={15}
-            scrollWheelZoom={true}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Marker position={position as LatLngTuple}></Marker>
-          </MapContainer>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Marker position={position as LatLngTuple}></Marker>
+            </MapContainer>
           </Stack>
         </div>
       )}
