@@ -632,6 +632,86 @@ export const ManageSpecialitiesPopularitySteps = [
   ManageSpecialitiesPopularitySubmitStep
 ]
 
+const ManageServiceFilterFormStep = {
+  element: ".tour-manage-service-filter-form",
+  intro: "در این قسمت می‌توانید درخواست‌ها را براساس فیلترهای مختلف مشاهده کنید.."
+}
+
+const ManageServiceFilterDateStep = {
+  element: ".tour-manage-service-filter-date",
+  intro: "در این قسمت می‌توانید بازه زمانی را مشخص کنید."
+}
+
+const ManageServiceFilterStatusStep = {
+  element: ".tour-manage-service-filter-status",
+  intro: "در این قسمت می‌توانید وضعیت درخواست را مشخص کنید."
+}
+
+const ManageServiceFilterSpecialityStep = {
+  element: ".tour-search-input-speciality",
+  intro: "در این قسمت می‌توانید تخصص را مشخص کنید."
+}
+
+const ManageServiceFilterCustomerNameStep = {
+  element: ".tour-manage-service-filter-customer-name",
+  intro: "در این قسمت می‌توانید نام مشتری را مشخص کنید."
+}
+
+const ManageServiceFilterSpecialistNameStep = {
+  element: ".tour-manage-service-filter-specialist-name",
+  intro: "در این قسمت می‌توانید نام متخصص را مشخص کنید."
+}
+
+const ManageServiceFilterSubmitStep = {
+  element: ".tour-manage-service-filter-submit",
+  intro: "با کلیک بر روی این دکمه فیلتر‌ها اعمال می‌شوند."
+}
+
+const ManageServiceFilterTableStep = {
+  element: ".tour-manage-service-filter-table",
+  intro: "در این قسمت می‌توانید لیست درخواست‌ها را مشاهده کنید."
+}
+
+const ManageServiceNotDoneSearchStep = {
+  element: ".tour-manage-service-not-done-search",
+  intro: "در این قسمت می‌توانید درخواست‌هایی که انجام نشده‌اند را براساس بازه زمانی مشاهده کنید."
+}
+
+
+const ManageServiceNotDoneSearchDateStep = {
+  element: ".tour-manage-service-not-done-search-date",
+  intro: "در این قسمت می‌توانید بازه زمانی شروع درخواست را برای جست‌و‌جو مشخص کنید."
+}
+
+const ManageServiceNotDoneSearchSubmitStep = {
+  element: ".tour-manage-service-not-done-search-submit",
+  intro: "با کلیک بر روی این دکمه جست‌وجوی درخواست‌های انجام نشده‌اند را برساس بازه زمانی انجام می‌شود."
+}
+
+const ManageServiceNotDoneSearchTableStep = {
+  element: ".tour-manage-service-not-done-table",
+  intro: "در این جدول می‌توانید لیست درخواست‌هایی که با شروع در بازه زمانی تعیین شده، هنوز انجام نشده‌اند را مشاهده کنید."
+}
+
+
+export const ManageServiceTab1Steps = [
+  ManageServiceFilterTableStep,
+  ManageServiceFilterFormStep,
+  ManageServiceFilterStatusStep,
+  ManageServiceFilterSpecialityStep,
+  ManageServiceFilterCustomerNameStep,
+  ManageServiceFilterDateStep,
+  ManageServiceFilterSpecialistNameStep,
+  ManageServiceFilterSubmitStep,
+]
+
+export const ManageServiceTab2Steps = [
+  ManageServiceNotDoneSearchStep,
+  ManageServiceNotDoneSearchDateStep,
+  ManageServiceNotDoneSearchSubmitStep,
+  ManageServiceNotDoneSearchTableStep
+]
+
 export const SpecialistListStep = {
   element: ".tour-specialist-list",
   intro: "در این قسمت می‌توانید لیست متخصصین را مشاهده نمایید."
