@@ -165,7 +165,7 @@ const CreateRequestView = () => {
                   customer_param?.firstName +
                   " " +
                   customer_param?.lastName
-                : 'می‌توانید مشتری را از صفحه‌ی "مشاهده‌ی کاربران" انتخاب کنید.'
+                : 'می‌توانید مشتری را از صفحه‌ی "مدیریت کاربران" انتخاب کنید.'
             }
             placeholder="id مشتری برای ایجاد سفارش"
             disabled={Boolean(customer_param)}
