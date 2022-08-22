@@ -202,7 +202,7 @@ const ManageServicesView = () => {
             ]}
             includeQuickFilters={false}
           />
-          <Table striped highlightOnHover>
+          <Table className="tour-manage-service-filter-table" striped highlightOnHover>
             <thead>
               <tr>
                 <th>ردیف</th>
