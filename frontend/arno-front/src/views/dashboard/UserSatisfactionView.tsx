@@ -11,44 +11,32 @@ import {
   Badge,
   Tooltip,
   Stack,
+  Modal,
+  Center,
 } from "@mantine/core";
 
 import { Check, ZoomInArea, Checks, InfoCircle, Eye } from "tabler-icons-react";
 
-import {
-  Feedback,
-  FeedbackStatus,
-  FeedbackType,
-  SatisfactionItem,
-  User,
-} from "../../models";
+import { RequestFeedback, SatisfactionItem, User } from "../../models";
 
-import { SystemFeedbackAPI } from "../../api/feedback";
-import {
-  APIDataToFeedbacks,
-  APIDataToSatisfactionItems,
-} from "../../models/utils";
+import { APIDataToSatisfactionItems } from "../../models/utils";
 
 import { Helmet } from "react-helmet";
-import { SystemFeedbackTypeDict } from "../../assets/consts";
 import UserModal from "../../components/UserModal";
-import { formatDateString } from "../../dateUtils";
-import { useAppDispatch } from "../../redux/hooks";
-import { useLocation } from "react-router-dom";
-import { setSteps } from "../../redux/intro";
-import {
-  CustomerRequestStep,
-  SystemFeedbackSteps,
-} from "../../assets/IntroSteps";
 import { AccountAPI } from "../../api/accounts";
-import RequestFeedbackModal from "../../components/RequestFeedbackModal";
 import UserFeedbackSearchComponent from "../../components/UserFeedbackSearchComponent";
+import FeedbacksListComponent from "../../components/FeedbacksListComponent";
 const TITLE = "کاربران ناراضی از خدمات";
 
 const UserSatisfactionView = () => {
   const [rows, setRows] = useState<SatisfactionItem[]>([]);
   const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState<boolean>(false);
+
+  const [selectedFeedbacks, setSelectedFeedbacks] = useState<RequestFeedback[]>(
+    []
+  );
 
   const threshold = 50;
   const getData = async (filters: any) => {
@@ -91,15 +79,15 @@ const UserSatisfactionView = () => {
             </Group>
           </td>
           <td>{`${obj.badFeedbacks.length} بازخورد`}</td>
-          <td>{`${  obj.totalFeedbacksCount} بازخورد`}</td>
+          <td>{`${obj.totalFeedbacksCount} بازخورد`}</td>
           <td>{obj.average / 20}</td>
-          
+
           <td>
             <Stack>
               {obj.badMetrics.map((metric) => {
                 return (
                   <Group>
-                    <Text weight={500}>{metric.title}</Text>
+                    <Text>{metric.title}</Text>
                     <Tooltip
                       label={metric.description}
                       color="gray"
@@ -108,7 +96,7 @@ const UserSatisfactionView = () => {
                       withArrow
                     >
                       <ActionIcon>
-                        <InfoCircle />
+                        <InfoCircle size="15" />
                       </ActionIcon>
                     </Tooltip>
                   </Group>
@@ -117,13 +105,17 @@ const UserSatisfactionView = () => {
             </Stack>
           </td>
           <td>
-            <Button
-              color="pink"
-              onClick={() => {}}
-              leftIcon={<Eye size={20} />}
-            >
-              مشاهده‌ی بازخوردها
-            </Button>
+            <Center>
+              <ActionIcon
+                onClick={() => {
+                  setSelectedUser(obj.user)
+                  setSelectedFeedbacks(obj.badFeedbacks);
+                  setFeedbackModalOpen(true);
+                }}
+              >
+                <Eye color="blue" size={20} />
+              </ActionIcon>
+            </Center>
           </td>
         </tr>
       );
@@ -156,7 +148,7 @@ const UserSatisfactionView = () => {
             <th>تعداد کل بازخوردها</th>
             <th>میانگین امتیاز</th>
             <th>معیارهای نارضایتی</th>
-            <th>عملیات</th>
+            <th> مشاهده‌ی بازخوردها</th>
           </tr>
         </thead>
         {renderRows()}
@@ -167,7 +159,17 @@ const UserSatisfactionView = () => {
         changeIsOpen={setIsUserModalOpen}
         validateSpecialist={null}
       />
-      {/* <RequestFeedbackModal */}
+      <Modal
+        centered
+        opened={isFeedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+        title="بازخوردهای نارضایت‌بخش"
+        overlayOpacity={0.55}
+        overlayBlur={3}
+        size="80%"
+      >
+        <FeedbacksListComponent user={selectedUser} feedbacks={selectedFeedbacks} />
+      </Modal>
     </>
   );
 };

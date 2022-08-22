@@ -14,6 +14,8 @@ import {
   Metric,
   SystemLog,
   SatisfactionItem,
+  RequestFeedback,
+  MetricScore,
 } from ".";
 
 import { APIResponse } from "../api/base";
@@ -208,6 +210,29 @@ export function APIDataToLogs(res: APIResponse): SystemLog[] {
   });
 }
 
+
+export function ObjectToMetricScore(data: Object): MetricScore {
+  console.info("ObjectToMetricScore", data);
+  let m: MetricScore = {
+    score: parseInt(data["score" as keyof object]),
+    metric: ObjectToMetric(data["metric" as keyof object]),
+  };
+  return m;
+}
+
+export function ObjectToRequestFeedback(data: Object): RequestFeedback {
+  console.info("ObjectToRequestFeedback", data);
+  let feedback: RequestFeedback = {
+    created_at: data["created_at" as keyof object],
+    id: data["id" as keyof object],
+    description: data["description" as keyof object],
+    user: ObjectToUser(data["user" as keyof object]),
+    request: parseInt(data["request" as keyof object]),
+    metricScores: (data["metric_scores" as keyof object] as object[]).map((a) => ObjectToMetricScore(a))
+  };
+  return feedback;
+}
+
 export function ObjectToSatisfactionItem(
   data: object
 ): SatisfactionItem {
@@ -217,7 +242,7 @@ export function ObjectToSatisfactionItem(
       ObjectToMetric(a)
     ),
     badFeedbacks: (data["bad_feedbacks" as keyof object] as object[]).map((a) =>
-      ObjectToFeedback(a)
+      ObjectToRequestFeedback(a)
     ),
     totalFeedbacksCount: parseInt(
       data["total_feedbacks_count" as keyof object]

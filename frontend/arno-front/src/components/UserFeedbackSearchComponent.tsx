@@ -55,7 +55,6 @@ const UserFeedbackSearchComponent = (props: { getData: Function }) => {
       role: v.role,
       ordering: v.ordering
     };
-    console.log("submit form", q);
     props.getData(q);
   };
 
