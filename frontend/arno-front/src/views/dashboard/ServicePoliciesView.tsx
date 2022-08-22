@@ -19,27 +19,15 @@ import {Edit, Plus, X} from "tabler-icons-react";
 import {ScorePolicy} from "../../models";
 import {ScoreAPI} from "../../api/score";
 
-import {Helmet} from "react-helmet";
 import {notifyUser} from "../utils";
 import {useAppDispatch} from "../../redux/hooks";
 import {useLocation} from "react-router-dom";
 import {PolicySteps, ReportCSVStep, ReportFormSteps} from "../../assets/IntroSteps";
 import {setSteps} from "../../redux/intro";
+import { RatingFillColorArray } from "../../assets/consts";
 
+import {Helmet} from "react-helmet";
 const TITLE = "سیاست‌گذاری خدمت‌دهی";
-
-const fillColorArray = [
-  "#f17a45",
-  "#f17a45",
-  "#f19745",
-  "#f19745",
-  "#f1a545",
-  "#f1a545",
-  "#f1b345",
-  "#f1b345",
-  "#f1d045",
-  "#f1d045",
-];
 
 const ServicePoliciesView = () => {
   const [policies, setPolicies] = useState<ScorePolicy[]>([]);
@@ -162,7 +150,7 @@ const ServicePoliciesView = () => {
                         size={30}
                         transition
                         allowHalfIcon
-                        fillColorArray={fillColorArray}
+                        fillColorArray={RatingFillColorArray}
                         readonly={true}
                     />
                   </td>
@@ -239,7 +227,7 @@ const ServicePoliciesView = () => {
                 size={30}
                 transition
                 allowHalfIcon
-                fillColorArray={fillColorArray}
+                fillColorArray={RatingFillColorArray}
                 readonly={false}
             />
             <NumberInput

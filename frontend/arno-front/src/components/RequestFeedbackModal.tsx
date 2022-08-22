@@ -12,8 +12,8 @@ import {
   Modal,
 } from "@mantine/core";
 
-import { Metric, UserRole } from "../models";
-import { APIDataToMetrics, APIDataToUsers } from "../models/utils";
+import { Metric } from "../models";
+import { APIDataToMetrics } from "../models/utils";
 
 import { InfoCircle } from "tabler-icons-react";
 
@@ -21,6 +21,7 @@ import { MetricsAPI } from "../api/metrics";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../api/base";
 import { FeedbackAPI } from "../api/feedback";
 import { notifyUser } from "../views/utils";
+import { RatingFillColorArray } from "../assets/consts";
 
 const RequestFeedbackModal = (props: {
   role: string;
@@ -148,6 +149,7 @@ const RequestFeedbackModal = (props: {
                   onClick={(r: number) => handleRatingChange(r, idx)}
                   ratingValue={ratings[idx]}
                   initialValue={3}
+                  fillColorArray={RatingFillColorArray}
                   allowHalfIcon
                   rtl
                 />

@@ -1,38 +1,24 @@
-import { useEffect, useState } from "react";
 
-import { useForm } from "@mantine/form";
-import { Rating } from "react-simple-star-rating";
 import {
   Text,
   Button,
-  ActionIcon,
-  Tooltip,
   Group,
-  Textarea,
   Card,
   Badge,
   Avatar,
   Modal,
-  List,
-  Grid,
   Space,
   Highlight,
   LoadingOverlay,
 } from "@mantine/core";
 
-import { Metric, User, UserRole } from "../models";
-import { APIDataToMetrics, APIDataToUsers } from "../models/utils";
+import { User, UserRole } from "../models";
 
-import { InfoCircle } from "tabler-icons-react";
 
-import { MetricsAPI } from "../api/metrics";
-import { FieldFilter, FieldFilterName, FieldFilterType } from "../api/base";
-import { FeedbackAPI } from "../api/feedback";
-import { notifyUser } from "../views/utils";
-import { CoreAPI } from "../api/core";
 import { RoleDict, RoleDictColor } from "../assets/consts";
 import { SpecialitiesBadges } from "../models/SpecialityBadges";
 import { formatDateString } from "../dateUtils";
+import { UserScore } from "../models/UserScore";
 
 const UserModal = (props: {
   user: User;
@@ -133,7 +119,7 @@ const UserModal = (props: {
                   <Text size="md" color="dimmed">
                     امتیاز:
                   </Text>
-                  <Text>{props.user.score}</Text>
+                  <UserScore score={props.user.score} />
                 </Group>
               </>
             )}

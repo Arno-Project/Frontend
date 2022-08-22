@@ -1,11 +1,10 @@
+import { useState } from "react";
 import { ZoomInArea } from "tabler-icons-react";
 import { Button, UnstyledButton } from "@mantine/core";
 
 import { User } from "../models";
-
-import { useState } from "react";
-
 import { SpecialitiesBadges } from "../models/SpecialityBadges";
+import { UserScore } from "../models/UserScore";
 import UserModal from "./UserModal";
 
 export const SpecialistRow = (props: {
@@ -29,7 +28,9 @@ export const SpecialistRow = (props: {
       <td>
         <SpecialitiesBadges speciality={user.speciality} />
       </td>
-      <td>{user.score}</td>
+      <td>
+        <UserScore score={user.score} />
+      </td>
       <td>
         <UnstyledButton
           onClick={() => {
@@ -46,7 +47,9 @@ export const SpecialistRow = (props: {
             onClick={() => {
               props.button!.action(user.id);
             }}
-            className={props.button!.className? props.button!.className+"-"+idx : ""}
+            className={
+              props.button!.className ? props.button!.className + "-" + idx : ""
+            }
           >
             {props.button.label}
           </Button>
