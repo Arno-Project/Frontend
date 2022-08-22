@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 
 import {
   Table,
@@ -17,21 +17,25 @@ import {
   MessageReport,
   ReportOff,
 } from "tabler-icons-react";
-import { useAppSelector } from "../../redux/hooks";
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 
-import { Feedback, UserRole } from "../../models";
+import {Feedback, UserRole} from "../../models";
 
-import { useForm } from "@mantine/form";
+import {useForm} from "@mantine/form";
 
-import { SystemFeedbackAPI } from "../../api/feedback";
-import { APIDataToFeedbacks } from "../../models/utils";
-import { formatDateString } from "../../dateUtils";
-import { notifyUser } from "../utils";
-import { ObjectSerializer } from "../../assets/ObjectSerializer";
+import {SystemFeedbackAPI} from "../../api/feedback";
+import {APIDataToFeedbacks} from "../../models/utils";
+import {formatDateString} from "../../dateUtils";
+import {notifyUser} from "../utils";
+import {ObjectSerializer} from "../../assets/ObjectSerializer";
 
-import { CSVLink } from "react-csv";
+import {CSVLink} from "react-csv";
 
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
+import {useLocation} from "react-router-dom";
+import {setSteps} from "../../redux/intro";
+import {ManageServiceTab1Steps, ManageServiceTab2Steps, TechnicalIssuesSteps} from "../../assets/IntroSteps";
+
 const TITLE = "مشکلات فنی";
 
 const TechnicalIssuesView = () => {
@@ -72,12 +76,21 @@ const TechnicalIssuesView = () => {
 
     validate: {
       techResponse: (value) =>
-        value.trim().length >= 2 ? null : "این بخش نمی‌تواند خالی باشد",
+          value.trim().length >= 2 ? null : "این بخش نمی‌تواند خالی باشد",
     },
   });
 
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/technical_issues") {
+      dispatch(setSteps(TechnicalIssuesSteps));
+    }
+  }, [location.pathname]);
+
   const submitResponse = async () => {
-    const reply = { system_feedback: rows[rowId]["id"], text: newResponse };
+    const reply = {system_feedback: rows[rowId]["id"], text: newResponse};
 
     const res = await SystemFeedbackAPI.getInstance().submitReply(reply);
 
@@ -86,63 +99,63 @@ const TechnicalIssuesView = () => {
 
   const renderRows = () => {
     const body: any[] = rows.map((obj: Feedback, i) => (
-      <tr key={i}>
-        <td>{i + 1}</td>
-        <td>{obj.user.username}</td>
-        <td>{obj.text}</td>
-        {user!.role === UserRole.CompanyManager && (
-          <td>
-            {!!obj.reply ? (
-              <UnstyledButton onClick={() => viewResponse(i)}>
-                <ClipboardText size={24} strokeWidth={2} color="blue" />
-              </UnstyledButton>
-            ) : (
-              <ReportOff size={24} strokeWidth={2} />
-            )}
-          </td>
-        )}
-        {user!.role === UserRole.TechnicalManager && (
-          <td>
-            <UnstyledButton onClick={() => writeResponse(i)}>
-              <MessageReport size={24} strokeWidth={2} color="blue" />
-            </UnstyledButton>
-          </td>
-        )}
-      </tr>
+        <tr key={i}>
+          <td>{i + 1}</td>
+          <td>{obj.user.username}</td>
+          <td>{obj.text}</td>
+          {user!.role === UserRole.CompanyManager && (
+              <td>
+                {!!obj.reply ? (
+                    <UnstyledButton onClick={() => viewResponse(i)}>
+                      <ClipboardText size={24} strokeWidth={2} color="blue"/>
+                    </UnstyledButton>
+                ) : (
+                    <ReportOff size={24} strokeWidth={2}/>
+                )}
+              </td>
+          )}
+          {user!.role === UserRole.TechnicalManager && (
+              <td>
+                <UnstyledButton onClick={() => writeResponse(i)}>
+                  <MessageReport size={24} strokeWidth={2} color="blue"/>
+                </UnstyledButton>
+              </td>
+          )}
+        </tr>
     ));
     return <tbody>{body}</tbody>;
   };
 
   return (
-    <>
-      <Helmet>
-        <title>{"آرنو | " + TITLE}</title>
-      </Helmet>
-      <Title order={2} mb="sm">
-        {TITLE}
-      </Title>
-      {!!rows && rows.length > 0 && (
-      <Text>برای دریافت گزارش کل مشکلات روی دکمه زیر کلیک کنید:</Text>
-          )}
-      <Center>
+      <>
+        <Helmet>
+          <title>{"آرنو | " + TITLE}</title>
+        </Helmet>
+        <Title order={2} mb="sm">
+          {TITLE}
+        </Title>
         {!!rows && rows.length > 0 && (
-          <CSVLink
-            filename={`TechnicalIssues ${new Date().toDateString()}.csv`}
-            data={ObjectSerializer.serializeData(rows)}
-            target="_blank"
-          >
-            <Button
-              variant="gradient"
-              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-              leftIcon={<Download size={20} />}
-            >
-              دریافت گزارش
-            </Button>
-          </CSVLink>
+            <Text>برای دریافت گزارش کل مشکلات روی دکمه زیر کلیک کنید:</Text>
         )}
-      </Center>
-      <Table striped highlightOnHover verticalSpacing="md">
-        <thead>
+        <Center>
+          {!!rows && rows.length > 0 && (
+              <CSVLink
+                  filename={`TechnicalIssues ${new Date().toDateString()}.csv`}
+                  data={ObjectSerializer.serializeData(rows)}
+                  target="_blank"
+              >
+                <Button
+                    variant="gradient"
+                    gradient={{from: "cyan", to: "indigo", deg: 105}}
+                    leftIcon={<Download size={20}/>}
+                >
+                  دریافت گزارش
+                </Button>
+              </CSVLink>
+          )}
+        </Center>
+        <Table striped highlightOnHover verticalSpacing="md" className="tour-technical-issues-table">
+          <thead>
           <tr>
             <th>ردیف</th>
             <th>ارسال‌کننده</th>
@@ -150,60 +163,60 @@ const TechnicalIssuesView = () => {
             {user!.role === UserRole.CompanyManager && <th>مشاهده پاسخ</th>}
             {user!.role === UserRole.TechnicalManager && <th>ارسال پاسخ</th>}
           </tr>
-        </thead>
-        {renderRows()}
-      </Table>
+          </thead>
+          {renderRows()}
+        </Table>
 
-      <Modal
-        opened={viewOpened}
-        onClose={() => setViewOpened(false)}
-        title="گزارش مشکل فنی"
-      >
-        {rows.length > 0 && rowId !== -1 ? (
-          <>
-            <Text weight={700}>ارسال شده توسط:</Text>
-            <Text>{rows[rowId].user.username}</Text>
-            <Text weight={700}>تاریخ:</Text>
-            <Text>{formatDateString(rows[rowId].created_at)}</Text>
-            <Text weight={700}>متن مشکل:</Text>
-            <Text>{rows[rowId].text}</Text>
-            <Text weight={700}> پاسخ:</Text>
-            <Text>{rows[rowId].reply ? rows[rowId].reply!.text : ""}</Text>
-            <Text size="sm">
-              پاسخ داده شده توسط {rows[rowId].reply!.user.username} در{" "}
-              {formatDateString(rows[rowId].reply!.created_at)}
-            </Text>
-          </>
-        ) : (
-          <></>
-        )}
-      </Modal>
+        <Modal
+            opened={viewOpened}
+            onClose={() => setViewOpened(false)}
+            title="گزارش مشکل فنی"
+        >
+          {rows.length > 0 && rowId !== -1 ? (
+              <>
+                <Text weight={700}>ارسال شده توسط:</Text>
+                <Text>{rows[rowId].user.username}</Text>
+                <Text weight={700}>تاریخ:</Text>
+                <Text>{formatDateString(rows[rowId].created_at)}</Text>
+                <Text weight={700}>متن مشکل:</Text>
+                <Text>{rows[rowId].text}</Text>
+                <Text weight={700}> پاسخ:</Text>
+                <Text>{rows[rowId].reply ? rows[rowId].reply!.text : ""}</Text>
+                <Text size="sm">
+                  پاسخ داده شده توسط {rows[rowId].reply!.user.username} در{" "}
+                  {formatDateString(rows[rowId].reply!.created_at)}
+                </Text>
+              </>
+          ) : (
+              <></>
+          )}
+        </Modal>
 
-      <Modal
-        opened={writeOpened}
-        onClose={() => setWriteOpened(false)}
-        title="ارسال پاسخ"
-      >
-        <form onSubmit={techManagerResponseForm.onSubmit(submitResponse)}>
-          <Textarea
-            value={newResponse}
-            onChange={(event) => setNewResponse(event.currentTarget.value)}
-            mt="sm"
-            placeholder="پاسخ به مشکل"
-            label="متن پیام"
-            autosize
-            minRows={4}
-            maxRows={6}
-            required
-          />
-          <Center>
-            <Button mt="md" color="blue" type="submit">
-              ارسال
-            </Button>
-          </Center>
-        </form>
-      </Modal>
-    </>
+        <Modal
+            opened={writeOpened}
+            onClose={() => setWriteOpened(false)}
+            title="ارسال پاسخ"
+        >
+          <form onSubmit={techManagerResponseForm.onSubmit(submitResponse)}>
+            <Textarea
+                value={newResponse}
+                onChange={(event) => setNewResponse(event.currentTarget.value)}
+                mt="sm"
+                placeholder="پاسخ به مشکل"
+                label="متن پیام"
+                autosize
+                minRows={4}
+                maxRows={6}
+                required
+            />
+            <Center>
+              <Button mt="md" color="blue" type="submit">
+                ارسال
+              </Button>
+            </Center>
+          </form>
+        </Modal>
+      </>
   );
 };
 

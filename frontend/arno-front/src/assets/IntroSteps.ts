@@ -31,6 +31,51 @@ const SpecialistsButtonStep = {
   intro: "در این قسمت می‌توانید متخصصین سامانه را مشاهده نمایید."
 }
 
+const ManageUsersButtonStep = {
+  element: ".tour-manage-users",
+  intro: "در این قسمت می‌توانید لیست کاربران سامانه را مشاهده کرده و آن را مدیریت کنید."
+}
+
+const ManageServicesButtonStep = {
+  element: ".tour-manage-services",
+  intro: "در این قسمت می‌توانید لیست خدمات و درخواست‌های موجود در سامانه را مشاهده کرده و آن را مدیریت کنید."
+}
+
+const ManageSpecialitiesButtonStep = {
+  element: ".tour-manage-specialities",
+  intro: "در این قسمت می‌توانید لیست تخصص‌های موجود را مشاهده کرده و آن را مدیریت کنید."
+}
+
+const TechnicalIssuesButtonStep = {
+  element: ".tour-technical-issues",
+  intro: "در این قسمت می‌توانید مشکلات فنی گزارش شده در سیستم را مشاهده کنید."
+}
+
+const SystemFeedbackButtonStep = {
+  element: ".tour-system-feedback",
+  intro: "در این قسمت می‌توانید پیشنهادات و انتقادات ارسال شده را مشاهده کنید."
+}
+
+const EvaluationMetricsButtonStep = {
+  element: ".tour-evaluation-metric",
+  intro: "در این قسمت می‌توانید معیارهای ارزیابی مشتری و متخصص را مشاهده و مدیریت کنید."
+}
+
+const ReportButtonStep = {
+  element: ".tour-report",
+  intro: "در این قسمت می‌توانید لاگ‌های سیستم را مشاهده کنید."
+}
+
+const ServicePolicyButtonStep = {
+  element: ".tour-service-policy",
+  intro: "در این قسمت می‌توانید سیاست‌های مربوط به امتیاز و خدمت را مشاهده و مدیریت کنید."
+}
+
+const CreateRequestButtonStep = {
+  element: ".tour-create-request",
+  intro: "در این قسمت می‌توانید برای مشتریان به صورت دستی خدمات ثبت کنید."
+}
+
 const CustomerNavbarSteps = [
   {
     element: ".tour-my-requests",
@@ -43,6 +88,33 @@ const CustomerNavbarSteps = [
   SpecialistsButtonStep,
   ChatStep,
   SuggestionComplaintButtonStep,
+  UserProfileStep,
+  NotificationIconStep,
+  LogoutIconStep
+]
+
+const CompanyManagerSteps = [
+  ManageUsersButtonStep,
+  ManageServicesButtonStep,
+  ManageSpecialitiesButtonStep,
+  TechnicalIssuesButtonStep,
+  SystemFeedbackButtonStep,
+  EvaluationMetricsButtonStep,
+  ReportButtonStep,
+  ServicePolicyButtonStep,
+  CreateRequestButtonStep,
+  UserProfileStep,
+  NotificationIconStep,
+  LogoutIconStep
+
+]
+
+const TechnicalManagerSteps = [
+  ManageUsersButtonStep,
+  ManageServicesButtonStep,
+  TechnicalIssuesButtonStep,
+  ReportButtonStep,
+  CreateRequestButtonStep,
   UserProfileStep,
   NotificationIconStep,
   LogoutIconStep
@@ -72,8 +144,8 @@ type EnumDictionary<T extends string | symbol | number, U> = {
 export const NavbarSteps: EnumDictionary<UserRole, Object> = {
   [UserRole.Customer]: CustomerNavbarSteps,
   [UserRole.Specialist]: SpecialistNavbarSteps,
-  [UserRole.CompanyManager]: [],
-  [UserRole.TechnicalManager]: [],
+  [UserRole.CompanyManager]: CompanyManagerSteps,
+  [UserRole.TechnicalManager]: TechnicalManagerSteps,
 
 }
 
@@ -710,6 +782,15 @@ export const ManageServiceTab2Steps = [
   ManageServiceNotDoneSearchDateStep,
   ManageServiceNotDoneSearchSubmitStep,
   ManageServiceNotDoneSearchTableStep
+]
+
+const TechnicalIssuesTableStep = {
+  element: ".tour-technical-issues-table",
+  intro: "در این جدول می‌توانید لیست تمام مشکلات فنی را مشاهده کنید."
+}
+
+export const TechnicalIssuesSteps = [
+  TechnicalIssuesTableStep
 ]
 
 export const SpecialistListStep = {
