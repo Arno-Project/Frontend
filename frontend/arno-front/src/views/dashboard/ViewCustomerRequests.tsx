@@ -1,19 +1,28 @@
-import { Table, Title, UnstyledButton, Alert, Space } from "@mantine/core";
+import {
+  Table,
+  Title,
+  UnstyledButton,
+  Alert,
+  Space,
+  ActionIcon,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useEffect, useState } from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { ExternalLink, X, AlertCircle } from "tabler-icons-react";
 
 import { CoreAPI } from "../../api/core";
 import { RequestStatus, ServiceSummary } from "../../models";
 import { APIDataToServiceSummary } from "../../models/utils";
-import {useAppDispatch, useAppSelector} from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { SpecialitiesBadges } from "../../models/SpecialityBadges";
+import { setSteps } from "../../redux/intro";
+import { CustomerRequestStep } from "../../assets/IntroSteps";
+import { FieldFilter, FieldFilterName } from "../../api/base";
+import RequestSearchComponent from "../../components/RequestSearchComponent";
 
 import { Helmet } from "react-helmet";
-import { SpecialitiesBadges } from "../../models/SpecialityBadges";
-import {setSteps} from "../../redux/intro";
-import {CustomerRequestStep} from "../../assets/IntroSteps";
 const TITLE = "درخواست‌های مشتریان";
 
 const ViewCustomerRequests = () => {
@@ -23,8 +32,8 @@ const ViewCustomerRequests = () => {
 
   const [rows, setRows] = useState<ServiceSummary[]>([]);
 
-  const getData = async () => {
-    const res = await CoreAPI.getInstance().getAllRequestsSummary();
+  const getData = async (filters: FieldFilter[]) => {
+    const res = await CoreAPI.getInstance().searchRequests(filters);
 
     console.info("customers request", res);
 
@@ -44,12 +53,12 @@ const ViewCustomerRequests = () => {
   const location = useLocation();
   useEffect(() => {
     if (location.pathname === "/dashboard/customer_requests") {
-      dispatch(setSteps(CustomerRequestStep))
+      dispatch(setSteps(CustomerRequestStep));
     }
   }, [location.pathname]);
 
   useEffect(() => {
-    getData();
+    getData([]);
   }, []);
 
   return (
@@ -68,43 +77,64 @@ const ViewCustomerRequests = () => {
           </Alert>
         </>
       ) : (
-        <Table striped highlightOnHover  className="tour-customer-request-table">
-          <thead>
-            <tr>
-              <th>ردیف</th>
-              <th>توضیحات</th>
-              <th>تخصص مورد نظر</th>
-              <th>مشاهده جزئیات</th>
-            </tr>
-          </thead>
-          {rows.map((row, i) => {
-            if (row.status !== RequestStatus.Pending) return <></>;
-            return (
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{!!row.description ? row.description : "-"}</td>
-                <td>
-                  {!!row.requested_speciality ? (
-                    <SpecialitiesBadges
-                      speciality={[row.requested_speciality]}
-                    />
-                  ) : (
-                    ""
-                  )}
-                </td>
-                <td>
-                  <UnstyledButton
-                    onClick={() =>
-                      navigate(`/dashboard/request_details/${row.id}`)
-                    }
-                  >
-                    <ExternalLink color="blue" size={22} />
-                  </UnstyledButton>
-                </td>
+        <>
+          <RequestSearchComponent
+            getData={getData}
+            searchFields={[
+              FieldFilterName.Customer,
+              FieldFilterName.DateRange,
+              FieldFilterName.Sort,
+            ]}
+            includeQuickFilters={false}
+          />
+          <Table
+            striped
+            verticalSpacing="xs"
+            highlightOnHover
+            className="tour-customer-request-table"
+          >
+            <thead>
+              <tr>
+                <th>ردیف</th>
+                <th>نام مشتری</th>
+                <th>تخصص مورد نظر</th>
+                <th>توضیحات</th>
+                <th>مشاهده جزئیات</th>
               </tr>
-            );
-          })}
-        </Table>
+            </thead>
+            <tbody>
+              {rows
+                .filter((row) => row.status === RequestStatus.Pending)
+                .map((row, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>{i + 1}</td>
+                      <td>{row.customerName}</td>
+                      <td>
+                        {!!row.requested_speciality ? (
+                          <SpecialitiesBadges
+                            speciality={[row.requested_speciality]}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </td>
+                      <td>{!!row.description ? row.description : "-"}</td>
+                      <td>
+                        <ActionIcon
+                          onClick={() =>
+                            navigate(`/dashboard/request_details/${row.id}`)
+                          }
+                        >
+                          <ExternalLink color="blue" size={22} />
+                        </ActionIcon>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </Table>
+        </>
       )}
     </>
   );

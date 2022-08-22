@@ -26,11 +26,14 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
-  async getAllRequestsSummary() {
-    const response = await this.getRequestsSummary({});
+  async searchRequests(fieldFilters: FieldFilter[]) {
+    const paramDict = Object.fromEntries(
+      fieldFilters.map((field) => field.get_pair())
+    );
 
-    console.info("getMyRequestsStats", response);
-    return response;
+    console.log("param dict", paramDict);
+
+    return this.getRequestsSummary(paramDict);
   }
 
   async getRequestDetails(requestId: string) {
@@ -187,24 +190,6 @@ export class CoreAPI extends BaseListAPI {
     });
 
     console.info("getRequestPopularityReport", response);
-    return response;
-  }
-
-  async searchRequests(fieldFilters: FieldFilter[]) {
-    const paramDict = Object.fromEntries(
-      fieldFilters.map((field) => field.get_pair())
-    );
-
-    console.log("param dict", paramDict);
-
-    const response = await this.sendAuthorizedGetRequest({
-      path: 'request/search/',
-      body: null,
-      headers: null,
-      params: {q: paramDict},
-    });
-
-    console.info("searchRequests", response);
     return response;
   }
 }
