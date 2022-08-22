@@ -1,8 +1,10 @@
 import "dayjs/locale/fa";
 
 import { useEffect, useState } from "react";
-
+import { DateRangePicker } from "@mantine/dates";
+import { showNotification } from "@mantine/notifications";
 import {
+  ActionIcon,
   Badge,
   Button,
   Center,
@@ -10,18 +12,15 @@ import {
   Pagination,
   Table,
   Tabs,
-  TextInput,
   Title,
   Tooltip,
-  Select,
   UnstyledButton,
 } from "@mantine/core";
+
 import {
   ExternalLink,
-  Eye,
   Filter,
   ListSearch,
-  Search,
   UserExclamation,
   X,
 } from "tabler-icons-react";
@@ -32,13 +31,11 @@ import { CoreAPI } from "../../api/core";
 import { RequestStatus, ServiceSummary } from "../../models";
 import { notifyUser } from "../utils";
 import { APIDataToServiceSummary } from "../../models/utils";
-import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
-
-import { DateRangePicker } from "@mantine/dates";
-import { showNotification } from "@mantine/notifications";
+import { FieldFilter, FieldFilterName } from "../../api/base";
+import { SpecialitiesBadges } from "../../models/SpecialityBadges";
+import RequestSearchComponent from "../../components/RequestSearchComponent";
 
 import { Helmet } from "react-helmet";
-import { useForm } from "@mantine/form";
 const TITLE = "مدیریت خدمات";
 
 const PAGE_SIZE = 5;
@@ -52,18 +49,12 @@ const ManageServicesView = () => {
   const [tab1_activePage, setTab1_activePage] = useState(1);
   const [tab2_activePage, setTab2_activePage] = useState(1);
 
-  const [tab1_startTimeInterval, setTab1_startTimeInterval] = useState<
-    [Date | null, Date | null]
-  >([new Date(), new Date()]);
-
   const [tab2_startTimeInterval, setTab2_startTimeInterval] = useState<
     [Date | null, Date | null]
   >([new Date(), new Date()]);
 
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-  const getData = async () => {
-    const res = await CoreAPI.getInstance().getAllRequestsSummary();
+  const getData = async (filters: FieldFilter[]) => {
+    const res = await CoreAPI.getInstance().searchRequests(filters);
     if (res.success) {
       const data = APIDataToServiceSummary(res);
       setCancelableData(data);
@@ -78,16 +69,8 @@ const ManageServicesView = () => {
   };
 
   useEffect(() => {
-    getData();
+    getData([]);
   }, []);
-
-  const filterForm = useForm({
-    initialValues: {
-      status: "",
-      customer_name: "",
-      specialist_name: "",
-    },
-  });
 
   const getPendingRequests = async () => {
     const query = {
@@ -114,11 +97,9 @@ const ManageServicesView = () => {
     const res = await CoreAPI.getInstance().cancelRequestByManager(id);
     notifyUser(res, "لغو موفقیت‌آمیز", "خدمت موردنظر با موفقیت لغو شد.");
     if (res.success) {
-      await getData();
+      await getData([]);
     }
   };
-
-  const applyFilters = (values: any) => {};
 
   const cancelableRows = cancelableData.slice(
     PAGE_SIZE * (tab1_activePage - 1),
@@ -136,24 +117,27 @@ const ManageServicesView = () => {
         <td>{obj.customerName}</td>
         <td>{!!obj.specialistName ? obj.specialistName : "-"}</td>
         <td>
+          <SpecialitiesBadges speciality={[obj.requested_speciality]} />
+        </td>
+        <td>
           <Badge color={RequestStatusBadge[obj.status].color} variant="filled">
             {RequestStatusBadge[obj.status].message}
           </Badge>
         </td>
         <td>
-          <UnstyledButton
+          <ActionIcon
             onClick={() => navigate(`/dashboard/request_details/${obj.id}`)}
           >
             <ExternalLink color="blue" size={22} />
-          </UnstyledButton>
+          </ActionIcon>
         </td>
         <td>
           {![RequestStatus.Cancelled, RequestStatus.Done].includes(
             obj.status
           ) && (
-            <UnstyledButton onClick={() => cancelService(obj.id)}>
+            <ActionIcon onClick={() => cancelService(obj.id)}>
               <X color="red" size={22} />
-            </UnstyledButton>
+            </ActionIcon>
           )}
         </td>
       </tr>
@@ -169,75 +153,38 @@ const ManageServicesView = () => {
       <Title order={2}>{TITLE}</Title>
       <Tabs defaultValue="manage">
         <Tabs.List>
-          <Tabs.Tab value="manage" icon={<Eye size={14} />}>
+          <Tabs.Tab value="manage" icon={<Filter size={14} />} color="indigo">
             مشاهده و فیلتر
           </Tabs.Tab>
-          <Tabs.Tab value="pending" icon={<UserExclamation size={14} />}>
+          <Tabs.Tab
+            value="pending"
+            icon={<UserExclamation size={14} />}
+            color="lime"
+          >
             خدمات ارائه‌نشده
           </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="manage" pt="xs">
-          <form onSubmit={filterForm.onSubmit(applyFilters)}>
-            <Grid grow align="flex-end" gutter="xs">
-              <Grid.Col span={4}>
-                <Select
-                  label="وضعیت خدمت"
-                  placeholder="وضعیت"
-                  data={Object.keys(RequestStatusBadge).map((k) => ({
-                    value: k,
-                    label: RequestStatusBadge[k]["message"],
-                  }))}
-                  {...filterForm.getInputProps("status")}
-                />
-              </Grid.Col>
-              <Grid.Col span={8}>
-                <SpecialityMultiSelect setter={setSelectedValues} />
-              </Grid.Col>
-              <Grid.Col span={4}>
-                <TextInput
-                  icon={<Search size={20} />}
-                  label="نام مشتری"
-                  placeholder="نام"
-                  {...filterForm.getInputProps("customer_name")}
-                />
-              </Grid.Col>
-              <Grid.Col span={4}>
-                <DateRangePicker
-                  locale="fa"
-                  label="زمان شروع سفارشات"
-                  placeholder="انتخاب بازه‌ی زمانی"
-                  value={tab1_startTimeInterval}
-                  onChange={setTab1_startTimeInterval}
-                />
-              </Grid.Col>
-              <Grid.Col span={4}>
-                <TextInput
-                  icon={<Search size={20} />}
-                  label="نام متخصص"
-                  placeholder="نام"
-                  {...filterForm.getInputProps("specialist_name")}
-                />
-              </Grid.Col>
-            </Grid>
-            <Center>
-              <Button
-                my="md"
-                variant="gradient"
-                gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-                leftIcon={<Filter size={20} />}
-                type="submit"
-              >
-                اعمال فیلترها
-              </Button>
-            </Center>
-          </form>
+          <RequestSearchComponent
+            getData={getData}
+            searchFields={[
+              FieldFilterName.Status,
+              FieldFilterName.Customer,
+              FieldFilterName.Specialist,
+              FieldFilterName.DateRange,
+              FieldFilterName.Speciality,
+              FieldFilterName.Sort,
+            ]}
+            includeQuickFilters={false}
+          />
           <Table striped highlightOnHover>
             <thead>
               <tr>
                 <th>ردیف</th>
                 <th>نام مشتری</th>
                 <th>نام متخصص</th>
+                <th>تخصص مورد نیاز</th>
                 <th>وضعیت</th>
                 <th>جزئیات</th>
                 <th>لغو خدمت</th>
