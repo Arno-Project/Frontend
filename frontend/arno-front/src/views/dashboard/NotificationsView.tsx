@@ -73,8 +73,8 @@ const NotificationsView = () => {
     );
   };
   const markAllAsRead = () => {
-    NotificationAPI.getInstance().markAsRead(notifs.map((n) => n.id));
-    setNotifsReadStatus(notifs.map((n) => true));
+    NotificationAPI.getInstance().markAsRead(notifs.map((n:Notification) => n.id));
+    setNotifsReadStatus(notifs.map((n:Notification) => true));
   };
 
   return (

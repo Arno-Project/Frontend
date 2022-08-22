@@ -28,6 +28,9 @@ import { AccountAPI } from "../../api/accounts";
 
 
 import { Helmet } from "react-helmet";
+import {useAppDispatch} from "../../redux/hooks";
+import {setSteps} from "../../redux/intro";
+import {ManagerCreateRequestSteps, PolicySteps} from "../../assets/IntroSteps";
 const TITLE = "ایجاد سفارش";
 
 const initialLocation = { lat: 35.6857447, lng: 51.3892365 };
@@ -135,15 +138,25 @@ const CreateRequestView = () => {
     }
   };
 
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/create_request") {
+      dispatch(setSteps(ManagerCreateRequestSteps));
+    }
+  }, [location.pathname]);
+
   return (
     <>
       <Helmet>
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      <form onSubmit={submitRequestForm.onSubmit(submitForm)}>
+      <form onSubmit={submitRequestForm.onSubmit(submitForm)} className="tour-create-request-form">
         <Center>
           <TextInput
+              className="tour-create-request-id"
             mt="sm"
             label="شناسه‌ی مشتری"
             description={
@@ -152,7 +165,7 @@ const CreateRequestView = () => {
                   customer_param?.firstName +
                   " " +
                   customer_param?.lastName
-                : 'می‌توانید مشتری را از صفحه‌ی "مشاهده‌ی کاربران" انتخاب کنید.'
+                : 'می‌توانید مشتری را از صفحه‌ی "مدیریت کاربران" انتخاب کنید.'
             }
             placeholder="id مشتری برای ایجاد سفارش"
             disabled={Boolean(customer_param)}
@@ -162,7 +175,7 @@ const CreateRequestView = () => {
         </Center>
         <div style={{ marginTop: "16px" }}>
           <Select
-            className="font-reminder"
+            className="font-reminder tour-create-request-specialty"
             data={specialities
               .filter((s) => s.parent !== null)
               .map((s) => ({
@@ -180,6 +193,7 @@ const CreateRequestView = () => {
           />
         </div>
         <DatePicker
+            className="tour-create-request-date"
           locale="fa"
           placeholder="یک روز را انتخاب کنید"
           label="زمان شروع"
@@ -188,6 +202,7 @@ const CreateRequestView = () => {
         />
         <Center>
           <Button
+              className="tour-create-request-address"
             mt="md"
             color="cyan"
             leftIcon={<Map2 size={20} />}
@@ -198,6 +213,7 @@ const CreateRequestView = () => {
         </Center>
 
         <Textarea
+            className="tour-create-request-description"
           mt="sm"
           placeholder="توضیحات"
           label="شرح سفارش"
@@ -210,6 +226,7 @@ const CreateRequestView = () => {
         />
         <Center>
           <Button
+                className="tour-create-request-submit"
             mt="md"
             variant="gradient"
             gradient={{ from: "cyan", to: "indigo", deg: 105 }}

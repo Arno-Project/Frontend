@@ -27,6 +27,7 @@ const SpecialistsTable = (props: {
   button: {
     label: string;
     action: Function;
+    className: string|null;
   } | null;
 }) => {
   const [activePage, setPage] = useState(1);
@@ -56,11 +57,11 @@ const SpecialistsTable = (props: {
             <th>جزئیات</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="tour-specialist-table-tbody">
           {rows.map((user, i) => {
             if (user.isValidated)
               return (
-                <SpecialistRow user={user} idx={i + 1} button={props.button} />
+                <SpecialistRow key={user.id} user={user} idx={i + 1} button={props.button} />
               );
           })}
         </tbody>

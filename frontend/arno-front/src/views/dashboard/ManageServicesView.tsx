@@ -3,6 +3,7 @@ import "dayjs/locale/fa";
 import { useEffect, useState } from "react";
 import { DateRangePicker } from "@mantine/dates";
 import { showNotification } from "@mantine/notifications";
+
 import {
   ActionIcon,
   Badge,
@@ -24,7 +25,7 @@ import {
   UserExclamation,
   X,
 } from "tabler-icons-react";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 import { CoreAPI } from "../../api/core";
@@ -34,6 +35,15 @@ import { APIDataToServiceSummary } from "../../models/utils";
 import { FieldFilter, FieldFilterName } from "../../api/base";
 import { SpecialitiesBadges } from "../../models/SpecialityBadges";
 import RequestSearchComponent from "../../components/RequestSearchComponent";
+
+import {useAppDispatch} from "../../redux/hooks";
+import {setSteps} from "../../redux/intro";
+import {
+  ManageServiceTab1Steps, ManageServiceTab2Steps,
+  ManageUsersTab1Steps,
+  ManageUsersTab2Steps,
+  ManageUsersTab3Steps
+} from "../../assets/IntroSteps";
 
 import { Helmet } from "react-helmet";
 const TITLE = "مدیریت خدمات";
@@ -48,6 +58,7 @@ const ManageServicesView = () => {
 
   const [tab1_activePage, setTab1_activePage] = useState(1);
   const [tab2_activePage, setTab2_activePage] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
 
   const [tab2_startTimeInterval, setTab2_startTimeInterval] = useState<
     [Date | null, Date | null]
@@ -63,7 +74,7 @@ const ManageServicesView = () => {
         title: "خطا",
         message: "دریافت درخواست‌ها از سرور با خطا مواجه شد",
         color: "red",
-        icon: <X size={18} />,
+        icon: <X size={18}/>,
       });
     }
   };
@@ -71,6 +82,19 @@ const ManageServicesView = () => {
   useEffect(() => {
     getData([]);
   }, []);
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/manage_services") {
+      if (activeTab === 0) {
+        dispatch(setSteps(ManageServiceTab1Steps));
+      } else if (activeTab === 1) {
+        dispatch(setSteps(ManageServiceTab2Steps));
+      }
+    }
+  }, [location.pathname, activeTab]);
 
   const getPendingRequests = async () => {
     const query = {
@@ -87,7 +111,7 @@ const ManageServicesView = () => {
         title: "خطا",
         message: "دریافت درخواست‌ها از سرور با خطا مواجه شد",
         color: "red",
-        icon: <X size={18} />,
+        icon: <X size={18}/>,
       });
     }
   };
@@ -102,12 +126,12 @@ const ManageServicesView = () => {
   };
 
   const cancelableRows = cancelableData.slice(
-    PAGE_SIZE * (tab1_activePage - 1),
-    PAGE_SIZE * tab1_activePage
+      PAGE_SIZE * (tab1_activePage - 1),
+      PAGE_SIZE * tab1_activePage
   );
   const pendingRows = pendingData.slice(
-    PAGE_SIZE * (tab2_activePage - 1),
-    PAGE_SIZE * tab2_activePage
+      PAGE_SIZE * (tab2_activePage - 1),
+      PAGE_SIZE * tab2_activePage
   );
 
   const renderRows = () => {
@@ -189,104 +213,106 @@ const ManageServicesView = () => {
                 <th>جزئیات</th>
                 <th>لغو خدمت</th>
               </tr>
-            </thead>
-            {renderRows()}
-          </Table>
-          <Center mt="sm">
-            <Pagination
-              total={Math.ceil(cancelableData.length / PAGE_SIZE)}
-              color="cyan"
-              radius="md"
-              withEdges
-              page={tab1_activePage}
-              onChange={setTab1_activePage}
-            />
-          </Center>
-        </Tabs.Panel>
-
-        <Tabs.Panel value="pending" pt="xs">
-          <Grid justify="center" align="flex-end">
-            <Grid.Col span={9}>
-              <DateRangePicker
-                locale="fa"
-                label="زمان شروع سفارشات"
-                placeholder="انتخاب بازه‌ی زمانی"
-                value={tab2_startTimeInterval}
-                onChange={setTab2_startTimeInterval}
+              </thead>
+              {renderRows()}
+            </Table>
+            <Center mt="sm">
+              <Pagination
+                  total={Math.ceil(cancelableData.length / PAGE_SIZE)}
+                  color="cyan"
+                  radius="md"
+                  withEdges
+                  page={tab1_activePage}
+                  onChange={setTab1_activePage}
               />
-            </Grid.Col>
-            <Grid.Col span={3}>
-              <Button
-                mt="sm"
-                color="lime"
-                leftIcon={<ListSearch size={20} />}
-                onClick={() => getPendingRequests()}
-              >
-                جست‌وجوی سفارشات
-              </Button>
-            </Grid.Col>
-          </Grid>
-          <Table mt="md" striped highlightOnHover>
-            <thead>
+            </Center>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="pending" pt="xs">
+            <Grid className="tour-manage-service-not-done-search" justify="center" align="flex-end">
+              <Grid.Col span={9}>
+                <DateRangePicker
+                    className="tour-manage-service-not-done-search-date"
+                    locale="fa"
+                    label="زمان شروع سفارشات"
+                    placeholder="انتخاب بازه‌ی زمانی"
+                    value={tab2_startTimeInterval}
+                    onChange={setTab2_startTimeInterval}
+                />
+              </Grid.Col>
+              <Grid.Col span={3}>
+                <Button
+                    className="tour-manage-service-not-done-search-submit"
+                    mt="sm"
+                    color="lime"
+                    leftIcon={<ListSearch size={20}/>}
+                    onClick={() => getPendingRequests()}
+                >
+                  جست‌وجوی سفارشات
+                </Button>
+              </Grid.Col>
+            </Grid>
+            <Table className="tour-manage-service-not-done-table" mt="md" striped highlightOnHover>
+              <thead>
               <tr>
                 <th>ردیف</th>
                 <th>نام مشتری</th>
                 <th>تخصص مورد نیاز</th>
                 <th>مشاهده‌ی جزئیات</th>
               </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
               {pendingRows.map((row, i) => (
-                <tr key={i}>
-                  <td>{(tab2_activePage - 1) * PAGE_SIZE + (i + 1)}</td>
-                  <td>{row.customerName}</td>
-                  <td>
-                    <Tooltip
-                      label={row.requested_speciality.description}
-                      color="gray"
-                      transition="skew-down"
-                      transitionDuration={300}
-                      withArrow
-                    >
-                      <Badge
-                        key={row.requested_speciality.id}
-                        color={
-                          mantine_colors[
-                            row.requested_speciality.id % mantine_colors.length
-                          ]
-                        }
-                        variant="filled"
+                  <tr key={i}>
+                    <td>{(tab2_activePage - 1) * PAGE_SIZE + (i + 1)}</td>
+                    <td>{row.customerName}</td>
+                    <td>
+                      <Tooltip
+                          label={row.requested_speciality.description}
+                          color="gray"
+                          transition="skew-down"
+                          transitionDuration={300}
+                          withArrow
                       >
-                        {row.requested_speciality.title}
-                      </Badge>
-                    </Tooltip>
-                  </td>
-                  <td>
-                    <UnstyledButton
-                      onClick={() =>
-                        navigate(`/dashboard/request_details/${row.id}`)
-                      }
-                    >
-                      <ExternalLink color="blue" size={22} />
-                    </UnstyledButton>
-                  </td>
-                </tr>
+                        <Badge
+                            key={row.requested_speciality.id}
+                            color={
+                              mantine_colors[
+                              row.requested_speciality.id % mantine_colors.length
+                                  ]
+                            }
+                            variant="filled"
+                        >
+                          {row.requested_speciality.title}
+                        </Badge>
+                      </Tooltip>
+                    </td>
+                    <td>
+                      <UnstyledButton
+                          onClick={() =>
+                              navigate(`/dashboard/request_details/${row.id}`)
+                          }
+                      >
+                        <ExternalLink color="blue" size={22}/>
+                      </UnstyledButton>
+                    </td>
+                  </tr>
               ))}
-            </tbody>
-          </Table>
-          <Center mt="sm">
-            <Pagination
-              total={Math.ceil(pendingData.length / PAGE_SIZE)}
-              color="lime"
-              radius="md"
-              withEdges
-              page={tab2_activePage}
-              onChange={setTab2_activePage}
-            />
-          </Center>
-        </Tabs.Panel>
-      </Tabs>
-    </>
+              </tbody>
+            </Table>
+            <Center mt="sm">
+              <Pagination
+                  total={Math.ceil(pendingData.length / PAGE_SIZE)}
+                  color="lime"
+                  radius="md"
+                  withEdges
+                  page={tab2_activePage}
+                  onChange={setTab2_activePage}
+              />
+            </Center>
+          </Tabs.Panel>
+        </Tabs>
+      </>
   );
 };
 

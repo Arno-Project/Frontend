@@ -39,7 +39,11 @@ import {
 import {Helmet} from "react-helmet";
 import {useLocation} from "react-router-dom";
 import {setSteps} from "../../redux/intro";
-import {ManageSpecialitiesInputSteps, ManageSpecialitiesSearchSteps} from "../../assets/IntroSteps";
+import {
+  ManageSpecialitiesInputSteps,
+  ManageSpecialitiesPopularitySteps,
+  ManageSpecialitiesSearchSteps
+} from "../../assets/IntroSteps";
 
 const TITLE = "مدیریت تخصص‌ها";
 
@@ -106,9 +110,13 @@ const ManageSpecialitiesView = () => {
         dispatch(setSteps(ManageSpecialitiesSearchSteps));
       } else if (activeTab === 1) {
         dispatch(setSteps(ManageSpecialitiesInputSteps));
+      } else if (activeTab === 2) {
+        if (user!.role !== UserRole.Specialist) {
+          dispatch(setSteps(ManageSpecialitiesPopularitySteps));
+        }
       }
     }
-  }, [location.pathname, activeTab]);
+  }, [location.pathname, activeTab, user]);
 
   const newSpecialityForm = useForm({
     initialValues: {
@@ -318,9 +326,10 @@ const ManageSpecialitiesView = () => {
           </Tabs.Panel>
 
           <Tabs.Panel value="reputation" pt="xs">
-            <Grid my="sm" justify="center" align="flex-end">
+            <Grid my="sm" justify="center" align="flex-end" className="tour-manage-specialities-popularity-form">
               <Grid.Col span={8}>
                 <DateRangePicker
+                    className="tour-manage-specialities-popularity-date"
                     locale="fa"
                     label="زمان شروع سفارشات"
                     placeholder="انتخاب بازه‌ی زمانی"
@@ -330,6 +339,7 @@ const ManageSpecialitiesView = () => {
               </Grid.Col>
               <Grid.Col span={3}>
                 <Button
+                    className="tour-manage-specialities-popularity-submit"
                     mt="sm"
                     color="pink"
                     leftIcon={<ListSearch size={20}/>}
@@ -338,7 +348,8 @@ const ManageSpecialitiesView = () => {
                   جست‌وجوی سفارشات
                 </Button>
               </Grid.Col>
-              <Grid.Col span={1}>
+              <Grid.Col span={1}
+                        className="tour-manage-specialities-popularity-ascdsc">
                 <Switch
                     size="lg"
                     color="pink"

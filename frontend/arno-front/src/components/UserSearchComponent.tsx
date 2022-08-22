@@ -104,8 +104,8 @@ const UserSearchComponent = (props: {
         <>
           <Divider size="xs" my="xs" label="فیلتر سریع" labelPosition="left" />
 
-          <Group position="left" mt="md" mb="xs" px="lg">
-            <Button
+          <Group className="tour-quick-select" position="left" mt="md" mb="xs" px="lg">
+            <Button className="tour-customer-based-on-score"
               variant="gradient"
               gradient={{
                 from: RoleDictColor[UserRole.Specialist],
@@ -129,6 +129,7 @@ const UserSearchComponent = (props: {
             </Button>
 
             <Button
+                className="tour-specialist-based-on-score"
               variant="gradient"
               gradient={{
                 from: RoleDictColor[UserRole.Customer],
@@ -152,6 +153,7 @@ const UserSearchComponent = (props: {
             </Button>
 
             <Button
+                className="tour-managers-quick-select"
               variant="gradient"
               gradient={{
                 from: RoleDictColor[UserRole.CompanyManager],

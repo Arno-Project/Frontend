@@ -24,12 +24,15 @@ import { Message } from "../../models";
 import { Helmet } from "react-helmet";
 import { APIDataToMessages } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
-import { useNavigate, useParams } from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import { ChatsAPI } from "../../api/chats";
 import { useInterval } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useWindowDimensions } from "../utils";
+import {useAppDispatch} from "../../redux/hooks";
+import {setSteps} from "../../redux/intro";
+import {ChatSteps, SingleChatSteps} from "../../assets/IntroSteps";
 
 const TITLE = "پیام‌ها";
 
@@ -74,6 +77,16 @@ const SingleChatView = (props: any) => {
     return interval.stop;
   }, []);
 
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (/dashboard\/chats\/\d+/g.test(location.pathname))  {
+      dispatch(setSteps(SingleChatSteps));
+    }
+  }, [location.pathname]);
+
   let navigate = useNavigate();
 
   const navigateToChats = () => {
@@ -105,7 +118,8 @@ const SingleChatView = (props: any) => {
       </Helmet>
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
-        <Button variant="outline" size="xs" onClick={navigateToChats}>
+        <Button className="tour-back-to-chat-list"
+            variant="outline" size="xs" onClick={navigateToChats}>
           بازگشت به لیست پیام‌ها
         </Button>
       </Group>
@@ -117,14 +131,15 @@ const SingleChatView = (props: any) => {
               <Avatar radius="xl" color={"pink"} />
             </Grid.Col>
             <Grid.Col span={9}>
-              <Input
+              <Input className="tour-chat-input"
                 placeholder="پیام خود را بنویسید..."
                 size="md"
                 {...form.getInputProps("text")}
               />
             </Grid.Col>
             <Grid.Col span={2}>
-              <Button variant="light" color="pink" type="submit">
+              <Button className="tour-chat-send"
+                  variant="light" color="pink" type="submit">
                 ارسال
               </Button>
             </Grid.Col>
