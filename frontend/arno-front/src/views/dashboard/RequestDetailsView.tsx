@@ -11,6 +11,7 @@ import {
   ActionIcon,
   Button,
   Modal,
+  Stack
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 
@@ -65,6 +66,7 @@ import {
   RequestDetailsChooseSpecialistButtonStep,
   RequestDetailsCompleteRequestStep,
   RequestDetailsEditRequestButtonStep,
+  RequestDetailsManagerViewFeedbackStep,
   RequestDetailsRejectCustomerRequestFromSpecialistStep,
   RequestDetailsRejectSpecialistStep,
   RequestDetailsSelectedSpecialistStep,
@@ -286,7 +288,8 @@ const RequestDetailsView = () => {
         if (user!.role === UserRole.Customer) {
           if (
             requestDetails.status === RequestStatus.In_progress ||
-            requestDetails.status === RequestStatus.WaitForSpecialist
+            requestDetails.status === RequestStatus.WaitForSpecialist ||
+            requestDetails.status === RequestStatus.Done
           ) {
             steps.push(RequestDetailsSelectedSpecialistStep);
           }
@@ -324,6 +327,13 @@ const RequestDetailsView = () => {
           if (requestDetails.status === RequestStatus.Done) {
             steps.push(RequestDetailsSubmitFeedbackStep);
           }
+          if (
+            [RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
+              requestDetails!.status
+            )
+          ) {
+            steps.push(RequestDetailsEditRequestButtonStep);
+          }
         }
         if (user!.role === UserRole.Specialist) {
           if (requestDetails.status === RequestStatus.Pending) {
@@ -353,12 +363,20 @@ const RequestDetailsView = () => {
         }
 
         if (
-          [RequestStatus.Pending, RequestStatus.WaitForSpecialist].includes(
-            requestDetails!.status
-          ) &&
-          user?.role !== UserRole.Specialist
+          user!.role === UserRole.CompanyManager ||
+          user!.role === UserRole.TechnicalManager
         ) {
-          steps.push(RequestDetailsEditRequestButtonStep);
+          if (
+            requestDetails.status === RequestStatus.In_progress ||
+            requestDetails.status === RequestStatus.WaitForSpecialist ||
+            requestDetails.status === RequestStatus.Done
+          ) {
+            steps.push(RequestDetailsSelectedSpecialistStep);
+          }
+
+          if (requestDetails.status === RequestStatus.Done) {
+            steps.push(RequestDetailsManagerViewFeedbackStep);
+          }
         }
       }
       dispatch(setSteps(steps));
@@ -718,68 +736,74 @@ const RequestDetailsView = () => {
         specialistComponent = (
           <>
             {specialistComponent}
-            <Divider size="sm" my="xs" label="بازخورد" labelPosition="left" />
-            <Group>
-              {customerFeedback && (
-                <>
-                  <Button
-                    color={RoleDictColor[UserRole.Customer]}
-                    onClick={() => {
-                      setIsFeedbacksListModalOpen([true, false]);
-                    }}
-                    leftIcon={<Eye size={20} />}
-                  >
-                    مشاهده بازخورد مشتری
-                  </Button>
+            <div className="tour-request-details-view-feedback">
+              <Divider size="sm" my="xs" label="بازخورد" labelPosition="left" />
+              <Group>
+                {customerFeedback && (
+                  <>
+                    <Button
+                      color={RoleDictColor[UserRole.Customer]}
+                      onClick={() => {
+                        setIsFeedbacksListModalOpen([true, false]);
+                      }}
+                      leftIcon={<Eye size={20} />}
+                    >
+                      مشاهده بازخورد مشتری
+                    </Button>
 
-                  <Modal
-                    centered
-                    opened={isFeedbacksListModalOpen[0]}
-                    onClose={() => setIsFeedbacksListModalOpen([false, false])}
-                    title="بازخورد"
-                    overlayOpacity={0.55}
-                    overlayBlur={3}
-                    size="80%"
-                    style={{ zIndex: 1000 }}
-                  >
-                    <FeedbacksListComponent
-                      user={requestDetails.customer}
-                      feedbacks={[customerFeedback]}
-                    />
-                  </Modal>
-                </>
-              )}
+                    <Modal
+                      centered
+                      opened={isFeedbacksListModalOpen[0]}
+                      onClose={() =>
+                        setIsFeedbacksListModalOpen([false, false])
+                      }
+                      title="بازخورد"
+                      overlayOpacity={0.55}
+                      overlayBlur={3}
+                      size="80%"
+                      style={{ zIndex: 1000 }}
+                    >
+                      <FeedbacksListComponent
+                        user={requestDetails.customer}
+                        feedbacks={[customerFeedback]}
+                      />
+                    </Modal>
+                  </>
+                )}
 
-              {specFeedback && (
-                <>
-                  <Button
-                    color={RoleDictColor[UserRole.Specialist]}
-                    onClick={() => {
-                      setIsFeedbacksListModalOpen([false, true]);
-                    }}
-                    leftIcon={<Eye size={20} />}
-                  >
-                    مشاهده بازخورد متخصص
-                  </Button>
+                {specFeedback && (
+                  <>
+                    <Button
+                      color={RoleDictColor[UserRole.Specialist]}
+                      onClick={() => {
+                        setIsFeedbacksListModalOpen([false, true]);
+                      }}
+                      leftIcon={<Eye size={20} />}
+                    >
+                      مشاهده بازخورد متخصص
+                    </Button>
 
-                  <Modal
-                    centered
-                    opened={isFeedbacksListModalOpen[1]}
-                    onClose={() => setIsFeedbacksListModalOpen([false, false])}
-                    title="بازخورد"
-                    overlayOpacity={0.55}
-                    overlayBlur={3}
-                    size="80%"
-                    style={{ zIndex: 1000 }}
-                  >
-                    <FeedbacksListComponent
-                      user={requestDetails.specialist}
-                      feedbacks={[specFeedback]}
-                    />
-                  </Modal>
-                </>
-              )}
-            </Group>
+                    <Modal
+                      centered
+                      opened={isFeedbacksListModalOpen[1]}
+                      onClose={() =>
+                        setIsFeedbacksListModalOpen([false, false])
+                      }
+                      title="بازخورد"
+                      overlayOpacity={0.55}
+                      overlayBlur={3}
+                      size="80%"
+                      style={{ zIndex: 1000 }}
+                    >
+                      <FeedbacksListComponent
+                        user={requestDetails.specialist}
+                        feedbacks={[specFeedback]}
+                      />
+                    </Modal>
+                  </>
+                )}
+              </Group>
+            </div>
           </>
         );
       }
@@ -795,7 +819,9 @@ const RequestDetailsView = () => {
       <Divider size="sm" my="xs" label="مشخصات سفارش" labelPosition="left" />
       {!!requestDetails && (
         <div className="tour-request-details-info">
+           <Stack>
           <div style={{ display: "flex" }}>
+           
             <Text weight={500} span>
               تخصص مورد نیاز:
             </Text>
@@ -869,6 +895,7 @@ const RequestDetailsView = () => {
             />
             <Marker position={position as LatLngTuple}></Marker>
           </MapContainer>
+          </Stack>
         </div>
       )}
       {!!requestDetails &&

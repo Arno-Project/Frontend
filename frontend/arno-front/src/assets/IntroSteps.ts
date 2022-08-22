@@ -600,6 +600,11 @@ export const RequestDetailsSubmitFeedbackStep = {
   intro: "با کلیک بر روی این دکمه می توانید بازخورد خود را نسبت به درخواست ثبت کنید."
 }
 
+export const RequestDetailsManagerViewFeedbackStep = {
+  element: ".tour-request-details-view-feedback",
+  intro: "در این قسمت در صورتی که مشتری و یا متخصص بازخوردی به این درخواست ارائه داده باشند، می‌توانید آن‌ها را مشاهده کنید."
+}
+
 
 export const RequestDetailsAcceptCustomerRequestFromSpecialistStep = {
   element: ".tour-request-details-accept-customer-request-from-specialist",
