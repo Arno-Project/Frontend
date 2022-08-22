@@ -65,6 +65,20 @@ type Feedback = {
   user: User;
 };
 
+type MetricScore = {
+  metric: Metric;
+  score: number;
+};
+
+type RequestFeedback = {
+  created_at: string;
+  metricScores: MetricScore[];
+  id: number;
+  description: string;
+  request: number;
+  user: User;
+};
+
 enum RequestStatus {
   Pending = "PEND",
   WaitForCustomer = "WAIS",
@@ -154,6 +168,14 @@ type ScorePolicy = {
   allowed_requests: number;
 };
 
+type SatisfactionItem = {
+  user: User;
+  badFeedbacks: RequestFeedback[];
+  badMetrics: Metric[];
+  totalFeedbacksCount: number;
+  average: number;
+};
+
 export {
   UserRole,
   UserGeneralRole,
@@ -176,4 +198,7 @@ export type {
   Metric,
   SystemLog,
   ScorePolicy,
+  SatisfactionItem,
+  RequestFeedback,
+  MetricScore
 };

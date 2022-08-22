@@ -152,4 +152,17 @@ export class AccountAPI extends BaseListAPI {
     console.info("getSpecialistById", response);
     return response;
   }
+
+  async getNonSatisfied(filters: object) {
+    console.log(filters)
+    const response = await this.sendAuthorizedGetRequest({
+      path: "satisfaction/",
+      body: null,
+      headers: null,
+      params: {q: filters},
+    });
+
+    console.info("getNonSatisfied", response);
+    return response;
+  }
 }
