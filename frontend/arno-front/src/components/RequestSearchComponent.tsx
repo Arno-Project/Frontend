@@ -124,12 +124,16 @@ const RequestSearchComponent = (props: {
     <>
       <Divider size="xs" my="xs" label="جست‌وجو" labelPosition="left" />
 
-      <form onSubmit={searchForm.onSubmit(submitForm)}>
+      <form
+        onSubmit={searchForm.onSubmit(submitForm)}
+        className="tour-manage-service-filter-form"
+      >
         <Stack>
           <Grid grow align="flex-end" gutter="xs">
             {props.searchFields.includes(FieldFilterName.Status) && (
               <Grid.Col span={4}>
                 <Select
+                  className="tour-manage-service-filter-status"
                   label="وضعیت خدمت"
                   placeholder="وضعیت"
                   data={Object.keys(RequestStatusBadge).map((k) => ({
@@ -153,7 +157,7 @@ const RequestSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.Customer) && (
               <Grid.Col span={4} sm={6} md={4}>
                 <TextInput
-                  className="tour-search-input-name"
+                  className="tour-manage-service-filter-customer-name"
                   label="نام مشتری"
                   placeholder="بخشی از نام مشتری"
                   {...searchForm.getInputProps("customerName")}
@@ -163,6 +167,7 @@ const RequestSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.DateRange) && (
               <Grid.Col span={4}>
                 <DateRangePicker
+                  className="tour-manage-service-filter-date"
                   locale="fa"
                   label="زمان شروع سفارشات"
                   placeholder="انتخاب بازه‌ی زمانی"
@@ -174,6 +179,7 @@ const RequestSearchComponent = (props: {
             {props.searchFields.includes(FieldFilterName.Specialist) && (
               <Grid.Col span={4}>
                 <TextInput
+                  className="tour-manage-service-filter-specialist-name"
                   icon={<Search size={20} />}
                   label="نام متخصص"
                   placeholder="بخشی از نام متخصص"
@@ -214,7 +220,7 @@ const RequestSearchComponent = (props: {
           </Grid>
           <Group position="center" spacing="md">
             <Button
-              className="tour-search-button"
+              className="tour-manage-service-filter-submit"
               ref={submitRef}
               type="submit"
               variant="gradient"
