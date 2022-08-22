@@ -1,5 +1,7 @@
 import {
   Badge,
+  Center,
+  Pagination,
   Table,
   Title,
   Tooltip,
@@ -23,10 +25,13 @@ import {MyRequestsStatusSteps} from "../../assets/IntroSteps";
 
 const TITLE = "درخواست‌های من";
 
-const CustomerRequestsView = () => {
+const PAGE_SIZE = 5;
 
+const CustomerRequestsView = () => {
   const navigate = useNavigate();
+  
   const [rows, setRows] = useState<ServiceSummary[]>([]);
+  const [activePage, setPage] = useState(1);
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getMyRequestsStatus();
@@ -59,10 +64,15 @@ const CustomerRequestsView = () => {
     }
   };
 
+  const currentPageRows = rows.slice(
+    PAGE_SIZE * (activePage - 1),
+    PAGE_SIZE * activePage
+  );
+
   const renderRows = () => {
-    const body: any[] = rows.map((obj: ServiceSummary, i) => (
+    const body: any[] = currentPageRows.map((obj: ServiceSummary, i) => (
       <tr key={i}>
-        <td>{i + 1}</td>
+        <td>{(activePage - 1) * PAGE_SIZE + (i + 1)}</td>
         <td>
           <Tooltip
             label={obj.requested_speciality.description}
@@ -118,7 +128,7 @@ const CustomerRequestsView = () => {
       <Title order={3} my="md">
         وضعیت درخواست‌ها
       </Title>
-      <Table striped highlightOnHover className="tour-my-requests-status">
+      <Table striped verticalSpacing="sm" highlightOnHover className="tour-my-requests-status">
         <thead>
           <tr>
             <th>ردیف</th>
@@ -131,6 +141,17 @@ const CustomerRequestsView = () => {
         </thead>
         {renderRows()}
       </Table>
+      <Center mt="sm">
+        <Pagination
+          mt="sm"
+          total={Math.ceil(rows.length / PAGE_SIZE)}
+          color="cyan"
+          radius="md"
+          withEdges
+          page={activePage}
+          onChange={setPage}
+        />
+      </Center>
     </>
   );
 };
