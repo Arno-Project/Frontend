@@ -87,7 +87,7 @@ const links: MainLinkProps[] = [
   {
     icon: <ReportAnalytics size={16} />,
     color: "blue",
-    label: "گزارش‌گیری",
+    label: "گزارش‌گیری فنی",
     path: "/report",
     classname: "tour-report",
   },
@@ -125,13 +125,7 @@ const links: MainLinkProps[] = [
     path: "/my_services",
     classname: "tour-my-services",
   },
-  {
-    icon: <Edit size={16} />,
-    color: "teal",
-    label: "ویرایش اطلاعات",
-    path: "/edit_data",
-    classname: "",
-  },
+  
   {
     icon: <ShoppingCartPlus size={16} />,
     color: "violet",

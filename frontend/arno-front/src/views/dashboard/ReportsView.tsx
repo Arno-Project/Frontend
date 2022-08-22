@@ -29,7 +29,7 @@ import {EvalMetricSteps, ReportCSVStep, ReportFormSteps} from "../../assets/Intr
 import {useAppDispatch} from "../../redux/hooks";
 import {useLocation} from "react-router-dom";
 
-const TITLE = "گزارشات سیستم";
+const TITLE = "گزارشات فنی سیستم";
 
 const ReportsView = () => {
   const [data, setData] = useState<SystemLog[]>([]);
