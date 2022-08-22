@@ -18,6 +18,7 @@ import {
   Message,
   ShoppingCart,
   Note,
+  MoodSad,
 } from "tabler-icons-react";
 
 import { UserCard } from "./_user";
@@ -54,6 +55,13 @@ const links: MainLinkProps[] = [
     label: "مدیریت تخصص‌ها",
     path: "/manage_specialities",
     classname: "tour-manage-specialities",
+  },
+  {
+    icon: <MoodSad size={16} />,
+    color: "red",
+    label: "کاربران ناراضی از خدمات",
+    path: "/unsatisfied_users",
+    classname: "tour-unsatisfied-users",
   },
   {
     icon: <AlertCircle size={16} />,

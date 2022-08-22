@@ -154,6 +154,14 @@ type ScorePolicy = {
   allowed_requests: number;
 };
 
+type SatisfactionItem = {
+  user: User;
+  badFeedbacks: Feedback[];
+  badMetrics: Metric[];
+  totalFeedbacksCount: number;
+  average: number;
+};
+
 export {
   UserRole,
   UserGeneralRole,
@@ -176,4 +184,5 @@ export type {
   Metric,
   SystemLog,
   ScorePolicy,
+  SatisfactionItem
 };

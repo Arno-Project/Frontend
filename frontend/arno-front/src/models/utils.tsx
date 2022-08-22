@@ -13,6 +13,7 @@ import {
   Notification,
   Metric,
   SystemLog,
+  SatisfactionItem,
 } from ".";
 
 import { APIResponse } from "../api/base";
@@ -47,7 +48,7 @@ export function ObjectToUserOrNull(data: Object): User | null {
 }
 
 export function ObjectToFeedback(data: Object): Feedback {
-  console.info("ObjectToFeedback", data)
+  console.info("ObjectToFeedback", data);
   let feedback: Feedback = {
     created_at: data["created_at" as keyof object],
     id: data["id" as keyof object],
@@ -126,7 +127,7 @@ export function APIDataToSpecialities(res: APIResponse): Speciality[] {
       title: r["title" as keyof Object],
       description: r["description" as keyof Object],
       parent: r["parent" as keyof object],
-      children: r["children" as keyof object] as Speciality[]
+      children: r["children" as keyof object] as Speciality[],
     };
     return spec;
   });
@@ -205,4 +206,30 @@ export function APIDataToLogs(res: APIResponse): SystemLog[] {
     };
     return log;
   });
+}
+
+export function ObjectToSatisfactionItem(
+  data: object
+): SatisfactionItem {
+  let msg: SatisfactionItem = {
+    user: ObjectToUser(data["user" as keyof object]),
+    badMetrics: (data["bad_metrics" as keyof object] as object[]).map((a) =>
+      ObjectToMetric(a)
+    ),
+    badFeedbacks: (data["bad_feedbacks" as keyof object] as object[]).map((a) =>
+      ObjectToFeedback(a)
+    ),
+    totalFeedbacksCount: parseInt(
+      data["total_feedbacks_count" as keyof object]
+    ),
+    average: parseFloat(data["average_score" as keyof object])
+  };
+  return msg;
+}
+
+export function APIDataToSatisfactionItems(
+  res: APIResponse
+): SatisfactionItem[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToSatisfactionItem(r));
 }

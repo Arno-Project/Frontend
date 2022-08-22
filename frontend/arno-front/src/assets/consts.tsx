@@ -24,6 +24,7 @@ export const SystemFeedbackTypeDict: any = {
 export const AccessRules: any = {
   "/technical_issues": [UserRole.TechnicalManager, UserRole.CompanyManager],
   "/system_feedbacks": [UserRole.CompanyManager],
+  "/unsatisfied_users": [UserRole.CompanyManager],
   "/specialists": [UserRole.Customer, UserRole.Specialist],
   "/suggestion_complaint": [UserRole.Customer, UserRole.Specialist],
   "/evaluation_metrics": [UserRole.CompanyManager],

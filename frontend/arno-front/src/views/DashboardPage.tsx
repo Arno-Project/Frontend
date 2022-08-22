@@ -52,6 +52,7 @@ import {Brand} from "../components/dashboard/_brand";
 import {Helmet} from "react-helmet";
 import ManageUsersView from "./dashboard/ManageUsersView";
 import SystemFeedbacksView from "./dashboard/SystemFeedbacksView";
+import UserSatisfactionView from "./dashboard/UserSatisfactionView";
 
 const TITLE = "آرنو | داشبورد";
 
@@ -209,6 +210,7 @@ const DashboardPage = () => {
                 <Route path="/request_details/:requestId" element={<RequestDetailsView/>}/>
                 <Route path="/customer_requests" element={<ViewCustomerRequests/>}/>
                 <Route path="/manage_users" element={<ManageUsersView/>}/>
+                <Route path="/unsatisfied_users" element={<UserSatisfactionView/>}/>
               </Routes>
             </Container>
           </AppShell>
