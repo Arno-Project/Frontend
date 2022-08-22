@@ -102,7 +102,7 @@ const TechnicalIssuesView = () => {
     const res = await SystemFeedbackAPI.getInstance().submitReply(reply);
 
     notifyUser(res, "ارسال موفقیت‌آمیز", "پاسخ شما با موفقیت ارسال شد.");
-    getData()
+    getData();
   };
 
   const renderRows = () => {
@@ -200,25 +200,14 @@ const TechnicalIssuesView = () => {
             rows.length > 0 &&
             rowId > -1 &&
             rows !== undefined &&
-            rows?.at(rowId)?.reply && (
-              <>
-                <Divider
-                  size="xs"
-                  my="xs"
-                  label="پاسخ قبلی"
-                  labelPosition="left"
-                  variant="dashed"
-                />
-                {viewFeedback()}
-                <Divider
-                  size="xs"
-                  my="xs"
-                  label="پاسخ جدید"
-                  labelPosition="left"
-                  variant="dashed"
-                />
-              </>
-            )}
+            rows?.at(rowId)?.reply && <>{viewFeedback()}</>}
+          <Divider
+            size="xs"
+            my="xs"
+            label="پاسخ جدید"
+            labelPosition="left"
+            variant="dashed"
+          />
           <Textarea
             value={newResponse}
             onChange={(event) => setNewResponse(event.currentTarget.value)}
@@ -243,6 +232,13 @@ const TechnicalIssuesView = () => {
   function viewFeedback() {
     return (
       <>
+        <Divider
+          size="xs"
+          my="xs"
+          label="پاسخ ثبت شده"
+          labelPosition="left"
+          variant="dashed"
+        />
         <Stack>
           <Group>
             <Text weight={700}>ارسال شده توسط:</Text>
