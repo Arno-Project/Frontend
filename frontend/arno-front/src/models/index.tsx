@@ -33,6 +33,7 @@ type User = {
   isValidated: boolean;
   dateJoined: string;
   lastLogin: string;
+  isActive: boolean;
 };
 
 enum FeedbackType {

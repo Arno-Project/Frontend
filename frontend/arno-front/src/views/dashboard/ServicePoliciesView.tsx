@@ -236,6 +236,7 @@ const ServicePoliciesView = () => {
             </Center>
             <NumberInput
                 label="حداکثر تعداد خدمات هم‌زمان:"
+                description="حداکثر تعداد خدمت هم‌زمان می‌تواند برابر با ۲۰ باشد."
                 placeholder="تعداد خدمات"
                 max={20}
                 min={0}

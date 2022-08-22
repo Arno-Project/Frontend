@@ -38,6 +38,7 @@ export function ObjectToUser(data: Object): User {
     isValidated: data["is_validated" as keyof object],
     dateJoined: userData["date_joined" as keyof object],
     lastLogin: userData["last_login" as keyof object],
+    isActive: userData["is_active" as keyof object],
   };
   return user;
 }
@@ -210,7 +211,6 @@ export function APIDataToLogs(res: APIResponse): SystemLog[] {
   });
 }
 
-
 export function ObjectToMetricScore(data: Object): MetricScore {
   console.info("ObjectToMetricScore", data);
   let m: MetricScore = {
@@ -228,21 +228,19 @@ export function ObjectToRequestFeedback(data: Object): RequestFeedback {
     description: data["description" as keyof object],
     user: ObjectToUser(data["user" as keyof object]),
     request: parseInt(data["request" as keyof object]),
-    metricScores: (data["metric_scores" as keyof object] as object[]).map((a) => ObjectToMetricScore(a))
+    metricScores: (data["metric_scores" as keyof object] as object[]).map((a) =>
+      ObjectToMetricScore(a)
+    ),
   };
   return feedback;
 }
 
-export function APIDataToRequestFeedbacks(
-  res: APIResponse
-): RequestFeedback[] {
+export function APIDataToRequestFeedbacks(res: APIResponse): RequestFeedback[] {
   let data = res.data as Array<Object>;
   return data.map((r) => ObjectToRequestFeedback(r));
 }
 
-export function ObjectToSatisfactionItem(
-  data: object
-): SatisfactionItem {
+export function ObjectToSatisfactionItem(data: object): SatisfactionItem {
   let msg: SatisfactionItem = {
     user: ObjectToUser(data["user" as keyof object]),
     badMetrics: (data["bad_metrics" as keyof object] as object[]).map((a) =>
@@ -254,7 +252,7 @@ export function ObjectToSatisfactionItem(
     totalFeedbacksCount: parseInt(
       data["total_feedbacks_count" as keyof object]
     ),
-    average: parseFloat(data["average_score" as keyof object])
+    average: parseFloat(data["average_score" as keyof object]),
   };
   return msg;
 }

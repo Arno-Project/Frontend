@@ -235,7 +235,7 @@ const TechnicalIssuesView = () => {
         <Divider
           size="xs"
           my="xs"
-          label="پاسخ ثبت شده"
+          label="مشکل گزارش شده"
           labelPosition="left"
           variant="dashed"
         />
@@ -250,12 +250,25 @@ const TechnicalIssuesView = () => {
           </Group>
           <Text weight={700}>متن مشکل:</Text>
           <Text>{rows[rowId].text}</Text>
-          <Text weight={700}> پاسخ:</Text>
-          <Text>{rows[rowId].reply ? rows[rowId].reply!.text : ""}</Text>
-          <Text size="sm" color="dimmed">
-            پاسخ داده شده توسط {rows[rowId].reply!.user.username} در{" "}
-            {formatDateString(rows[rowId].reply!.created_at)}
-          </Text>
+          {rows[rowId].reply && (
+            <>
+              <Divider
+                size="xs"
+                my="xs"
+                label="پاسخ ثبت شده"
+                labelPosition="left"
+                variant="dashed"
+              />
+
+              <Text weight={700}> پاسخ:</Text>
+
+              <Text>{rows[rowId].reply ? rows[rowId].reply?.text : ""}</Text>
+              <Text size="sm" color="dimmed">
+                پاسخ داده شده توسط {rows[rowId].reply!.user.username} در{" "}
+                {formatDateString(rows[rowId].reply!.created_at)}
+              </Text>
+            </>
+          )}
         </Stack>
       </>
     );
