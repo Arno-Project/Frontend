@@ -15,7 +15,7 @@ import {
   Anchor,
 } from "@mantine/core";
 
-import { Lock, Mail, Phone, Check, X, Id} from "tabler-icons-react";
+import { Lock, Mail, Phone, Check, X, Id, Plus } from "tabler-icons-react";
 
 import { AuthAPI } from "../api/auth";
 import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
@@ -51,26 +51,22 @@ const NewManagerForm = () => {
     },
   });
 
-  
-
   const handleSubmit = async (values: any) => {
     const api = AuthAPI.getInstance();
 
     let res = null;
-    res = await api.registerManager(
-        values, 
-        userRole);
+    res = await api.registerManager(values, userRole);
     let data = res.data;
 
     if (res.success && data !== null) {
-        showNotification({
-            title: "عملیات موفقیت‌آمیز",
-            message: "مدیر جدید با موفقیت اضافه شد.",
-            color: "teal",
-            icon: <Check size={18} />,
-          });
+      showNotification({
+        title: "عملیات موفقیت‌آمیز",
+        message: "مدیر جدید با موفقیت اضافه شد.",
+        color: "teal",
+        icon: <Check size={18} />,
+      });
       setErrorMessage({});
-    registerForm.reset()
+      registerForm.reset();
     } else {
       setErrorMessage(res.error);
     }
@@ -91,8 +87,12 @@ const NewManagerForm = () => {
           </Notification>
         )}
 
-        <form onSubmit={registerForm.onSubmit(handleSubmit)} className="manage-users-create-manager-form">
-          <Radio.Group className="manage-users-create-manager-role"
+        <form
+          onSubmit={registerForm.onSubmit(handleSubmit)}
+          className="manage-users-create-manager-form"
+        >
+          <Radio.Group
+            className="manage-users-create-manager-role"
             mb="sm"
             label="نوع کاربر"
             spacing="xl"
@@ -106,7 +106,8 @@ const NewManagerForm = () => {
           </Radio.Group>
 
           <Group grow>
-            <TextInput  className="manage-users-create-manager-first-name"
+            <TextInput
+              className="manage-users-create-manager-first-name"
               data-autofocus
               required
               placeholder="نام"
@@ -115,7 +116,7 @@ const NewManagerForm = () => {
             />
 
             <TextInput
-                className="manage-users-create-manager-last-name"
+              className="manage-users-create-manager-last-name"
               required
               placeholder="نام خانوادگی"
               label="نام خانوادگی"
@@ -128,7 +129,7 @@ const NewManagerForm = () => {
             error={error ? error["email" as keyof object] : ""}
           >
             <TextInput
-                className="manage-users-create-manager-email"
+              className="manage-users-create-manager-email"
               mt="md"
               required
               placeholder="پست الکترونیکی"
@@ -144,7 +145,7 @@ const NewManagerForm = () => {
             error={error ? error["username" as keyof object] : ""}
           >
             <TextInput
-                className="manage-users-create-manager-username"
+              className="manage-users-create-manager-username"
               mt="md"
               required
               placeholder="نام کاربری"
@@ -160,7 +161,7 @@ const NewManagerForm = () => {
             error={error ? error["phone" as keyof object] : ""}
           >
             <TextInput
-                className="manage-users-create-manager-phone"
+              className="manage-users-create-manager-phone"
               mt="md"
               required
               placeholder="تلفن همراه"
@@ -175,7 +176,7 @@ const NewManagerForm = () => {
             error={error ? error["password" as keyof object] : ""}
           >
             <PasswordInput
-                className="manage-users-create-manager-password"
+              className="manage-users-create-manager-password"
               mt="md"
               required
               placeholder="رمز عبور"
@@ -186,7 +187,7 @@ const NewManagerForm = () => {
             />
 
             <PasswordInput
-                className="manage-users-create-manager-confirm-password"
+              className="manage-users-create-manager-confirm-password"
               mt="md"
               required
               label="تکرار رمز عبور"
@@ -196,8 +197,13 @@ const NewManagerForm = () => {
             />
           </Input.Wrapper>
 
-          <Group position="apart" mt="xl">
-            <Button color="blue" type="submit" className="manage-users-create-manager-submit">
+          <Group position="center" mt="xl">
+            <Button
+              color="blue"
+              type="submit"
+              className="manage-users-create-manager-submit"
+              leftIcon={<Plus size={20} />}
+            >
               اضافه کردن
             </Button>
           </Group>

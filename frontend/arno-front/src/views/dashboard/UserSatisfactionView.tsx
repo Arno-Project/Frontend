@@ -86,8 +86,6 @@ const UserSatisfactionView = () => {
             <Stack>
               {obj.badMetrics.map((metric) => {
                 return (
-                  <Group>
-                    <Text>{metric.title}</Text>
                     <Tooltip
                       label={metric.description}
                       color="gray"
@@ -95,11 +93,8 @@ const UserSatisfactionView = () => {
                       transitionDuration={300}
                       withArrow
                     >
-                      <ActionIcon>
-                        <InfoCircle size="15" />
-                      </ActionIcon>
+                      <Badge color="cyan">{metric.title}</Badge>
                     </Tooltip>
-                  </Group>
                 );
               })}
             </Stack>
@@ -108,7 +103,7 @@ const UserSatisfactionView = () => {
             <Center>
               <ActionIcon
                 onClick={() => {
-                  setSelectedUser(obj.user)
+                  setSelectedUser(obj.user);
                   setSelectedFeedbacks(obj.badFeedbacks);
                   setFeedbackModalOpen(true);
                 }}
@@ -168,7 +163,10 @@ const UserSatisfactionView = () => {
         overlayBlur={3}
         size="80%"
       >
-        <FeedbacksListComponent user={selectedUser} feedbacks={selectedFeedbacks} />
+        <FeedbacksListComponent
+          user={selectedUser}
+          feedbacks={selectedFeedbacks}
+        />
       </Modal>
     </>
   );

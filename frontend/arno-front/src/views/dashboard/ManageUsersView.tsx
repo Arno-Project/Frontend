@@ -7,7 +7,6 @@ import {
   Pagination,
   Tabs,
   Space,
-  UnstyledButton,
   Badge,
   ActionIcon,
 } from "@mantine/core";
@@ -26,11 +25,11 @@ import {
   Paperclip,
   Phone,
   Check,
-  Eye,
   Plus,
   X,
   Checklist,
   Mail,
+  Filter,
 } from "tabler-icons-react";
 
 import UserModal from "../../components/UserModal";
@@ -56,7 +55,7 @@ import { UserScore } from "../../models/UserScore";
 import { Helmet } from "react-helmet";
 const TITLE = "مدیریت کاربران";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 const ManageUsersView = () => {
   const [activePage, setPage] = useState(1);
@@ -139,7 +138,7 @@ const ManageUsersView = () => {
               setActiveTab(0);
             }}
             value="view"
-            icon={<Eye size={14} />}
+            icon={<Filter size={14} />}
             color="teal"
           >
             مشاهده و جست‌وجو
@@ -277,12 +276,12 @@ const ManageUsersView = () => {
         <Table
           striped
           highlightOnHover
-          verticalSpacing="xs"
           mt="sm"
           className="tour-manage-users-user-table"
         >
           <thead>
             <tr>
+              <th>ردیف</th>
               <th>نام کاربری</th>
               <th>نام</th>
               <th>نقش</th>
@@ -294,6 +293,7 @@ const ManageUsersView = () => {
           <tbody>
             {rows.map((user: User, idx: number) => (
               <tr key={user.id}>
+                <td>{(activePage - 1) * PAGE_SIZE + (idx + 1)}</td>
                 <td>{user.username}</td>
                 <td>
                   {user.firstName} {user.lastName}
@@ -315,14 +315,14 @@ const ManageUsersView = () => {
                   )}
                 </td>
                 <td>
-                  <UnstyledButton
+                  <ActionIcon
                     onClick={() => {
                       setSelectedUser(user);
                       setIsUserModalOpen(true);
                     }}
                   >
                     <ZoomInArea color="black" size={22} />
-                  </UnstyledButton>
+                  </ActionIcon>
                 </td>
                 <td>
                   <Tooltip
@@ -334,7 +334,7 @@ const ManageUsersView = () => {
                       <Phone color="green" size={15} />
                     </Anchor>
                   </Tooltip>
-                  <Space w="sm" />
+                  <Space w="xs" />
                   <Tooltip
                     color="gray"
                     position="right"

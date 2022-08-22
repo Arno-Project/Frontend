@@ -17,7 +17,7 @@ import {setSteps} from "../../redux/intro";
 import {SpecialistListSteps} from "../../assets/IntroSteps";
 const TITLE = "متخصصان";
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 5;
 
 const SpecialistsView = () => {
   const user = useAppSelector((state) => state.auth.user);

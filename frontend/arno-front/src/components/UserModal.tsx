@@ -1,4 +1,3 @@
-
 import {
   Text,
   Button,
@@ -14,11 +13,11 @@ import {
 
 import { User, UserRole } from "../models";
 
-
 import { RoleDict, RoleDictColor } from "../assets/consts";
 import { SpecialitiesBadges } from "../models/SpecialityBadges";
 import { formatDateString } from "../dateUtils";
 import { UserScore } from "../models/UserScore";
+import { useNavigate } from "react-router-dom";
 
 const UserModal = (props: {
   user: User;
@@ -26,7 +25,9 @@ const UserModal = (props: {
   changeIsOpen: Function;
   validateSpecialist: Function | null;
 }) => {
-  console.info("UserModal", props)
+  const navigate = useNavigate();
+  
+  console.info("UserModal", props);
   // useEffect(() => {
   //   getData();
   // }, []);
@@ -150,13 +151,18 @@ const UserModal = (props: {
                 fullWidth
                 mt="md"
                 radius="md"
+                onClick={() =>
+                  navigate("/dashboard/create_request/", {
+                    state: { customer: props.user },
+                  })
+                }
               >
                 ثبت درخواست برای این کاربر
               </Button>
             )}
 
             {props.user.role === UserRole.Specialist &&
-            props.validateSpecialist !== null &&
+              props.validateSpecialist !== null &&
               !props.user.isValidated && (
                 <Button
                   variant="light"
