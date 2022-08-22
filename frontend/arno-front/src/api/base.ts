@@ -21,22 +21,28 @@ export enum FieldFilterName {
   Email = "email",
   Roles = "roles",
   Sort = "sort",
+  Status = "status",
+  Customer = "customer",
+  Specialist = "specialist",
+  DateRange = "dateRange"
 }
 
 export class FieldFilter {
   name: string;
-  value: string | string[];
+  value: string | string[] | {id:string} | {name: string};
   type: FieldFilterType;
 
-  constructor(name: string, value: string | string[], type: FieldFilterType) {
+  constructor(name: string, value: any, type: FieldFilterType) {
     this.name = name;
     this.value = value;
     this.type = type;
   }
 
-  get_pair(): string[] {
-    if (typeof this.value === "string") return [this.name, this.value];
-    else return [this.name, this.value.join(",")];
+  get_pair(): any[] {
+    if (Array.isArray(this.value)) {
+      return [this.name, this.value.join(",")];
+    }
+    return [this.name, this.value];
   }
 }
 
