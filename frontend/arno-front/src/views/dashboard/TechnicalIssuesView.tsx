@@ -154,7 +154,7 @@ const TechnicalIssuesView = () => {
               </CSVLink>
           )}
         </Center>
-        <Table striped highlightOnHover verticalSpacing="md" className="tour-technical-issues-table">
+        <Table striped highlightOnHover verticalSpacing="sm" className="tour-technical-issues-table">
           <thead>
           <tr>
             <th>ردیف</th>
