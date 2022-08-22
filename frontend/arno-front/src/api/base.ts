@@ -24,7 +24,8 @@ export enum FieldFilterName {
   Status = "status",
   Customer = "customer",
   Specialist = "specialist",
-  DateRange = "dateRange"
+  DateRange = "dateRange",
+  UserID="user_id"
 }
 
 export class FieldFilter {

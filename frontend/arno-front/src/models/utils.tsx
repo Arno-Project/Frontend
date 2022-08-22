@@ -233,6 +233,13 @@ export function ObjectToRequestFeedback(data: Object): RequestFeedback {
   return feedback;
 }
 
+export function APIDataToRequestFeedbacks(
+  res: APIResponse
+): RequestFeedback[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToRequestFeedback(r));
+}
+
 export function ObjectToSatisfactionItem(
   data: object
 ): SatisfactionItem {

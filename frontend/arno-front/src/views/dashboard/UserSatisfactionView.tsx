@@ -93,7 +93,7 @@ const UserSatisfactionView = () => {
                       transitionDuration={300}
                       withArrow
                     >
-                      <Badge color="cyan">{metric.title}</Badge>
+                      <Badge color="dark">{metric.title}</Badge>
                     </Tooltip>
                 );
               })}

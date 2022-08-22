@@ -26,7 +26,7 @@ const UserModal = (props: {
   validateSpecialist: Function | null;
 }) => {
   const navigate = useNavigate();
-  
+
   console.info("UserModal", props);
   // useEffect(() => {
   //   getData();
@@ -88,17 +88,25 @@ const UserModal = (props: {
 
             <Space h="md" />
             <Group>
-              <Text size="md" color="dimmed">
-                تلفن همراه:
-              </Text>
-              <Text>{props.user.phone}</Text>
+              {props.user.phone && (
+                <>
+                  <Text size="md" color="dimmed">
+                    تلفن همراه:
+                  </Text>
+                  <Text>{props.user.phone}</Text>
+                </>
+              )}
             </Group>
             <Space h="md" />
             <Group>
-              <Text size="md" color="dimmed">
-                ایمیل:
-              </Text>
-              <Text>{props.user.email}</Text>
+              {props.user.email && (
+                <>
+                  <Text size="md" color="dimmed">
+                    ایمیل:
+                  </Text>
+                  <Text>{props.user.email}</Text>
+                </>
+              )}
             </Group>
             {props.user.role === UserRole.Specialist && (
               <>
@@ -138,11 +146,7 @@ const UserModal = (props: {
               <Text size="md" color="dimmed">
                 آخرین ورود:
               </Text>
-              <Text>
-                {props.user.lastLogin
-                  ? formatDateString(props.user.lastLogin)
-                  : "-"}
-              </Text>
+              <Text>{formatDateString(props.user.lastLogin)}</Text>
             </Group>
             {props.user.role === UserRole.Customer && (
               <Button

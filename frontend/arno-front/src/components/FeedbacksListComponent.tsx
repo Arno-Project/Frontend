@@ -48,7 +48,7 @@ const FeedbacksListComponent = (props: {
       <Title order={3}> کاربر {props?.user?.username}</Title>
       {props.feedbacks.map((feedback: RequestFeedback, idx: number) => {
         return (
-          <>
+          <div key={idx}>
           <Space h="sm"/>
           <Card shadow="sm" p="lg" radius="md" withBorder>
             <Card.Section withBorder inheritPadding py="xs">
@@ -111,7 +111,7 @@ const FeedbacksListComponent = (props: {
             )}
           </Card>
           
-          </>
+          </div>
         );
       })}
     </>
