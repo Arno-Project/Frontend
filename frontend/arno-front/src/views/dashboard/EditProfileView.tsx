@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useForm } from "@mantine/form";
 import {
@@ -20,7 +20,7 @@ import { Lock, Mail, Phone, X, Edit, Id, FileUpload } from "tabler-icons-react";
 import { useAppSelector } from "../../redux/hooks";
 
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
-import { UserRole } from "../../models";
+import { Speciality, UserRole } from "../../models";
 import { notifyUser } from "../utils";
 import { AccountAPI } from "../../api/accounts";
 import { APIDataToUsers } from "../../models/utils";
@@ -40,6 +40,28 @@ const EditProfileView = () => {
   );
   const [specialityError, setSpecialityError] = useState("");
 
+  const [mySpecialities, setMySpecialities] = useState<Speciality[]>([]);
+  const [allSpecialities, setAllSpecialities] = useState<Speciality[]>([]);
+
+  const getData = async () => {
+    const res = await AccountAPI.getInstance().getSpecialistById(user!.id);
+    if (!res.success) {
+      showNotification({
+        title: "خطا",
+        message: "دریافت تخصص‌ها از سرور با خطا مواجه شد",
+        color: "red",
+        icon: <X size={18} />,
+      });
+      return;
+    }
+    setAllSpecialities(await AccountAPI.getInstance().fetchSpecialities());
+    setMySpecialities(APIDataToUsers(res)[0].speciality);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   const onSpecialitySelectChange = (values: any[]) => {
     setSelectedSpecialities(values);
     setSpecialityError("");
@@ -54,6 +76,7 @@ const EditProfileView = () => {
       phone: user?.phone,
       is_active: true,
       documents: null,
+      specialities: [],
     },
 
     validate: {
@@ -117,30 +140,19 @@ const EditProfileView = () => {
   };
 
   const syncSpecialities = async () => {
-    const res = await AccountAPI.getInstance().getSpecialistById(user!.id);
-    if (!res.success) {
-      showNotification({
-        title: "خطا",
-        message: "دریافت تخصص‌ها از سرور با خطا مواجه شد",
-        color: "red",
-        icon: <X size={18} />,
-      });
-      return;
-    }
-    const allSpecialities = await AccountAPI.getInstance().fetchSpecialities();
-    const mySpec = APIDataToUsers(res)[0].speciality.map((s) => s.id);
-
+    let selectedSpec = editProfileForm.values["specialities"].map(s => s + "");
+    const mySpecIds = mySpecialities.map((s) => s.id);
     for (let specialityId of allSpecialities.map((s) => s.id)) {
       let specialityIdStr = specialityId + "";
       if (
-        mySpec.includes(specialityId) &&
-        !selectedSpecialities.includes(specialityIdStr)
+        mySpecIds.includes(specialityId) &&
+        !selectedSpec.includes(specialityIdStr)
       ) {
         await AccountAPI.getInstance().removeSpeciality(specialityId);
       }
       if (
-        selectedSpecialities.includes(specialityIdStr) &&
-        !mySpec.includes(specialityId)
+        selectedSpec.includes(specialityIdStr) &&
+        !mySpecIds.includes(specialityId)
       ) {
         await AccountAPI.getInstance().addSpeciality(specialityId);
       }
@@ -211,12 +223,16 @@ const EditProfileView = () => {
           />
         )}
 
-        {user?.role === UserRole.Specialist && (
+        {user?.role === UserRole.Specialist && allSpecialities.length > 0 && (
           <div style={{ marginTop: "16px" }}>
             <SpecialityMultiSelect
               setter={onSpecialitySelectChange}
+              initialValues={mySpecialities.map((s) => s.id + "")}
               required={true}
               error={specialityError}
+              disabled={allSpecialities.length === 0}
+              form={editProfileForm}
+              formProps={editProfileForm.getInputProps("specialities")}
             />
           </div>
         )}

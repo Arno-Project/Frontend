@@ -11,7 +11,10 @@ export default function SpecialityMultiSelect({
   setter,
   required,
   error,
-  disabled=false
+  initialValues = [],
+  disabled = false,
+  form = {},
+  formProps = {}
 }: any) {
   const [specialities, setSpecialities] = useState<Speciality[]>([]);
 
@@ -33,6 +36,9 @@ export default function SpecialityMultiSelect({
 
   useEffect(() => {
     getSpecialities();
+    if (Object.keys(form).length > 0) {
+      form.setFieldValue("specialities", initialValues);
+    }
   }, []);
 
   return (
@@ -40,8 +46,8 @@ export default function SpecialityMultiSelect({
       onChange={setter}
       className="font-reminder tour-search-input-speciality"
       data={specialities
-        .filter((s:Speciality) => s.parent !== null)
-        .map((s:Speciality) => ({
+        .filter((s: Speciality) => s.parent !== null)
+        .map((s: Speciality) => ({
           label: s.title,
           value: s.id + "",
           group: s.parent?.title,
@@ -54,6 +60,7 @@ export default function SpecialityMultiSelect({
       searchable
       clearable
       disabled={disabled}
+      {...formProps}
     />
   );
 }
