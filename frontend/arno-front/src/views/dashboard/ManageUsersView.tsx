@@ -72,6 +72,7 @@ const ManageUsersView = () => {
       const users = APIDataToUsers(res);
       setUsers(users);
       console.log(users);
+      setPage(1);
     } else {
       showNotification({
         title: "خطا",

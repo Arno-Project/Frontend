@@ -80,6 +80,7 @@ import {
 } from "../../assets/IntroSteps";
 import FeedbacksListComponent from "../../components/FeedbacksListComponent";
 import { FeedbackAPI } from "../../api/feedback";
+import { notifyUser } from "../utils";
 
 const TITLE = "جزئیات سفارش";
 
@@ -129,10 +130,11 @@ const RequestDetailsView = () => {
           FieldFilterType.Exact
         ),
       ]);
-      const f1 = APIDataToRequestFeedbacks(res);
-      if (f1.length > 0) setCustomerFeedback(f1.at(0));
-      console.log("F1", f1);
-
+      if (res.success) {
+        const f1 = APIDataToRequestFeedbacks(res);
+        if (f1.length > 0) setCustomerFeedback(f1.at(0));
+        console.info("F1", f1);
+      }
       if (data.specialist) {
         res = await FeedbackAPI.getInstance().get([
           filter,
@@ -142,9 +144,11 @@ const RequestDetailsView = () => {
             FieldFilterType.Exact
           ),
         ]);
-        const f2 = APIDataToRequestFeedbacks(res);
-        console.log("F2", f2);
-        if (f2.length > 0) setSpecFeedback(f2.at(0));
+        if (res.success) {
+          const f2 = APIDataToRequestFeedbacks(res);
+          console.info("F2", f2);
+          if (f2.length > 0) setSpecFeedback(f2.at(0));
+        }
       }
     } else {
       showNotification({
@@ -191,15 +195,14 @@ const RequestDetailsView = () => {
       is_accept
     );
 
-    if (res.success) {
-      const is_accept_string = is_accept ? "پذیرفته" : "رد";
-      showNotification({
-        title: "عملیات موفقیت‌آمیز",
-        message: `درخواست با موفقیت ${is_accept_string} شد.`,
-        color: "teal",
-        icon: <Check size={18} />,
-      });
+    const is_accept_string = is_accept ? "پذیرفته" : "رد";
 
+    notifyUser(
+      res,
+      "عملیات موفقیت‌آمیز",
+      `متخصص با موفقیت ${is_accept_string} شد.`
+    );
+    if (res.success) {
       getData();
     }
   };
@@ -210,15 +213,15 @@ const RequestDetailsView = () => {
       is_accept
     );
 
-    if (res.success) {
-      const is_accept_string = is_accept ? "پذیرفته" : "رد";
-      showNotification({
-        title: "عملیات موفقیت‌آمیز",
-        message: `متخصص با موفقیت ${is_accept_string} شد.`,
-        color: "teal",
-        icon: <Check size={18} />,
-      });
+    const is_accept_string = is_accept ? "پذیرفته" : "رد";
 
+    notifyUser(
+      res,
+      "عملیات موفقیت‌آمیز",
+      `متخصص با موفقیت ${is_accept_string} شد.`
+    );
+
+    if (res.success) {
       getData();
     }
   };
@@ -247,14 +250,8 @@ const RequestDetailsView = () => {
       requestDetails!.id
     );
 
+    notifyUser(res, "عملیات موفقیت‌آمیز", `درخواست با موفقیت پذیرفته شد.`);
     if (res.success) {
-      showNotification({
-        title: "عملیات موفقیت‌آمیز",
-        message: `درخواست با موفقیت پذیرفته شد.`,
-        color: "teal",
-        icon: <Check size={18} />,
-      });
-
       getData();
     }
   };
@@ -460,7 +457,7 @@ const RequestDetailsView = () => {
                 }}
                 leftIcon={<Check size={20} />}
               >
-                قبول درخواست
+                اعلام آمادگی برای درخواست
               </Button>
             </Group>
           </>
