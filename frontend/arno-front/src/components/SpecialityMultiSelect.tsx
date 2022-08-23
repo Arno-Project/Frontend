@@ -11,12 +11,16 @@ export default function SpecialityMultiSelect({
   setter,
   required,
   error,
+  initialValues = [],
+  disabled = false,
+  form = {},
+  formProps = {}
 }: any) {
   const [specialities, setSpecialities] = useState<Speciality[]>([]);
 
   const getSpecialities = async () => {
     const res = await AccountAPI.getInstance().getSpecialities();
-    
+
     if (res.success) {
       const data = APIDataToSpecialities(res);
       setSpecialities(data);
@@ -32,20 +36,31 @@ export default function SpecialityMultiSelect({
 
   useEffect(() => {
     getSpecialities();
+    if (Object.keys(form).length > 0) {
+      form.setFieldValue("specialities", initialValues);
+    }
   }, []);
 
   return (
     <MultiSelect
       onChange={setter}
-      className="font-reminder"
-      data={specialities.map((s) => s.title)}
+      className="font-reminder tour-search-input-speciality"
+      data={specialities
+        .filter((s: Speciality) => s.parent !== null)
+        .map((s: Speciality) => ({
+          label: s.title,
+          value: s.id + "",
+          group: s.parent?.title,
+        }))}
       icon={<UserSearch size={20} />}
-      label="انتخاب تخصص(ها)"
+      label="انتخاب تخصص‌ها برای متخصصین"
       placeholder="تخصص‌های مورد نظر"
       required={required}
       error={error}
       searchable
       clearable
+      disabled={disabled}
+      {...formProps}
     />
   );
 }

@@ -24,7 +24,7 @@ export function UserCard({ user }: any) {
     }
     
     return (
-        <Box
+        <Box className="tour-user-profile"
       sx={{
         paddingTop: theme.spacing.sm,
         borderTop: `1px solid ${

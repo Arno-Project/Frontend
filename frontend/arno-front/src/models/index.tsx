@@ -16,7 +16,9 @@ type Speciality = {
   id: number;
   title: string;
   description: string;
-}
+  parent: Speciality | null;
+  children: Speciality[];
+};
 
 type User = {
   id: number;
@@ -28,7 +30,10 @@ type User = {
   phone: string;
   score: number;
   speciality: Array<Speciality>;
-  is_validated: boolean;
+  isValidated: boolean;
+  dateJoined: string;
+  lastLogin: string;
+  isActive: boolean;
 };
 
 enum FeedbackType {
@@ -49,7 +54,7 @@ type FeedbackReply = {
   id: number;
   text: string;
   user: User;
-}
+};
 
 type Feedback = {
   created_at: string;
@@ -59,7 +64,21 @@ type Feedback = {
   text: string;
   type: string;
   user: User;
-}
+};
+
+type MetricScore = {
+  metric: Metric;
+  score: number;
+};
+
+type RequestFeedback = {
+  created_at: string;
+  metricScores: MetricScore[];
+  id: number;
+  description: string;
+  request: number;
+  user: User;
+};
 
 enum RequestStatus {
   Pending = "PEND",
@@ -75,7 +94,7 @@ type LocationModel = {
   address: string;
   latitude: number;
   longitude: number;
-}
+};
 
 type ServiceSummary = {
   id: number;
@@ -88,7 +107,7 @@ type ServiceSummary = {
   description: string;
   start_time: string;
   requested_speciality: Speciality;
-}
+};
 
 type Message = {
   id: number;
@@ -97,12 +116,12 @@ type Message = {
   text: string;
   created_at: string;
   is_read: boolean;
-}
+};
 
 type Chat = {
   lastMessage: Message;
   peer: User;
-}
+};
 
 enum NotificationType {
   Info = "INF",
@@ -110,24 +129,77 @@ enum NotificationType {
   Success = "SUC",
 }
 
-
 type Notification = {
-  id: number,
-  title: string,
-  message: string,
-  link: string,
-  date: string,
-  is_read: boolean,
-  user: User,
-  type: NotificationType
-}
+  id: number;
+  title: string;
+  message: string;
+  link: string;
+  date: string;
+  is_read: boolean;
+  user: User;
+  type: NotificationType;
+};
 
 type Metric = {
-  id: number,
-  title: string,
-  description: string,
-  userType: UserRole
+  id: number;
+  title: string;
+  description: string;
+  userType: UserRole;
+};
+
+enum LogLevel {
+  Debug = "D",
+  Info = "I",
+  Warning = "W",
+  Error = "E",
+  Critical = "C",
 }
 
-export { UserRole, UserGeneralRole, FeedbackType, FeedbackStatus, RequestStatus, NotificationType};
-export type { User , Speciality, Feedback, FeedbackReply, LocationModel, ServiceSummary, Message, Chat, Notification, Metric};
+type SystemLog = {
+  id: number;
+  level: LogLevel;
+  source: string;
+  message: string;
+  created_at: Date;
+};
+
+type ScorePolicy = {
+  id: number;
+  minimum_score: number;
+  allowed_requests: number;
+};
+
+type SatisfactionItem = {
+  user: User;
+  badFeedbacks: RequestFeedback[];
+  badMetrics: Metric[];
+  totalFeedbacksCount: number;
+  average: number;
+};
+
+export {
+  UserRole,
+  UserGeneralRole,
+  FeedbackType,
+  FeedbackStatus,
+  RequestStatus,
+  NotificationType,
+  LogLevel,
+};
+export type {
+  User,
+  Speciality,
+  Feedback,
+  FeedbackReply,
+  LocationModel,
+  ServiceSummary,
+  Message,
+  Chat,
+  Notification,
+  Metric,
+  SystemLog,
+  ScorePolicy,
+  SatisfactionItem,
+  RequestFeedback,
+  MetricScore
+};

@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8000/api";
+const BASE_HOST = process.env.REACT_APP_BASE_HOST || "http://localhost:8000";
+const BASE_URL = `${BASE_HOST}/api`;
 
 const NETWORK_ERROR_MSG = {
   error: "در ارتباط با سرور خطایی رخ داد. مجددا تلاش کنید.",
@@ -13,21 +14,35 @@ export enum FieldFilterType {
 
 export enum FieldFilterName {
   Role = "role",
-  Speciality = "speciality"
+  Speciality = "speciality",
+  RequestID = "request_id",
+  Name = "name",
+  Phone = "phone",
+  Email = "email",
+  Roles = "roles",
+  Sort = "sort",
+  Status = "status",
+  Customer = "customer",
+  Specialist = "specialist",
+  DateRange = "dateRange",
+  UserID="user_id"
 }
 
 export class FieldFilter {
   name: string;
-  value: string;
+  value: string | string[] | {id:string} | {name: string};
   type: FieldFilterType;
 
-  constructor(name: string, value: string, type: FieldFilterType) {
+  constructor(name: string, value: any, type: FieldFilterType) {
     this.name = name;
     this.value = value;
     this.type = type;
   }
 
-  get_pair(): string[] {
+  get_pair(): any[] {
+    if (Array.isArray(this.value)) {
+      return [this.name, this.value.join(",")];
+    }
     return [this.name, this.value];
   }
 }
@@ -91,7 +106,7 @@ abstract class BaseAPI {
     }
   }
 
-    async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
+  async sendDeleteRequest(r: APIRequest): Promise<APIResponse> {
     try {
       const config = {
         headers: {
@@ -218,7 +233,7 @@ abstract class BaseListAPI extends BaseAPI {
       fieldFilters.map((field) => field.get_pair())
     );
 
-    console.log("paramdict", paramDict)
+    console.log("param dict", paramDict);
 
     const response = await this.sendAuthorizedGetRequest({
       path: this.get_path,
@@ -264,4 +279,4 @@ abstract class BaseListAPI extends BaseAPI {
   }
 }
 
-export { BASE_URL, BaseAPI, BaseListAPI };
+export { BASE_HOST, BASE_URL, BaseAPI, BaseListAPI };

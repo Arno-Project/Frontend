@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ThemeIcon, UnstyledButton, Group, Text, useMantineTheme } from "@mantine/core";
 import { MainLinkProps } from "./DashboardNav"
 
-function MainLink({ icon, color, label, path }: MainLinkProps) {
+function MainLink({ icon, color, label, path , classname }: MainLinkProps) {
   const ref: any = useRef<HTMLButtonElement>();
   const theme = useMantineTheme();
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ function MainLink({ icon, color, label, path }: MainLinkProps) {
         <ThemeIcon color={color} variant="light">
           {icon}
         </ThemeIcon>
-        <Text size="sm">{label}</Text>
+        <Text size="sm" className={classname}>{label}</Text>
       </Group>
     </UnstyledButton>
   );

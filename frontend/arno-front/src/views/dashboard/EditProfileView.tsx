@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useForm } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 import {
   TextInput,
   PasswordInput,
@@ -11,18 +11,20 @@ import {
   Center,
   Title,
   Modal,
+  FileInput,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 
-import { Lock, Mail, Phone, X, Edit, Id } from "tabler-icons-react";
+import { Lock, Mail, Phone, X, Edit, Id, FileUpload } from "tabler-icons-react";
 
 import { useAppSelector } from "../../redux/hooks";
 
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
-import { UserRole } from "../../models";
+import { Speciality, UserRole } from "../../models";
 import { notifyUser } from "../utils";
 import { AccountAPI } from "../../api/accounts";
 import { APIDataToUsers } from "../../models/utils";
+import { PasswordValidator } from "../../assets/PasswordValidator";
 
 import { Helmet } from "react-helmet";
 const TITLE = "اطلاعات کاربری";
@@ -38,6 +40,28 @@ const EditProfileView = () => {
   );
   const [specialityError, setSpecialityError] = useState("");
 
+  const [mySpecialities, setMySpecialities] = useState<Speciality[]>([]);
+  const [allSpecialities, setAllSpecialities] = useState<Speciality[]>([]);
+
+  const getData = async () => {
+    const res = await AccountAPI.getInstance().getSpecialistById(user!.id);
+    if (!res.success) {
+      showNotification({
+        title: "خطا",
+        message: "دریافت تخصص‌ها از سرور با خطا مواجه شد",
+        color: "red",
+        icon: <X size={18} />,
+      });
+      return;
+    }
+    setAllSpecialities(await AccountAPI.getInstance().fetchSpecialities());
+    setMySpecialities(APIDataToUsers(res)[0].speciality);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   const onSpecialitySelectChange = (values: any[]) => {
     setSelectedSpecialities(values);
     setSpecialityError("");
@@ -51,18 +75,21 @@ const EditProfileView = () => {
       email: user?.email,
       phone: user?.phone,
       is_active: true,
+      documents: null,
+      specialities: [],
     },
 
-    validationRules: {
-      first_name: (value) => value!.trim().length >= 2,
-      last_name: (value) => value!.trim().length >= 2,
-      email: (value) => /^\S+@\S+$/.test(value!),
-      phone: (value) => /^(\+|0)\d{10}$/.test(value!),
-    },
-
-    errorMessages: {
-      email: "ایمیل به‌درستی وارد نشده است.",
-      phone: "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
+    validate: {
+      first_name: (value: string) =>
+        value!.trim().length >= 2 ? null : "نام به‌درستی ثبت نشده است",
+      last_name: (value: string) =>
+        value!.trim().length >= 2 ? null : "نام به‌درستی ثبت نشده است",
+      email: (value: string) =>
+        /^\S+@\S+$/.test(value!) ? null : "ایمیل به‌درستی وارد نشده است.",
+      phone: (value: string) =>
+        /^(\+|0)\d{10}$/.test(value!)
+          ? null
+          : "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
     },
   });
 
@@ -73,18 +100,16 @@ const EditProfileView = () => {
       confirm_password: "",
     },
 
-    validationRules: {
-      confirm_password: (val, values: any) => val === values.password,
-    },
-
-    errorMessages: {
-      // password:
-      //   "Password should contain 1 number, 1 letter and at least 6 characters",
-      confirm_password: "تکرار رمز مطابق رمز وارد شده نیست.",
+    validate: {
+      password: PasswordValidator.validatePassword,
+      confirm_password: (val, values: any) =>
+        val === values.password ? null : "تکرار رمز مطابق رمز وارد شده نیست.",
     },
   });
 
   const submitEditProfileForm = async (values: any) => {
+    uploadSpecialistDocument(values["documents"]);
+
     const res = await AccountAPI.getInstance().editMyProfile(values);
     if (user?.role === UserRole.Specialist) {
       await syncSpecialities();
@@ -101,27 +126,34 @@ const EditProfileView = () => {
     }
   };
 
-  const syncSpecialities = async () => {
-    const res = await AccountAPI.getInstance().getSpecialistById(user!.id);
-    if (!res.success) {
-      showNotification({
-        title: "خطا",
-        message: "دریافت تخصص‌ها از سرور با خطا مواجه شد",
-        color: "red",
-        icon: <X size={18} />,
-      });
+  const uploadSpecialistDocument = async (document: any) => {
+    if (document === null) {
       return;
     }
-    const allSpecialities = await AccountAPI.getInstance().fetchSpecialities();
-    const mySpec = APIDataToUsers(res)[0].speciality.map((s) => s.id);
-    const selectedSpec = selectedSpecialities.map(
-      (s) => allSpecialities.filter((sp) => sp.title === s)[0].id
-    );
+
+    let formData = new FormData();
+    formData.append("file", document);
+
+    const res = await AccountAPI.getInstance().uploadDocument(formData);
+
+    notifyUser(res, "بارگذاری موفقیت‌آمیز", "مدارک شما با موفقیت آپلود شد.");
+  };
+
+  const syncSpecialities = async () => {
+    let selectedSpec = editProfileForm.values["specialities"].map(s => s + "");
+    const mySpecIds = mySpecialities.map((s) => s.id);
     for (let specialityId of allSpecialities.map((s) => s.id)) {
-      if (mySpec.includes(specialityId) && !selectedSpec.includes(specialityId)) {
+      let specialityIdStr = specialityId + "";
+      if (
+        mySpecIds.includes(specialityId) &&
+        !selectedSpec.includes(specialityIdStr)
+      ) {
         await AccountAPI.getInstance().removeSpeciality(specialityId);
       }
-      if (selectedSpec.includes(specialityId) && !mySpec.includes(specialityId)) {
+      if (
+        selectedSpec.includes(specialityIdStr) &&
+        !mySpecIds.includes(specialityId)
+      ) {
         await AccountAPI.getInstance().addSpeciality(specialityId);
       }
     }
@@ -181,11 +213,26 @@ const EditProfileView = () => {
         />
 
         {user?.role === UserRole.Specialist && (
+          <FileInput
+            mt="sm"
+            label="آپلود مدارک"
+            placeholder="انتخاب مدارک اعتبارسنجی"
+            icon={<FileUpload size={20} />}
+            accept="application/pdf"
+            {...editProfileForm.getInputProps("documents")}
+          />
+        )}
+
+        {user?.role === UserRole.Specialist && allSpecialities.length > 0 && (
           <div style={{ marginTop: "16px" }}>
             <SpecialityMultiSelect
               setter={onSpecialitySelectChange}
+              initialValues={mySpecialities.map((s) => s.id + "")}
               required={true}
               error={specialityError}
+              disabled={allSpecialities.length === 0}
+              form={editProfileForm}
+              formProps={editProfileForm.getInputProps("specialities")}
             />
           </div>
         )}
@@ -193,7 +240,7 @@ const EditProfileView = () => {
         {user?.role === UserRole.Specialist && (
           <Checkbox
             mt="xl"
-            label="فعال بودن متخصص"
+            label="در حال حاضر مایل به ارائه‌ی سرویس می‌باشم."
             {...editProfileForm.getInputProps("is_active", {
               type: "checkbox",
             })}

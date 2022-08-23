@@ -8,7 +8,10 @@ import {
   Button,
   UnstyledButton,
   Modal,
+  Divider,
   Textarea,
+  Stack,
+  Group,
 } from "@mantine/core";
 
 import {
@@ -17,17 +20,29 @@ import {
   MessageReport,
   ReportOff,
 } from "tabler-icons-react";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 import { Feedback, UserRole } from "../../models";
 
-import { useForm } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 
-import { Helmet } from "react-helmet";
 import { SystemFeedbackAPI } from "../../api/feedback";
 import { APIDataToFeedbacks } from "../../models/utils";
 import { formatDateString } from "../../dateUtils";
 import { notifyUser } from "../utils";
+import { ObjectSerializer } from "../../assets/ObjectSerializer";
+
+import { CSVLink } from "react-csv";
+
+import { Helmet } from "react-helmet";
+import { useLocation } from "react-router-dom";
+import { setSteps } from "../../redux/intro";
+import {
+  ManageServiceTab1Steps,
+  ManageServiceTab2Steps,
+  TechnicalIssuesSteps,
+} from "../../assets/IntroSteps";
+
 const TITLE = "مشکلات فنی";
 
 const TechnicalIssuesView = () => {
@@ -66,21 +81,28 @@ const TechnicalIssuesView = () => {
       techResponse: "placeholder",
     },
 
-    validationRules: {
-      techResponse: (value) => value.trim().length >= 2,
-    },
-
-    errorMessages: {
-      techResponse: "این بخش نمی‌تواند خالی باشد",
+    validate: {
+      techResponse: (value) =>
+        value.trim().length >= 2 ? null : "این بخش نمی‌تواند خالی باشد",
     },
   });
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/technical_issues") {
+      dispatch(setSteps(TechnicalIssuesSteps));
+    }
+  }, [location.pathname]);
 
   const submitResponse = async () => {
     const reply = { system_feedback: rows[rowId]["id"], text: newResponse };
 
     const res = await SystemFeedbackAPI.getInstance().submitReply(reply);
-    
+
     notifyUser(res, "ارسال موفقیت‌آمیز", "پاسخ شما با موفقیت ارسال شد.");
+    getData();
   };
 
   const renderRows = () => {
@@ -120,18 +142,32 @@ const TechnicalIssuesView = () => {
       <Title order={2} mb="sm">
         {TITLE}
       </Title>
-      <Text>برای دریافت گزارش کل مشکلات روی دکمه زیر کلیک کنید:</Text>
+      {!!rows && rows.length > 0 && (
+        <Text>برای دریافت گزارش کل مشکلات روی دکمه زیر کلیک کنید:</Text>
+      )}
       <Center>
-        <Button
-          variant="gradient"
-          gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-          leftIcon={<Download size={20} />}
-          // onClick={() => fetchResults()}
-        >
-          دریافت گزارش
-        </Button>
+        {!!rows && rows.length > 0 && (
+          <CSVLink
+            filename={`TechnicalIssues ${new Date().toDateString()}.csv`}
+            data={ObjectSerializer.serializeData(rows)}
+            target="_blank"
+          >
+            <Button
+              variant="gradient"
+              gradient={{ from: "cyan", to: "indigo", deg: 105 }}
+              leftIcon={<Download size={20} />}
+            >
+              دریافت گزارش
+            </Button>
+          </CSVLink>
+        )}
       </Center>
-      <Table striped highlightOnHover verticalSpacing="md">
+      <Table
+        striped
+        highlightOnHover
+        verticalSpacing="sm"
+        className="tour-technical-issues-table"
+      >
         <thead>
           <tr>
             <th>ردیف</th>
@@ -148,31 +184,30 @@ const TechnicalIssuesView = () => {
         opened={viewOpened}
         onClose={() => setViewOpened(false)}
         title="گزارش مشکل فنی"
+        size="50%"
       >
-        {rows.length > 0 && rowId !== -1 ? (
-          <>
-          
-            <Text weight={700}>ارسال شده توسط:</Text>
-             <Text>{rows[rowId].user.username}</Text>
-             <Text weight={700}>تاریخ:</Text>
-             <Text>{formatDateString(rows[rowId].created_at)}</Text>
-            <Text weight={700}>متن مشکل:</Text>
-            <Text>{rows[rowId].text}</Text>
-            <Text weight={700}> پاسخ:</Text>
-            <Text>{rows[rowId].reply ? rows[rowId].reply!.text : ""}</Text>
-            <Text size="sm">پاسخ داده شده توسط {rows[rowId].reply!.user.username} در {formatDateString(rows[rowId].reply!.created_at)}</Text>
-          </>
-        ) : (
-          <></>
-        )}
+        {rows.length > 0 && rowId !== -1 ? viewFeedback() : <></>}
       </Modal>
 
       <Modal
         opened={writeOpened}
         onClose={() => setWriteOpened(false)}
         title="ارسال پاسخ"
+        size="50%"
       >
         <form onSubmit={techManagerResponseForm.onSubmit(submitResponse)}>
+          {!!rows &&
+            rows.length > 0 &&
+            rowId > -1 &&
+            rows !== undefined &&
+            rows?.at(rowId)?.reply && <>{viewFeedback()}</>}
+          <Divider
+            size="xs"
+            my="xs"
+            label="پاسخ جدید"
+            labelPosition="left"
+            variant="dashed"
+          />
           <Textarea
             value={newResponse}
             onChange={(event) => setNewResponse(event.currentTarget.value)}
@@ -193,6 +228,51 @@ const TechnicalIssuesView = () => {
       </Modal>
     </>
   );
+
+  function viewFeedback() {
+    return (
+      <>
+        <Divider
+          size="xs"
+          my="xs"
+          label="مشکل گزارش شده"
+          labelPosition="left"
+          variant="dashed"
+        />
+        <Stack>
+          <Group>
+            <Text weight={700}>ارسال شده توسط:</Text>
+            <Text>{rows[rowId].user.username}</Text>
+          </Group>
+          <Group>
+            <Text weight={700}>تاریخ:</Text>
+            <Text>{formatDateString(rows[rowId].created_at)}</Text>
+          </Group>
+          <Text weight={700}>متن مشکل:</Text>
+          <Text>{rows[rowId].text}</Text>
+          {rows[rowId].reply && (
+            <>
+              <Divider
+                size="xs"
+                my="xs"
+                label="پاسخ ثبت شده"
+                labelPosition="left"
+                variant="dashed"
+              />
+
+              <Text weight={700}> پاسخ:</Text>
+
+              <Text>{rows[rowId].reply ? rows[rowId].reply?.text : ""}</Text>
+              <Text size="sm" color="dimmed">
+                پاسخ داده شده توسط {rows[rowId].reply!.user.username} در{" "}
+                {formatDateString(rows[rowId].reply!.created_at)}
+              </Text>
+            </>
+          )}
+        </Stack>
+      </>
+    );
+  }
 };
 
 export default TechnicalIssuesView;

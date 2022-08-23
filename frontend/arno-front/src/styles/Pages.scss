@@ -27,6 +27,17 @@
   // custom styles
 }
 
+.centered-table {
+  td {
+    text-align: center;
+  }
+  
+  th {
+    text-align: center !important;
+  }
+  
+}
+
 @font-face {
   font-family: Yekan;
   src: url("../assets/fonts/yekan.eot");

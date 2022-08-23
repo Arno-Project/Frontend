@@ -1,75 +1,67 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
-  Badge,
   Button,
   Center,
   Pagination,
-  Space,
   Table,
   TextInput,
-  Title,
   Group,
-  Grid,
 } from "@mantine/core";
-import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
+import { ListSearch, Search } from "tabler-icons-react";
 
-import { useAppSelector } from "../redux/hooks";
-import { User, UserGeneralRole, UserRole } from "../models";
+import { User } from "../models";
 import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
 import { SpecialistRow } from "./SpecialistRow";
+import UserSearchComponent from "./UserSearchComponent";
+import { FieldFilterName } from "../api/base";
+
+const PAGE_SIZE = 5;
 
 const SpecialistsTable = (props: {
   users: User[];
+  search: {
+    getUsers: Function;
+    searchFields: FieldFilterName[];
+  } | null;
   button: {
     label: string;
     action: Function;
+    className: string|null;
   } | null;
 }) => {
-  const PAGE_SIZE = 5;
   const [activePage, setPage] = useState(1);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
+  const rows = props.users.slice(
+    PAGE_SIZE * (activePage - 1),
+    PAGE_SIZE * activePage
+  );
+
   return (
     <>
-      <div className="search-criteria">
-        <Group align="flex-end">
-          <TextInput
-            // value={inputValue}
-            // onChange={(event) => setInputValue(event.currentTarget.value)}
-            icon={<Search size={20} />}
-            label="نام متخصص"
-            placeholder="نام"
-          />
+      {props.search !== null && (
+        <UserSearchComponent
+          getData={props.search.getUsers}
+          searchFields={props.search.searchFields}
+          includeQuickFilters={false}
+        />
+      )}
 
-          <SpecialityMultiSelect setter={setSelectedValues} />
-
-          <Button
-            variant="gradient"
-            gradient={{ from: "cyan", to: "indigo", deg: 105 }}
-            leftIcon={<ListSearch size={20} />}
-            // loading={isSearching}
-            // onClick={() => fetchResults()}
-          >
-            جست‌وجو
-          </Button>
-        </Group>
-      </div>
-
-      <Table striped highlightOnHover verticalSpacing="sm" mt="sm">
+      <Table striped highlightOnHover verticalSpacing="sm" mt="sm" className="tour-specialist-list">
         <thead>
           <tr>
-            <th>ردیف</th>
             <th>نام متخصص</th>
-            <th>تخصص(ها)</th>
+            <th>تخصص‌ها</th>
             <th>امتیاز</th>
+            <th>جزئیات</th>
           </tr>
         </thead>
-        <tbody>
-          {props.users.map((user, i) => {
-            if (user.is_validated)
+        <tbody className="tour-specialist-table-tbody">
+          {rows.map((user, i) => {
+            if (user.isValidated)
               return (
-                <SpecialistRow user={user} idx={i + 1} button={props.button} />
+                <SpecialistRow key={user.id} user={user} idx={i + 1} button={props.button} />
               );
           })}
         </tbody>
@@ -77,7 +69,7 @@ const SpecialistsTable = (props: {
       <Center mt="sm">
         <Pagination
           mt="sm"
-          total={3} // {Math.ceil(data.length / PAGE_SIZE)}
+          total={Math.ceil(props.users.length / PAGE_SIZE)}
           color="cyan"
           radius="md"
           withEdges

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   Table,
   Title,
-  Avatar,
   Space,
   Group,
   ActionIcon,
@@ -12,33 +11,25 @@ import {
   Textarea,
   Input,
   Radio,
-  RadioGroup,
 } from "@mantine/core";
 import {
   X,
   Check,
-  ListSearch,
-  Search,
-  Paperclip,
-  BellRinging,
-  Checks,
   Edit,
-  Send,
 } from "tabler-icons-react";
 
-import { useAppSelector } from "../../redux/hooks";
-import { Chat, Metric, UserRole } from "../../models";
+import { Metric, UserRole } from "../../models";
 
 import { Helmet } from "react-helmet";
-import { APIDataToChats, APIDataToMetrics } from "../../models/utils";
-import { formatDateString } from "../../dateUtils";
-import { useNavigate } from "react-router-dom";
-import { ChatsAPI } from "../../api/chats";
-import { FeedbackAPI, SystemFeedbackAPI } from "../../api/feedback";
+import { APIDataToMetrics } from "../../models/utils";
 import { MetricsAPI } from "../../api/metrics";
 import { RoleDict } from "../../assets/consts";
 import { showNotification } from "@mantine/notifications";
-import { useForm } from "@mantine/hooks";
+import { useForm } from '@mantine/form';
+import {useAppDispatch} from "../../redux/hooks";
+import {useLocation} from "react-router-dom";
+import {setSteps} from "../../redux/intro";
+import {EvalMetricSteps, SystemFeedbackSteps} from "../../assets/IntroSteps";
 
 const TITLE = "معیارهای ارزیابی";
 
@@ -59,6 +50,14 @@ const EvalMetricsView = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname === "/dashboard/evaluation_metrics") {
+      dispatch(setSteps(EvalMetricSteps))
+    }
+  }, [location.pathname]);
 
   const editMetric = async (values: any) => {
     const metric = toEditMetric;
@@ -126,6 +125,7 @@ const EvalMetricsView = () => {
       <Group position="apart">
         <Title order={2}>{TITLE}</Title>
         <Button
+            className="tour-add-metric-button"
           variant="light"
           size="xs"
           color="violet"
@@ -138,7 +138,7 @@ const EvalMetricsView = () => {
         </Button>
       </Group>
       <Space h="lg" />
-      <Table striped verticalSpacing="lg">
+      <Table className="tour-metric-table" striped verticalSpacing="lg">
         <thead>
           <tr>
             <th>ردیف</th>
@@ -238,7 +238,7 @@ const EvalMetricsView = () => {
             required
             {...editMetricForm.getInputProps("description")}
           />
-          <RadioGroup
+          <Radio.Group
             mb="sm"
             label="کاربر مربوطه"
             description="مشخص کنید معیار در نظرسنجی کدام کاربر مورد استفاده قرار گیرد."
@@ -249,7 +249,7 @@ const EvalMetricsView = () => {
           >
             <Radio value={UserRole.Customer} label="مشتری" />
             <Radio value={UserRole.Specialist} label="متخصص" />
-          </RadioGroup>
+          </Radio.Group>
           <Group position="right">
             <Button mt="md" color="blue" type="submit">
               ثبت

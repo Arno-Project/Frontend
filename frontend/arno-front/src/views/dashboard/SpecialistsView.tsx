@@ -1,48 +1,61 @@
 import { useEffect, useState } from "react";
 
-import {
-  Badge,
-  Button,
-  Center,
-  Pagination,
-  Space,
-  Table,
-  TextInput,
-  Title,
-  Tooltip,
-} from "@mantine/core";
-import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
+import { Space, Table, Title } from "@mantine/core";
+import { X, Check, Paperclip } from "tabler-icons-react";
 
-import { useAppSelector } from "../../redux/hooks";
-import { User, UserGeneralRole, UserRole } from "../../models";
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
+import { User, UserRole } from "../../models";
 
 import { Helmet } from "react-helmet";
 import { AccountAPI } from "../../api/accounts";
 import { FieldFilter, FieldFilterName, FieldFilterType } from "../../api/base";
 import { APIDataToUsers } from "../../models/utils";
-import { mantine_colors } from "../../assets/consts";
 import SpecialistsTable from "../../components/SpecialistsTable";
 import { SpecialitiesBadges } from "../../models/SpecialityBadges";
+import {useLocation} from "react-router-dom";
+import {setSteps} from "../../redux/intro";
+import {SpecialistListSteps} from "../../assets/IntroSteps";
 const TITLE = "متخصصان";
+
+const PAGE_SIZE = 5;
 
 const SpecialistsView = () => {
   const user = useAppSelector((state) => state.auth.user);
 
   const [users, setUsers] = useState<User[]>([]);
 
-  const getData = async () => {
-    const filter = new FieldFilter(
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/specialists") {
+      dispatch(setSteps(SpecialistListSteps));
+    }
+  }, [location.pathname]);
+
+
+  const getData = async (filters: FieldFilter[]) => {
+    const filter1 = new FieldFilter(
       FieldFilterName.Role,
       UserRole.Specialist,
       FieldFilterType.Exact
     );
-    let res = await AccountAPI.getInstance().get([filter]);
+    const filter2 = new FieldFilter(
+      FieldFilterName.Sort,
+      "-score",
+      FieldFilterType.Exact
+    );
+    let res = await AccountAPI.getInstance().get([
+      filter2,
+      ...filters,
+      filter1,
+    ]);
     const users = APIDataToUsers(res);
     setUsers(users);
   };
 
   useEffect(() => {
-    getData();
+    getData([]);
   }, []);
 
   return (
@@ -51,57 +64,19 @@ const SpecialistsView = () => {
         <title>{"آرنو | " + TITLE}</title>
       </Helmet>
       <Title order={2}>{TITLE}</Title>
-      {[UserRole.CompanyManager, UserRole.TechnicalManager].includes(
-        user!.role
-      ) && (
-        <>
-          <Title order={3} my="md">
-            تأیید متخصصین
-          </Title>
-          <Table striped highlightOnHover>
-            <thead>
-              <tr>
-                <th>ردیف</th>
-                <th>نام متخصص</th>
-                <th>تخصص(ها)</th>
-                <th>مدارک اعتبارسنجی</th>
-                <th>تأیید/رد</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user, i) => {
-                if (!user.is_validated)
-                  return (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>
-                        {user.firstName} {user.lastName}
-                      </td>
-                      <td>
-                      <SpecialitiesBadges speciality={user.speciality} />
-                      </td>
-                      <td>
-                        <Paperclip size={24} />
-                      </td>
-                      <td>
-                        <div style={{ display: "flex" }}>
-                          <Check color="green" size={22} />
-                          <Space w="lg" />
-                          <X color="red" size={22} />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-              })}
-            </tbody>
-          </Table>
-        </>
-      )}
+
       <Title order={3} my="md">
         مشاهده متخصصین برحسب امتیاز
       </Title>
 
-     <SpecialistsTable users={users} button={null}></SpecialistsTable>
+      <SpecialistsTable
+        users={users}
+        button={null}
+        search={{
+          getUsers: getData,
+          searchFields: [FieldFilterName.Name, FieldFilterName.Sort, FieldFilterName.Speciality],
+        }}
+      ></SpecialistsTable>
     </>
   );
 };

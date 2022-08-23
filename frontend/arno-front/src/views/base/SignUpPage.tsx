@@ -1,13 +1,6 @@
-import { useForm } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 
-import {
-  InputWrapper,
-  Notification,
-  Radio,
-  RadioGroup,
-  Space,
-  Title,
-} from "@mantine/core";
+import { Input, Notification, Radio, Space, Title } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -26,10 +19,12 @@ import { Lock, Mail, Phone, Check, X, Id } from "tabler-icons-react";
 
 import { AuthAPI } from "../../api/auth";
 import SpecialityMultiSelect from "../../components/SpecialityMultiSelect";
-import { User, UserRole } from "../../models";
+import { Speciality, UserRole } from "../../models";
 import { useAppDispatch } from "../../redux/hooks";
 import { login, setUserInfo } from "../../redux/auth";
 import { APIDataToUser } from "../../models/utils";
+import { PasswordValidator } from "../../assets/PasswordValidator";
+import { AccountAPI } from "../../api/accounts";
 
 const SignUpPage = () => {
   const [formType, setFormType] = useState<"register" | "login">("login");
@@ -66,24 +61,21 @@ const SignUpPage = () => {
       termsOfService: true,
     },
 
-    validationRules: {
+    validate: {
       // firstName: (value) => formType === "login" || value.trim().length >= 2,
       // lastName: (value) => formType === "login" || value.trim().length >= 2,
       // email: (value) => /^\S+@\S+$/.test(value),
-      // password: (value) => /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(value),
-      phone: (value) => /^(\+|0)\d{10}$/.test(value),
-      confirmPassword: (val, values: any) =>
-        formType === "login" || val === values.password,
-      termsOfService: (value) => value === true,
-    },
-
-    errorMessages: {
-      // email: "Invalid email",
-      // password:
-      //   "Password should contain 1 number, 1 letter and at least 6 characters",
-      phone: "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
-      confirmPassword: "تکرار رمز مطابق رمز وارد شده نیست.",
-      termsOfService: "لطفا با مقررات سایت موافقت کنید",
+      password: PasswordValidator.validatePassword,
+      phone: (value: string) =>
+        /^(\+|0)\d{10}$/.test(value)
+          ? null
+          : "شماره تلفن همراه وارد شده صحیح نمی‌باشد.",
+      confirmPassword: (val: string, values: any) =>
+        formType === "login" || val === values.password
+          ? null
+          : "تکرار رمز مطابق رمز وارد شده نیست.",
+      termsOfService: (value: boolean) =>
+        value === true ? null : "لطفا با مقررات سایت موافقت کنید",
     },
   });
 
@@ -92,24 +84,32 @@ const SignUpPage = () => {
       username: "",
       password: "",
     },
-
-    validationRules: {},
-
-    errorMessages: {},
   });
 
-  const handleSubmit = async (values: any) => {
-    if (userRole === UserRole.Specialist && selectedSpecialities.length === 0) {
-      setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
-      return;
-    }
+  const syncSpecialities = async () => {
+    const accountAPI = AccountAPI.getInstance();
+    selectedSpecialities.forEach(async (specialityID: string) => {
+      console.log("syncSpecialities", specialityID);
+      const res = await accountAPI.addSpeciality(parseInt(specialityID));
+      console.log(res);
+    });
+  };
 
+  const handleSubmit = async (values: any) => {
     const api = AuthAPI.getInstance();
 
     let res = null;
     if (formType === "login") {
       res = await api.login(values["username"], values["password"]);
     } else {
+      if (
+        userRole === UserRole.Specialist &&
+        selectedSpecialities.length === 0
+      ) {
+        setSpecialityError("باید حداقل یک تخصص انتخاب کنید");
+        return;
+      }
+
       res = await api.register(
         { specialities: selectedSpecialities, ...values },
         userRole
@@ -123,16 +123,16 @@ const SignUpPage = () => {
       setShowFailureNotification(false);
       setShowSuccessNotification(true);
 
-      if (formType === "login" || userRole === UserRole.Customer) {
-        let user = APIDataToUser(res);
+      let user = APIDataToUser(res);
 
-        dispatch(login(data["token" as keyof object]));
-        dispatch(setUserInfo(user));
+      dispatch(login(data["token" as keyof object]));
+      dispatch(setUserInfo(user));
 
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      }
+      syncSpecialities();
+      
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     } else {
       setErrorMessage(res.error);
       setShowSuccessNotification(false);
@@ -194,7 +194,7 @@ const SignUpPage = () => {
 
         {formType === "register" ? (
           <form onSubmit={registerForm.onSubmit(handleSubmit)}>
-            <RadioGroup
+            <Radio.Group
               mb="sm"
               label="نوع کاربر"
               description="در صورت انتخاب متخصص، نیاز به تأیید مدیر خواهید داشت"
@@ -206,7 +206,7 @@ const SignUpPage = () => {
             >
               <Radio value={UserRole.Customer} label="مشتری" />
               <Radio value={UserRole.Specialist} label="متخصص" />
-            </RadioGroup>
+            </Radio.Group>
 
             <LoadingOverlay visible={loading} />
             <Group grow>
@@ -225,7 +225,7 @@ const SignUpPage = () => {
                 {...registerForm.getInputProps("lastName")}
               />
             </Group>
-            <InputWrapper
+            <Input.Wrapper
               id="input-demo"
               required
               error={error ? error["email" as keyof object] : ""}
@@ -238,9 +238,9 @@ const SignUpPage = () => {
                 icon={<Mail />}
                 {...registerForm.getInputProps("email")}
               />
-            </InputWrapper>
+            </Input.Wrapper>
 
-            <InputWrapper
+            <Input.Wrapper
               id="input-demo"
               required
               error={error ? error["username" as keyof object] : ""}
@@ -253,9 +253,9 @@ const SignUpPage = () => {
                 icon={<Id />}
                 {...registerForm.getInputProps("username")}
               />
-            </InputWrapper>
+            </Input.Wrapper>
 
-            <InputWrapper
+            <Input.Wrapper
               id="input-demo"
               required
               error={error ? error["phone" as keyof object] : ""}
@@ -268,8 +268,8 @@ const SignUpPage = () => {
                 icon={<Phone />}
                 {...registerForm.getInputProps("phone")}
               />
-            </InputWrapper>
-            <InputWrapper
+            </Input.Wrapper>
+            <Input.Wrapper
               id="input-demo"
               required
               error={error ? error["password" as keyof object] : ""}
@@ -292,7 +292,7 @@ const SignUpPage = () => {
                 icon={<Lock />}
                 {...registerForm.getInputProps("confirmPassword")}
               />
-            </InputWrapper>
+            </Input.Wrapper>
 
             {userRole === UserRole.Specialist && (
               <div style={{ marginTop: "16px" }}>
@@ -332,7 +332,7 @@ const SignUpPage = () => {
           <form onSubmit={loginForm.onSubmit(handleSubmit)}>
             <LoadingOverlay visible={loading} />
 
-            <InputWrapper
+            <Input.Wrapper
               id="input-demo"
               required
               error={error ? error["username" as keyof object] : ""}
@@ -345,7 +345,7 @@ const SignUpPage = () => {
                 icon={<Id />}
                 {...loginForm.getInputProps("username")}
               />
-            </InputWrapper>
+            </Input.Wrapper>
             <PasswordInput
               mt="md"
               required

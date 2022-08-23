@@ -12,6 +12,10 @@ import {
   UserRole,
   Notification,
   Metric,
+  SystemLog,
+  SatisfactionItem,
+  RequestFeedback,
+  MetricScore,
 } from ".";
 
 import { APIResponse } from "../api/base";
@@ -31,7 +35,10 @@ export function ObjectToUser(data: Object): User {
     phone: userData["phone"],
     score: data["score" as keyof object],
     speciality: data["speciality" as keyof object] as Array<Speciality>,
-    is_validated: data["is_validated" as keyof object],
+    isValidated: data["is_validated" as keyof object],
+    dateJoined: userData["date_joined" as keyof object],
+    lastLogin: userData["last_login" as keyof object],
+    isActive: userData["is_active" as keyof object],
   };
   return user;
 }
@@ -44,6 +51,7 @@ export function ObjectToUserOrNull(data: Object): User | null {
 }
 
 export function ObjectToFeedback(data: Object): Feedback {
+  console.info("ObjectToFeedback", data);
   let feedback: Feedback = {
     created_at: data["created_at" as keyof object],
     id: data["id" as keyof object],
@@ -121,6 +129,8 @@ export function APIDataToSpecialities(res: APIResponse): Speciality[] {
       id: r["id" as keyof Object],
       title: r["title" as keyof Object],
       description: r["description" as keyof Object],
+      parent: r["parent" as keyof object],
+      children: r["children" as keyof object] as Speciality[],
     };
     return spec;
   });
@@ -185,4 +195,71 @@ export function ObjectToMetric(data: Object): Metric {
 export function APIDataToMetrics(res: APIResponse): Metric[] {
   let data = res.data as Array<Object>;
   return data.map((r) => ObjectToMetric(r));
+}
+
+export function APIDataToLogs(res: APIResponse): SystemLog[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => {
+    const log: SystemLog = {
+      id: r["id" as keyof object],
+      level: r["level" as keyof object],
+      source: r["source" as keyof object],
+      message: r["message" as keyof object],
+      created_at: r["created_at" as keyof object],
+    };
+    return log;
+  });
+}
+
+export function ObjectToMetricScore(data: Object): MetricScore {
+  console.info("ObjectToMetricScore", data);
+  let m: MetricScore = {
+    score: parseInt(data["score" as keyof object]),
+    metric: ObjectToMetric(data["metric" as keyof object]),
+  };
+  return m;
+}
+
+export function ObjectToRequestFeedback(data: Object): RequestFeedback {
+  console.info("ObjectToRequestFeedback", data);
+  let feedback: RequestFeedback = {
+    created_at: data["created_at" as keyof object],
+    id: data["id" as keyof object],
+    description: data["description" as keyof object],
+    user: ObjectToUser(data["user" as keyof object]),
+    request: parseInt(data["request" as keyof object]),
+    metricScores: (data["metric_scores" as keyof object] as object[]).map((a) =>
+      ObjectToMetricScore(a)
+    ),
+  };
+  return feedback;
+}
+
+export function APIDataToRequestFeedbacks(res: APIResponse): RequestFeedback[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToRequestFeedback(r));
+}
+
+export function ObjectToSatisfactionItem(data: object): SatisfactionItem {
+  let msg: SatisfactionItem = {
+    user: ObjectToUser(data["user" as keyof object]),
+    badMetrics: (data["bad_metrics" as keyof object] as object[]).map((a) =>
+      ObjectToMetric(a)
+    ),
+    badFeedbacks: (data["bad_feedbacks" as keyof object] as object[]).map((a) =>
+      ObjectToRequestFeedback(a)
+    ),
+    totalFeedbacksCount: parseInt(
+      data["total_feedbacks_count" as keyof object]
+    ),
+    average: parseFloat(data["average_score" as keyof object]),
+  };
+  return msg;
+}
+
+export function APIDataToSatisfactionItems(
+  res: APIResponse
+): SatisfactionItem[] {
+  let data = res.data as Array<Object>;
+  return data.map((r) => ObjectToSatisfactionItem(r));
 }

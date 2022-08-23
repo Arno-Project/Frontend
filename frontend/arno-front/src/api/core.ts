@@ -1,4 +1,4 @@
-import { BaseListAPI } from "./base";
+import { BaseListAPI, FieldFilter } from "./base";
 
 export class CoreAPI extends BaseListAPI {
   protected static instance: CoreAPI;
@@ -26,11 +26,14 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
-  async getAllRequestsSummary() {
-    const response = await this.getRequestsSummary({});
+  async searchRequests(fieldFilters: FieldFilter[]) {
+    const paramDict = Object.fromEntries(
+      fieldFilters.map((field) => field.get_pair())
+    );
 
-    console.info("getMyRequestsStats", response);
-    return response;
+    console.log("param dict", paramDict);
+
+    return this.getRequestsSummary(paramDict);
   }
 
   async getRequestDetails(requestId: string) {
@@ -64,6 +67,18 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
+  async editRequest(requestId: number, body: any) {
+    const response = await this.sendAuthorizedPutRequest({
+      path: `request/edit/${requestId}/`,
+      body: body,
+      headers: null,
+      params: null,
+    });
+
+    console.info("editRequest", response);
+    return response;
+  }
+
   async cancelRequest(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/cancel/",
@@ -75,7 +90,7 @@ export class CoreAPI extends BaseListAPI {
     console.info("cancelRequest", response);
     return response;
   }
-
+  
   async cancelRequestByManager(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/cancel/force/",
@@ -105,7 +120,7 @@ export class CoreAPI extends BaseListAPI {
       path: "request/accept/customer/final/",
       body: {
         request_id: requestID,
-        is_accept: is_accept?"1":"0",
+        is_accept: is_accept ? "1" : "0",
       },
       headers: null,
       params: null,
@@ -118,7 +133,7 @@ export class CoreAPI extends BaseListAPI {
       path: "request/select/specialist/",
       body: {
         request_id: requestID,
-        specialist_id: specialistUserID
+        specialist_id: specialistUserID,
       },
       headers: null,
       params: null,
@@ -126,14 +141,13 @@ export class CoreAPI extends BaseListAPI {
 
     return response;
   }
-
 
   async acceptOrRejectCustomerRequest(requestID: number, is_accept: boolean) {
     const response = await this.sendAuthorizedPostRequest({
       path: "request/accept/specialist/final/",
       body: {
         request_id: requestID,
-        is_accept: is_accept?"1":"0",
+        is_accept: is_accept ? "1" : "0",
       },
       headers: null,
       params: null,
@@ -141,7 +155,6 @@ export class CoreAPI extends BaseListAPI {
 
     return response;
   }
-
 
   async selectRequestBySpecialist(requestID: number) {
     const response = await this.sendAuthorizedPostRequest({
@@ -156,18 +169,27 @@ export class CoreAPI extends BaseListAPI {
     return response;
   }
 
-
-  async endRequest(requestID: number) {
+  async finishRequest(request_id: number) {
     const response = await this.sendAuthorizedPostRequest({
-      path: "request/accept/specialist/initial/",
-      body: {
-        request_id: requestID,
-      },
+      path: "request/finish/",
+      body: { request_id },
       headers: null,
       params: null,
     });
 
+    console.info("finishRequest", response);
     return response;
   }
   
+  async getRequestPopularityReport(query: any) {
+    const response = await this.sendAuthorizedGetRequest({
+      path: "request/popularity/",
+      body: null,
+      headers: null,
+      params: { q: query },
+    });
+
+    console.info("getRequestPopularityReport", response);
+    return response;
+  }
 }

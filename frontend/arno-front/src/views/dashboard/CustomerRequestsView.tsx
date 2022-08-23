@@ -1,5 +1,7 @@
 import {
   Badge,
+  Center,
+  Pagination,
   Table,
   Title,
   Tooltip,
@@ -9,29 +11,46 @@ import { useEffect, useState } from "react";
 
 import { ExternalLink, X } from "tabler-icons-react";
 
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 import { mantine_colors, RequestStatusBadge } from "../../assets/consts";
 import { RequestStatus, ServiceSummary } from "../../models";
 import { CoreAPI } from "../../api/core";
 import { APIDataToRequestsSummary } from "../../models/utils";
-
 import { Helmet } from "react-helmet";
 import { notifyUser } from "../utils";
-const TITLE = "سفارش‌های من";
+import {useAppDispatch} from "../../redux/hooks";
+import {setSteps} from "../../redux/intro";
+import {MyRequestsStatusSteps} from "../../assets/IntroSteps";
+
+const TITLE = "درخواست‌های من";
+
+const PAGE_SIZE = 5;
 
 const CustomerRequestsView = () => {
   const navigate = useNavigate();
+  
   const [rows, setRows] = useState<ServiceSummary[]>([]);
+  const [activePage, setPage] = useState(1);
 
   const getData = async () => {
     const res = await CoreAPI.getInstance().getMyRequestsStatus();
 
+    console.info("Customer request view ", res)
     if (res.success) {
       const data = APIDataToRequestsSummary(res);
       setRows(data);
     }
   };
+
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard/requests") {
+      dispatch(setSteps(MyRequestsStatusSteps));
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     getData();
@@ -45,10 +64,15 @@ const CustomerRequestsView = () => {
     }
   };
 
+  const currentPageRows = rows.slice(
+    PAGE_SIZE * (activePage - 1),
+    PAGE_SIZE * activePage
+  );
+
   const renderRows = () => {
-    const body: any[] = rows.map((obj: ServiceSummary, i) => (
+    const body: any[] = currentPageRows.map((obj: ServiceSummary, i) => (
       <tr key={i}>
-        <td>{i + 1}</td>
+        <td>{(activePage - 1) * PAGE_SIZE + (i + 1)}</td>
         <td>
           <Tooltip
             label={obj.requested_speciality.description}
@@ -102,9 +126,9 @@ const CustomerRequestsView = () => {
       </Helmet>
       <Title order={2}>{TITLE}</Title>
       <Title order={3} my="md">
-        وضعیت سفارش‌ها
+        وضعیت درخواست‌ها
       </Title>
-      <Table striped highlightOnHover>
+      <Table striped verticalSpacing="sm" highlightOnHover className="tour-my-requests-status">
         <thead>
           <tr>
             <th>ردیف</th>
@@ -117,6 +141,17 @@ const CustomerRequestsView = () => {
         </thead>
         {renderRows()}
       </Table>
+      <Center mt="sm">
+        <Pagination
+          mt="sm"
+          total={Math.ceil(rows.length / PAGE_SIZE)}
+          color="cyan"
+          radius="md"
+          withEdges
+          page={activePage}
+          onChange={setPage}
+        />
+      </Center>
     </>
   );
 };

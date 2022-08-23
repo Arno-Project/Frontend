@@ -1,4 +1,4 @@
-
+.PHONY: build up down restart logs deploy-build deploy-build-prod
 build:
 	docker-compose up --build -d
 up:
@@ -9,3 +9,7 @@ restart:
 	docker-compose restart
 logs:
 	docker-compose logs
+deploy-build:
+	npm i && npm run build && docker-compose up --build -d && cp ./build-config/Dockerfile ./build/Dockerfile && cp ./build-config/docker-compose.yml ./build/docker-compose.yml  && cp ./build-config/default.conf ./build/default.conf && docker-compose --file ./build/docker-compose.yml up --build -d
+deploy-build-prod:
+	npm i && export BASE_HOST=arno.mostafaojaghi.ir && npm run build && docker-compose up --build -d && cp ./build-config/Dockerfile ./build/Dockerfile && cp ./build-config/docker-compose.yml ./build/docker-compose.yml  && cp ./build-config/default.conf ./build/default.conf && docker-compose --file ./build/docker-compose.yml up --build -d

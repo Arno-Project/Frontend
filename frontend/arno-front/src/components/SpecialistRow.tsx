@@ -1,17 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ZoomInArea } from "tabler-icons-react";
+import { Button, UnstyledButton } from "@mantine/core";
 
-import { Badge, Button, Tooltip } from "@mantine/core";
-import { X, Check, ListSearch, Search, Paperclip } from "tabler-icons-react";
-
-import { useAppSelector } from "../redux/hooks";
-import { User, UserGeneralRole, UserRole } from "../models";
-import SpecialityMultiSelect from "../components/SpecialityMultiSelect";
-
-import { AccountAPI } from "../api/accounts";
-import { FieldFilter, FieldFilterName, FieldFilterType } from "../api/base";
-import { APIDataToUsers } from "../models/utils";
-import { mantine_colors } from "../assets/consts";
+import { User } from "../models";
 import { SpecialitiesBadges } from "../models/SpecialityBadges";
+import { UserScore } from "../models/UserScore";
+import UserModal from "./UserModal";
 
 export const SpecialistRow = (props: {
   user: User;
@@ -19,22 +13,33 @@ export const SpecialistRow = (props: {
   button: {
     label: string;
     action: Function;
+    className: string | null;
   } | null;
 }) => {
+  const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
+
   const user = props.user;
   const idx = props.idx;
   return (
-    <tr key={user.id}>
-      <td>{idx}</td>
+    <tr>
       <td>
         {user.firstName} {user.lastName}
       </td>
       <td>
         <SpecialitiesBadges speciality={user.speciality} />
       </td>
-      <td>{user.score}</td>
-      {props.button !== null && (
-        <td>
+      <td>
+        <UserScore score={user.score} />
+      </td>
+      <td>
+        <UnstyledButton
+          onClick={() => {
+            setIsUserModalOpen(true);
+          }}
+        >
+          <ZoomInArea color="black" size={22} />
+        </UnstyledButton>
+        {props.button !== null && (
           <Button
             color="orange"
             variant="outline"
@@ -42,11 +47,22 @@ export const SpecialistRow = (props: {
             onClick={() => {
               props.button!.action(user.id);
             }}
+            className={
+              props.button!.className ? props.button!.className + "-" + idx : ""
+            }
           >
             {props.button.label}
           </Button>
-        </td>
-      )}
+        )}
+      </td>
+
+      <UserModal
+        key={user.id}
+        user={props.user}
+        isOpen={isUserModalOpen}
+        changeIsOpen={setIsUserModalOpen}
+        validateSpecialist={null}
+      />
     </tr>
   );
 };
